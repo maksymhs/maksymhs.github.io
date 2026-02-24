@@ -45,8 +45,8 @@ const lang = detectLang()
 
 const i18n = {
   en: {
-    welcome: "Hi! I'm Maksym, a Software Engineer specializing in backend development. Press SPACEBAR to ask me anything!",
-    idle: "Press SPACEBAR to talk to me!",
+    welcome: "Hi! I'm Maksym, a Software Engineer specializing in backend development. Press SPACE to talk or ENTER to type!",
+    idle: "Press SPACE to talk or ENTER to type!",
     listening: "I'm listening...",
     noSpeech: "I didn't hear you. Press SPACEBAR again!",
     thinking: "Let me think...",
@@ -59,8 +59,8 @@ const i18n = {
     speechLang: "en-US",
   },
   es: {
-    welcome: "¡Hola! Soy Maksym, Ingeniero de Software especializado en desarrollo backend. ¡Pulsa ESPACIO para preguntarme lo que quieras!",
-    idle: "¡Pulsa ESPACIO para hablarme!",
+    welcome: "¡Hola! Soy Maksym, Ingeniero de Software especializado en desarrollo backend. ¡Pulsa ESPACIO para hablar o INTRO para escribir!",
+    idle: "¡Pulsa ESPACIO para hablar o INTRO para escribir!",
     listening: "Te escucho...",
     noSpeech: "No te he oído. ¡Pulsa ESPACIO otra vez!",
     thinking: "Déjame pensar...",
@@ -73,8 +73,8 @@ const i18n = {
     speechLang: "es-ES",
   },
   ru: {
-    welcome: "Привет! Я Максим, инженер-программист, специализируюсь на бэкенд-разработке. Нажми ПРОБЕЛ, чтобы задать мне вопрос!",
-    idle: "Нажми ПРОБЕЛ, чтобы поговорить!",
+    welcome: "Привет! Я Максим, инженер-программист, специализируюсь на бэкенд-разработке. Нажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
+    idle: "Нажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
     listening: "Слушаю...",
     noSpeech: "Я тебя не услышал. Нажми ПРОБЕЛ ещё раз!",
     thinking: "Дай подумать...",
@@ -376,15 +376,37 @@ export default function ChatOverlay() {
           className={`interaction-btn btn-voice ${state === 'listening' ? 'btn-listening' : ''}`}
           onClick={handleVoice}
           onTouchEnd={(e) => { e.preventDefault(); handleVoice() }}
+          title={t.hintIdle}
         >
-          {state === 'listening' ? t.hintListening : t.hintIdle}
+          {state === 'listening' ? (
+            <span className="btn-label">{t.hintListening}</span>
+          ) : (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="9" y="1" width="6" height="12" rx="3" />
+              <path d="M5 10a7 7 0 0 0 14 0" />
+              <line x1="12" y1="17" x2="12" y2="22" />
+              <line x1="8" y1="22" x2="16" y2="22" />
+            </svg>
+          )}
         </button>
         <button
           className={`interaction-btn btn-type ${state === 'typing' ? 'btn-type-active' : ''}`}
           onClick={startTyping}
           onTouchEnd={(e) => { e.preventDefault(); startTyping() }}
+          title={t.hintType}
         >
-          {t.hintType}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <line x1="6" y1="8" x2="6" y2="8" strokeWidth="3" />
+            <line x1="10" y1="8" x2="10" y2="8" strokeWidth="3" />
+            <line x1="14" y1="8" x2="14" y2="8" strokeWidth="3" />
+            <line x1="18" y1="8" x2="18" y2="8" strokeWidth="3" />
+            <line x1="6" y1="12" x2="6" y2="12" strokeWidth="3" />
+            <line x1="10" y1="12" x2="10" y2="12" strokeWidth="3" />
+            <line x1="14" y1="12" x2="14" y2="12" strokeWidth="3" />
+            <line x1="18" y1="12" x2="18" y2="12" strokeWidth="3" />
+            <line x1="8" y1="16" x2="16" y2="16" />
+          </svg>
         </button>
       </div>
     </>

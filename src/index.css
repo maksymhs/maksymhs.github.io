@@ -141,7 +141,7 @@ html, body, #root {
   font-size: 10px;
   color: #f0d040;
   text-shadow: 2px 2px 0px #000;
-  padding: 14px 28px;
+  padding: 14px;
   background: rgba(0, 0, 0, 0.7);
   border: 3px solid rgba(240, 208, 64, 0.5);
   cursor: pointer;
@@ -151,6 +151,20 @@ html, body, #root {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  min-height: 50px;
+}
+
+.interaction-btn svg {
+  filter: drop-shadow(2px 2px 0px #000);
+}
+
+.btn-label {
+  font-size: 9px;
+  white-space: nowrap;
 }
 
 .interaction-btn:active {
