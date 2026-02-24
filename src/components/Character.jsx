@@ -25,17 +25,18 @@ function Head({ position }) {
   return (
     <group ref={headRef} position={position}>
       {/* Head - blocky cube */}
-      <Vox position={[0, 0, 0]} args={[0.5, 0.5, 0.5]} color="#ffd8a8" />
+      <Vox position={[0, 0, 0]} args={[0.5, 0.5, 0.5]} color="#f5dcc0" />
 
       {/* Hair - top */}
-      <Vox position={[0, 0.28, 0]} args={[0.54, 0.1, 0.54]} color="#4a3020" />
+      <Vox position={[0, 0.28, 0]} args={[0.54, 0.1, 0.54]} color="#6a4830" />
       {/* Hair - back */}
-      <Vox position={[0, 0.08, -0.24]} args={[0.54, 0.4, 0.08]} color="#4a3020" />
+      <Vox position={[0, 0.08, -0.24]} args={[0.54, 0.4, 0.08]} color="#6a4830" />
       {/* Hair - sides */}
-      <Vox position={[-0.26, 0.1, 0]} args={[0.06, 0.3, 0.5]} color="#4a3020" />
-      <Vox position={[0.26, 0.1, 0]} args={[0.06, 0.3, 0.5]} color="#4a3020" />
-      {/* Fringe */}
-      <Vox position={[0, 0.18, 0.22]} args={[0.4, 0.12, 0.1]} color="#4a3020" />
+      <Vox position={[-0.26, 0.1, 0]} args={[0.06, 0.3, 0.5]} color="#6a4830" />
+      <Vox position={[0.26, 0.12, 0]} args={[0.06, 0.26, 0.5]} color="#6a4830" />
+      {/* Fringe - swept to the right */}
+      <Vox position={[-0.08, 0.22, 0.22]} args={[0.36, 0.1, 0.1]} color="#6a4830" />
+      <Vox position={[-0.18, 0.2, 0.24]} args={[0.14, 0.08, 0.06]} color="#7a5838" />
 
       {/* Eyes - big pixel squares */}
       {[-0.12, 0.12].map((x, i) => (
@@ -49,16 +50,15 @@ function Head({ position }) {
         </group>
       ))}
 
-      {/* Blush cheeks - pixel squares */}
-      {[-0.2, 0.2].map((x, i) => (
-        <Vox key={i} position={[x, -0.06, 0.24]} args={[0.08, 0.06, 0.02]} color="#ff8888" />
-      ))}
+      {/* Eyebrows */}
+      <Vox position={[-0.12, 0.1, 0.26]} args={[0.12, 0.03, 0.02]} color="#5a3828" />
+      <Vox position={[0.12, 0.1, 0.26]} args={[0.12, 0.03, 0.02]} color="#5a3828" />
 
       {/* Mouth - small pixel line */}
-      <Vox position={[0, -0.12, 0.26]} args={[0.1, 0.03, 0.02]} color="#c06050" />
+      <Vox position={[0, -0.12, 0.26]} args={[0.1, 0.03, 0.02]} color="#c08070" />
 
       {/* Nose */}
-      <Vox position={[0, -0.04, 0.27]} args={[0.04, 0.04, 0.02]} color="#f0c090" />
+      <Vox position={[0, -0.04, 0.27]} args={[0.04, 0.05, 0.02]} color="#e8c8a8" />
     </group>
   )
 }
@@ -66,17 +66,16 @@ function Head({ position }) {
 function Body({ position }) {
   return (
     <group position={position}>
-      {/* Torso - hoodie */}
-      <Vox position={[0, 0, 0]} args={[0.5, 0.48, 0.32]} color="#5060e0" />
+      {/* Torso - black t-shirt */}
+      <Vox position={[0, 0, 0]} args={[0.5, 0.48, 0.32]} color="#1a1a1a" />
 
-      {/* Hoodie front detail - zipper line */}
-      <Vox position={[0, 0, 0.165]} args={[0.03, 0.44, 0.01]} color="#4050c0" />
+      {/* T-shirt logo (Puma-style small detail) */}
+      <Vox position={[-0.08, 0.08, 0.165]} args={[0.12, 0.06, 0.01]} color="#f0f0f0" />
 
-      {/* Hoodie pocket */}
-      <Vox position={[0, -0.12, 0.165]} args={[0.26, 0.1, 0.01]} color="#4858d0" />
-
-      {/* Collar */}
-      <Vox position={[0, 0.22, 0.06]} args={[0.36, 0.06, 0.2]} color="#4858d0" />
+      {/* Collar - round neck */}
+      <Vox position={[0, 0.22, 0.06]} args={[0.3, 0.06, 0.2]} color="#1a1a1a" />
+      {/* Neck */}
+      <Vox position={[0, 0.26, 0]} args={[0.16, 0.06, 0.14]} color="#f5dcc0" />
     </group>
   )
 }
@@ -99,16 +98,16 @@ function Arms({ position }) {
     <group position={position}>
       {/* Left arm */}
       <group ref={leftArmRef} position={[-0.34, 0.08, 0]}>
-        <Vox position={[0, 0, 0]} args={[0.16, 0.36, 0.16]} color="#5060e0" />
+        <Vox position={[0, 0, 0]} args={[0.16, 0.36, 0.16]} color="#1a1a1a" />
         {/* Hand */}
-        <Vox position={[0, -0.22, 0]} args={[0.12, 0.12, 0.12]} color="#ffd8a8" />
+        <Vox position={[0, -0.22, 0]} args={[0.12, 0.12, 0.12]} color="#f5dcc0" />
       </group>
 
       {/* Right arm */}
       <group ref={rightArmRef} position={[0.34, 0.08, 0]}>
-        <Vox position={[0, 0, 0]} args={[0.16, 0.36, 0.16]} color="#5060e0" />
+        <Vox position={[0, 0, 0]} args={[0.16, 0.36, 0.16]} color="#1a1a1a" />
         {/* Hand */}
-        <Vox position={[0, -0.22, 0]} args={[0.12, 0.12, 0.12]} color="#ffd8a8" />
+        <Vox position={[0, -0.22, 0]} args={[0.12, 0.12, 0.12]} color="#f5dcc0" />
       </group>
     </group>
   )
@@ -119,10 +118,10 @@ function Legs({ position }) {
     <group position={position}>
       {[-0.11, 0.11].map((x, i) => (
         <group key={i} position={[x, 0, 0]}>
-          {/* Leg - pants */}
-          <Vox position={[0, 0, 0]} args={[0.18, 0.32, 0.18]} color="#384050" />
-          {/* Shoe */}
-          <Vox position={[0, -0.19, 0.03]} args={[0.2, 0.1, 0.26]} color="#f0a020" />
+          {/* Leg - dark jeans */}
+          <Vox position={[0, 0, 0]} args={[0.18, 0.32, 0.18]} color="#2a2a38" />
+          {/* Shoe - white sneakers */}
+          <Vox position={[0, -0.19, 0.03]} args={[0.2, 0.1, 0.26]} color="#e8e8e8" />
         </group>
       ))}
     </group>
@@ -150,12 +149,12 @@ export default function Character({ position = [0, 0, 0], seated = false }) {
         {/* Arms reaching forward toward desk */}
         <group position={[0, 0.79, 0]}>
           <group position={[-0.34, 0.04, 0]}>
-            <Vox position={[0, 0, 0.08]} args={[0.16, 0.16, 0.3]} color="#5060e0" />
-            <Vox position={[0, 0, 0.26]} args={[0.12, 0.12, 0.12]} color="#ffd8a8" />
+            <Vox position={[0, 0, 0.08]} args={[0.16, 0.16, 0.3]} color="#1a1a1a" />
+            <Vox position={[0, 0, 0.26]} args={[0.12, 0.12, 0.12]} color="#f5dcc0" />
           </group>
           <group position={[0.34, 0.04, 0]}>
-            <Vox position={[0, 0, 0.08]} args={[0.16, 0.16, 0.3]} color="#5060e0" />
-            <Vox position={[0, 0, 0.26]} args={[0.12, 0.12, 0.12]} color="#ffd8a8" />
+            <Vox position={[0, 0, 0.08]} args={[0.16, 0.16, 0.3]} color="#1a1a1a" />
+            <Vox position={[0, 0, 0.26]} args={[0.12, 0.12, 0.12]} color="#f5dcc0" />
           </group>
         </group>
         {/* Seated legs - on chair seat */}
@@ -163,11 +162,11 @@ export default function Character({ position = [0, 0, 0], seated = false }) {
           {[-0.11, 0.11].map((x, i) => (
             <group key={i} position={[x, 0, 0]}>
               {/* Upper leg - horizontal on seat */}
-              <Vox position={[0, 0, 0.14]} args={[0.18, 0.14, 0.34]} color="#384050" />
+              <Vox position={[0, 0, 0.14]} args={[0.18, 0.14, 0.34]} color="#2a2a38" />
               {/* Lower leg - hanging down */}
-              <Vox position={[0, -0.2, 0.3]} args={[0.16, 0.28, 0.16]} color="#384050" />
-              {/* Shoe */}
-              <Vox position={[0, -0.37, 0.33]} args={[0.2, 0.1, 0.26]} color="#f0a020" />
+              <Vox position={[0, -0.2, 0.3]} args={[0.16, 0.28, 0.16]} color="#2a2a38" />
+              {/* Shoe - white sneakers */}
+              <Vox position={[0, -0.37, 0.33]} args={[0.2, 0.1, 0.26]} color="#e8e8e8" />
             </group>
           ))}
         </group>
