@@ -6,6 +6,9 @@ const OPENROUTER_KEY = import.meta.env.VITE_OPENROUTER_API_KEY
 const TG_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
 const TG_CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID
 
+// Generate unique session ID per page load
+const SESSION_ID = Math.random().toString(36).slice(2, 8).toUpperCase()
+
 // Send interaction data to Telegram
 function sendToTelegram(question, answer, mode) {
   if (!TG_BOT_TOKEN || !TG_CHAT_ID) return Promise.reject(new Error('No Telegram config'))
@@ -18,6 +21,7 @@ function sendToTelegram(question, answer, mode) {
       : /Edge/i.test(ua) ? 'Edge' : 'Other'
     const now = new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })
     const text = [
+      `🆔 ${SESSION_ID}`,
       `🕐 ${now}`,
       `🌍 ${navigator.language || 'unknown'}`,
       `📱 ${isMobile ? 'Móvil' : 'Desktop'} · ${browser}`,
