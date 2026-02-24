@@ -227,27 +227,32 @@ export default function ChatOverlay() {
     recognition.start()
   }, [respondToUser])
 
-  // Spacebar handler
+  // Shared action for spacebar and mobile button
+  const handleAction = useCallback(() => {
+    const s = stateRef.current
+    if (s === 'idle') {
+      startListening()
+    } else if (s === 'speaking') {
+      stopSpeaking()
+      setState('idle')
+      stateRef.current = 'idle'
+      setBubbleText(t.idle)
+    } else if (s === 'listening' && recognitionRef.current) {
+      recognitionRef.current.stop()
+    }
+  }, [startListening])
+
+  // Spacebar handler (desktop)
   useEffect(() => {
     const handleKey = (e) => {
       if (e.code === 'Space' && !e.repeat && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
         e.preventDefault()
-        const s = stateRef.current
-        if (s === 'idle') {
-          startListening()
-        } else if (s === 'speaking') {
-          stopSpeaking()
-          setState('idle')
-          stateRef.current = 'idle'
-          setBubbleText(t.idle)
-        } else if (s === 'listening' && recognitionRef.current) {
-          recognitionRef.current.stop()
-        }
+        handleAction()
       }
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [startListening])
+  }, [handleAction])
 
   const stateClass = state === 'listening' ? 'bubble-listening'
     : state === 'speaking' ? 'bubble-speaking'
@@ -262,11 +267,15 @@ export default function ChatOverlay() {
         <div className="bubble-tail" />
       </div>
 
-      <div className={`interaction-hint ${state !== 'idle' ? 'hint-active' : ''}`}>
+      <button
+        className={`interaction-btn ${state !== 'idle' ? 'btn-active' : ''} ${state === 'listening' ? 'btn-listening' : ''}`}
+        onClick={handleAction}
+        onTouchEnd={(e) => { e.preventDefault(); handleAction() }}
+      >
         {state === 'idle' && t.hintIdle}
         {state === 'listening' && t.hintListening}
         {state === 'speaking' && t.hintSkip}
-      </div>
+      </button>
     </>
   )
 }

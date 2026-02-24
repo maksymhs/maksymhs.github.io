@@ -125,31 +125,54 @@ html, body, #root {
   border-top-color: #50c0a0;
 }
 
-/* Interaction Hint */
-.interaction-hint {
+/* Interaction Button */
+.interaction-btn {
   position: fixed;
-  bottom: 24px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
   font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
+  font-size: 10px;
   color: #f0d040;
   text-shadow: 2px 2px 0px #000;
-  padding: 8px 16px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(240, 208, 64, 0.4);
-  animation: hintPulse 2s steps(2) infinite;
+  padding: 14px 28px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 3px solid rgba(240, 208, 64, 0.5);
+  cursor: pointer;
   letter-spacing: 1px;
+  animation: hintPulse 2s steps(2) infinite;
+  transition: background 0.1s, border-color 0.1s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
 }
 
-.interaction-hint.hint-active {
+.interaction-btn:active {
+  background: rgba(240, 208, 64, 0.3);
+  transform: translateX(-50%) scale(0.95);
+}
+
+.interaction-btn.btn-active {
   animation: none;
+  border-color: rgba(80, 192, 160, 0.6);
+  color: #50c0a0;
+}
+
+.interaction-btn.btn-listening {
+  border-color: rgba(224, 80, 80, 0.6);
+  color: #e05050;
+  animation: listenPulse 0.8s steps(2) infinite;
 }
 
 @keyframes hintPulse {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }
+}
+
+@keyframes listenPulse {
+  0%, 100% { opacity: 1; border-color: rgba(224, 80, 80, 0.8); }
+  50% { opacity: 0.7; border-color: rgba(224, 80, 80, 0.3); }
 }
 
 /* Responsive */
@@ -162,8 +185,11 @@ html, body, #root {
   .bubble-text {
     font-size: 9px;
   }
-  .interaction-hint {
-    font-size: 6px;
+  .interaction-btn {
+    font-size: 9px;
+    padding: 16px 24px;
     bottom: 16px;
+    min-width: 200px;
+    text-align: center;
   }
 }
