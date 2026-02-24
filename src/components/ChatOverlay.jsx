@@ -274,16 +274,26 @@ export default function ChatOverlay() {
     recognition.start()
   }, [respondToUser])
 
+  const hiddenInputRef = useRef(null)
+
   // Start typing mode — from any state
   const startTyping = useCallback(() => {
     stopSpeaking()
     if (recognitionRef.current) { try { recognitionRef.current.stop() } catch(e) {} }
+    // Focus hidden input synchronously to keep mobile keyboard gesture chain
+    if (hiddenInputRef.current) hiddenInputRef.current.focus()
     setState('typing')
     stateRef.current = 'typing'
     setBubbleText('')
     setInputText('')
-    setTimeout(() => inputRef.current?.focus(), 50)
   }, [])
+
+  // Transfer focus to real input once typing state renders
+  useEffect(() => {
+    if (state === 'typing' && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [state])
 
   // Start voice — from any state
   const handleVoice = useCallback(() => {
@@ -409,6 +419,13 @@ export default function ChatOverlay() {
           </svg>
         </button>
       </div>
+      {/* Hidden input to capture mobile keyboard focus synchronously */}
+      <input
+        ref={hiddenInputRef}
+        style={{ position: 'fixed', left: -9999, top: -9999, opacity: 0, width: 0, height: 0 }}
+        tabIndex={-1}
+        aria-hidden="true"
+      />
     </>
   )
 }
