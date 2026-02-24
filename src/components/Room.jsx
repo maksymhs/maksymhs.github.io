@@ -180,13 +180,56 @@ function Desk() {
   )
 }
 
+const LOG_LINES = [
+  { width: 0.50, color: '#60d0a0', x: -0.20 },
+  { width: 0.85, color: '#80b0ff', x: -0.03 },
+  { width: 0.65, color: '#f0d060', x: -0.13 },
+  { width: 0.90, color: '#60d0a0', x: 0.00 },
+  { width: 0.55, color: '#ff8080', x: -0.18 },
+  { width: 0.78, color: '#80b0ff', x: -0.06 },
+  { width: 0.60, color: '#c090f0', x: -0.15 },
+  { width: 0.88, color: '#60d0a0', x: -0.01 },
+  { width: 0.70, color: '#f0d060', x: -0.10 },
+  { width: 0.48, color: '#ff8080', x: -0.21 },
+  { width: 0.82, color: '#80b0ff', x: -0.04 },
+  { width: 0.58, color: '#c090f0', x: -0.16 },
+  { width: 0.92, color: '#60d0a0', x: 0.01 },
+  { width: 0.45, color: '#f0d060', x: -0.22 },
+  { width: 0.75, color: '#ff8080', x: -0.08 },
+  { width: 0.68, color: '#80b0ff', x: -0.11 },
+]
+
 function Monitor() {
   const screenRef = useRef()
+  const linesRef = useRef()
+  const scrollRef = useRef(0)
+  const LINE_H = 0.04
+  const VISIBLE = 8
+  const SCREEN_TOP = 0.57
+  const SCREEN_BOT = 0.23
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (screenRef.current) {
       const t = state.clock.elapsedTime
       screenRef.current.material.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.08
+    }
+    // Scroll lines upward in stepped pixel fashion
+    scrollRef.current += delta * 0.3
+    if (linesRef.current) {
+      const step = Math.floor(scrollRef.current / LINE_H)
+      const children = linesRef.current.children
+      for (let i = 0; i < children.length; i++) {
+        const lineIdx = (i + step) % LOG_LINES.length
+        const line = LOG_LINES[lineIdx]
+        const yBase = SCREEN_TOP - i * LINE_H
+        const frac = (scrollRef.current % LINE_H) / LINE_H
+        const y = yBase + frac * LINE_H
+        children[i].position.y = y
+        children[i].position.x = line.x
+        children[i].scale.x = line.width / 0.9
+        children[i].material.color.set(line.color)
+        children[i].visible = y >= SCREEN_BOT && y <= SCREEN_TOP + 0.01
+      }
     }
   })
 
@@ -199,17 +242,15 @@ function Monitor() {
         <boxGeometry args={[0.95, 0.6, 0.02]} />
         <meshLambertMaterial color="#1a1a30" emissive="#2040a0" emissiveIntensity={0.3} flatShading />
       </mesh>
-      {/* Code lines on screen */}
-      <Vox position={[-0.2, 0.56, 0.175]} args={[0.3, 0.02, 0.005]} color="#60d0a0" />
-      <Vox position={[-0.1, 0.52, 0.175]} args={[0.5, 0.02, 0.005]} color="#80b0ff" />
-      <Vox position={[-0.15, 0.48, 0.175]} args={[0.4, 0.02, 0.005]} color="#f0d060" />
-      <Vox position={[-0.05, 0.44, 0.175]} args={[0.55, 0.02, 0.005]} color="#60d0a0" />
-      <Vox position={[-0.2, 0.40, 0.175]} args={[0.35, 0.02, 0.005]} color="#ff8080" />
-      <Vox position={[-0.1, 0.36, 0.175]} args={[0.45, 0.02, 0.005]} color="#80b0ff" />
-      <Vox position={[-0.15, 0.32, 0.175]} args={[0.38, 0.02, 0.005]} color="#c090f0" />
-      <Vox position={[-0.05, 0.28, 0.175]} args={[0.5, 0.02, 0.005]} color="#60d0a0" />
-      {/* Cursor blink */}
-      <Vox position={[0.2, 0.24, 0.175]} args={[0.04, 0.03, 0.005]} color="#ffffff" />
+      {/* Scrolling log lines */}
+      <group ref={linesRef}>
+        {Array.from({ length: VISIBLE + 2 }).map((_, i) => (
+          <mesh key={i} position={[0, SCREEN_TOP - i * LINE_H, 0.175]}>
+            <boxGeometry args={[0.9, 0.02, 0.005]} />
+            <meshBasicMaterial color="#60d0a0" transparent opacity={0.6} depthWrite={false} />
+          </mesh>
+        ))}
+      </group>
       {/* Stand */}
       <Vox position={[0, 0.08, 0.05]} args={[0.2, 0.16, 0.2]} color="#404050" />
       {/* Base */}
@@ -723,32 +764,58 @@ function Poster() {
   )
 }
 
-function FairyLights() {
-  const colors = ['#ff8080', '#80ff80', '#8080ff', '#ffff60', '#ff80ff', '#80ffff']
+const XMAS_COLORS = [
+  new THREE.Color('#ff3030'), new THREE.Color('#30ff30'), new THREE.Color('#3060ff'),
+  new THREE.Color('#ffdd00'), new THREE.Color('#ff30ff'), new THREE.Color('#30ffdd')
+]
 
+function ChristmasBulb({ position, index }) {
+  const meshRef = useRef()
+  const lightRef = useRef()
+  const hasLight = index % 3 === 0
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime
+    // Each bulb cycles through colors at its own offset, slow speed
+    const colorIdx = Math.floor((t * 0.4 + index * 0.7) % XMAS_COLORS.length)
+    const color = XMAS_COLORS[colorIdx]
+    // Gentle blink: fade between 0.4 and 1.0
+    const blink = 0.7 + Math.sin(t * 1.5 + index * 1.1) * 0.3
+    if (meshRef.current) {
+      meshRef.current.material.color.copy(color)
+      meshRef.current.material.opacity = blink
+    }
+    if (hasLight && lightRef.current) {
+      lightRef.current.color.copy(color)
+      lightRef.current.intensity = 0.15 * blink
+    }
+  })
+
+  return (
+    <group position={position}>
+      <mesh ref={meshRef}>
+        <boxGeometry args={[0.06, 0.06, 0.06]} />
+        <meshBasicMaterial color="#ff3030" transparent opacity={1} />
+      </mesh>
+      {hasLight && <pointLight ref={lightRef} intensity={0.15} color="#ff3030" distance={1.2} />}
+    </group>
+  )
+}
+
+function FairyLights() {
   return (
     <group>
       {/* String along back wall top */}
       {Array.from({ length: 12 }).map((_, i) => {
         const x = -3.2 + i * 0.55
         const sag = Math.sin((i / 11) * Math.PI) * 0.15
-        return (
-          <group key={`b${i}`} position={[x, 3.5 - sag, -3.9]}>
-            <Vox position={[0, 0, 0]} args={[0.06, 0.06, 0.06]} color={colors[i % colors.length]} />
-            {i % 3 === 0 && <pointLight intensity={0.2} color={colors[i % colors.length]} distance={1.2} />}
-          </group>
-        )
+        return <ChristmasBulb key={`b${i}`} position={[x, 3.5 - sag, -3.9]} index={i} />
       })}
       {/* String along right wall top */}
       {Array.from({ length: 12 }).map((_, i) => {
         const z = -3.2 + i * 0.55
         const sag = Math.sin((i / 11) * Math.PI) * 0.15
-        return (
-          <group key={`r${i}`} position={[3.9, 3.5 - sag, z]}>
-            <Vox position={[0, 0, 0]} args={[0.06, 0.06, 0.06]} color={colors[(i + 2) % colors.length]} />
-            {i % 3 === 0 && <pointLight intensity={0.15} color={colors[(i + 2) % colors.length]} distance={1.0} />}
-          </group>
-        )
+        return <ChristmasBulb key={`r${i}`} position={[3.9, 3.5 - sag, z]} index={i + 12} />
       })}
     </group>
   )
