@@ -45,7 +45,7 @@ const lang = detectLang()
 
 const i18n = {
   en: {
-    welcome: "Hi! I'm Maksym, a Software Engineer specializing in backend development. Press SPACE to talk or ENTER to type!",
+    welcome: "Hi! I'm Maksym, a Software Engineer specializing in backend development.\nPress SPACE to talk or ENTER to type!",
     idle: "Press SPACE to talk or ENTER to type!",
     listening: "I'm listening...",
     noSpeech: "I didn't hear you. Press SPACEBAR again!",
@@ -63,7 +63,7 @@ const i18n = {
     speechLang: "en-US",
   },
   es: {
-    welcome: "¡Hola! Soy Maksym, Ingeniero de Software especializado en desarrollo backend. ¡Pulsa ESPACIO para hablar o INTRO para escribir!",
+    welcome: "¡Hola! Soy Maksym, Ingeniero de Software especializado en desarrollo backend.\n¡Pulsa ESPACIO para hablar o INTRO para escribir!",
     idle: "¡Pulsa ESPACIO para hablar o INTRO para escribir!",
     listening: "Te escucho...",
     noSpeech: "No te he oído. ¡Pulsa ESPACIO otra vez!",
@@ -81,7 +81,7 @@ const i18n = {
     speechLang: "es-ES",
   },
   ru: {
-    welcome: "Привет! Я Максим, инженер-программист, специализируюсь на бэкенд-разработке. Нажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
+    welcome: "Привет! Я Максим, инженер-программист, специализируюсь на бэкенд-разработке.\nНажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
     idle: "Нажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
     listening: "Слушаю...",
     noSpeech: "Я тебя не услышал. Нажми ПРОБЕЛ ещё раз!",
@@ -206,10 +206,11 @@ function speakTTS(text) {
 // Supports: plain URLs, Word[url] pattern, and {{MESSAGE}} placeholder
 function renderTextWithLinks(text, onMessageClick) {
   if (!text) return text
-  const parts = text.split(/(\{\{MESSAGE\}\}|\w+\[https?:\/\/[^\]]+\]|https?:\/\/[^\s]+)/g)
+  const parts = text.split(/(\n|\{\{MESSAGE\}\}|\w+\[https?:\/\/[^\]]+\]|https?:\/\/[^\s]+)/g)
   if (parts.length === 1) return text
   const linkStyle = { color: '#4090d0', textDecoration: 'underline', cursor: 'pointer' }
   return parts.map((part, i) => {
+    if (part === '\n') return <br key={i} />
     if (part === '{{MESSAGE}}') {
       return <span key={i} style={linkStyle} onClick={onMessageClick}>{t.messageLabel}</span>
     }
@@ -245,9 +246,7 @@ export default function ChatOverlay() {
     if (welcomeDone.current) return
     welcomeDone.current = true
     speak(t.welcome, () => {
-      setState('idle')
-      stateRef.current = 'idle'
-      setBubbleText(t.idle)
+      // Keep welcome message visible until user interacts
     })
   }, [])
 
@@ -395,8 +394,6 @@ export default function ChatOverlay() {
       stopSpeaking()
       setState('idle')
       stateRef.current = 'idle'
-      setBubbleText(t.idle)
-      return
     }
     startListening()
   }, [startListening])
