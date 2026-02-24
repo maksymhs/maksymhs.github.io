@@ -143,6 +143,63 @@ function speak(text, onEnd) {
 
 function stopSpeaking() {
   if (speakTimer) { clearTimeout(speakTimer); speakTimer = null }
+  if (window.speechSynthesis) window.speechSynthesis.cancel()
+}
+
+// Pick a male voice for the given language
+let _voicesLoaded = false
+function getMaleVoice(langCode) {
+  const voices = window.speechSynthesis.getVoices()
+  const langPrefix = langCode.slice(0, 2).toLowerCase()
+  // Filter voices matching the language
+  const matching = voices.filter(v => v.lang.toLowerCase().startsWith(langPrefix))
+  if (!matching.length) return null
+  // Prefer Google male voices (Chrome provides these)
+  const maleKeywords = ['male', 'david', 'jorge', 'dmitri', 'james', 'daniel', 'google uk english male', 'google español', 'google русский']
+  const femaleKeywords = ['female', 'woman', 'fiona', 'samantha', 'mónica', 'milena', 'karen', 'tessa', 'victoria']
+  // Try Google voices first (they sound best in Chrome)
+  const googleMale = matching.find(v =>
+    v.name.toLowerCase().includes('google') &&
+    !femaleKeywords.some(f => v.name.toLowerCase().includes(f))
+  )
+  if (googleMale) return googleMale
+  // Try any explicitly male voice
+  const male = matching.find(v =>
+    maleKeywords.some(k => v.name.toLowerCase().includes(k))
+  )
+  if (male) return male
+  // Try any non-female voice
+  const nonFemale = matching.find(v =>
+    !femaleKeywords.some(f => v.name.toLowerCase().includes(f))
+  )
+  if (nonFemale) return nonFemale
+  return matching[0]
+}
+
+// Preload voices (Chrome loads them async)
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices()
+  window.speechSynthesis.onvoiceschanged = () => { _voicesLoaded = true }
+}
+
+// Text-to-speech using Web Speech Synthesis API
+function speakTTS(text) {
+  if (!window.speechSynthesis) return
+  window.speechSynthesis.cancel()
+  // Clean text: remove URLs, markdown, special patterns
+  const clean = text
+    .replace(/https?:\/\/[^\s]+/g, '')
+    .replace(/\{\{MESSAGE\}\}/g, '')
+    .replace(/\w+\[https?:\/\/[^\]]+\]/g, (m) => m.match(/^(\w+)/)?.[1] || '')
+    .trim()
+  if (!clean) return
+  const utterance = new SpeechSynthesisUtterance(clean)
+  utterance.lang = t.speechLang
+  const voice = getMaleVoice(t.speechLang)
+  if (voice) utterance.voice = voice
+  utterance.rate = 1.0
+  utterance.pitch = 0.9
+  window.speechSynthesis.speak(utterance)
 }
 
 // Convert URLs in text to clickable links
@@ -236,6 +293,9 @@ export default function ChatOverlay() {
       setState('speaking')
       stateRef.current = 'speaking'
 
+      // Speak aloud only if user used voice
+      if (mode === 'voice') speakTTS(reply)
+
       // Track interaction via Telegram
       sendToTelegram(userMessage, reply, mode)
     } catch (err) {
@@ -243,6 +303,8 @@ export default function ChatOverlay() {
       setBubbleText(t.fallback)
       setState('speaking')
       stateRef.current = 'speaking'
+
+      if (mode === 'voice') speakTTS(t.fallback)
 
       sendToTelegram(userMessage, '[ERROR] ' + err.message, mode)
     }
