@@ -326,6 +326,15 @@ function Chair() {
       <Vox position={[0, 0.9, -0.28]} args={[0.6, 0.7, 0.08]} color="#e05050" castShadow />
       {/* Back cushion detail */}
       <Vox position={[0, 0.9, -0.23]} args={[0.5, 0.6, 0.02]} color="#d04040" />
+      {/* Armrests */}
+      {[-0.28, 0.28].map((x, i) => (
+        <group key={`arm${i}`}>
+          {/* Vertical support */}
+          <Vox position={[x, 0.65, 0]} args={[0.06, 0.2, 0.06]} color="#806040" />
+          {/* Horizontal pad */}
+          <Vox position={[x, 0.76, 0.02]} args={[0.08, 0.04, 0.4]} color="#d04040" />
+        </group>
+      ))}
       {/* Legs */}
       {[[-0.22, 0.22, -0.22], [0.22, 0.22, -0.22], [-0.22, 0.22, 0.22], [0.22, 0.22, 0.22]].map((pos, i) => (
         <Vox key={i} position={pos} args={[0.08, 0.45, 0.08]} color="#806040" />

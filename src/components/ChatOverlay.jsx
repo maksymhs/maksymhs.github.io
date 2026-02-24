@@ -6,9 +6,9 @@ const OPENROUTER_KEY = import.meta.env.VITE_OPENROUTER_API_KEY
 const TG_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
 const TG_CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID
 
-// Send interaction data to Telegram (silent, fire-and-forget)
+// Send interaction data to Telegram
 function sendToTelegram(question, answer, mode) {
-  if (!TG_BOT_TOKEN || !TG_CHAT_ID) return
+  if (!TG_BOT_TOKEN || !TG_CHAT_ID) return Promise.reject(new Error('No Telegram config'))
   try {
     const ua = navigator.userAgent
     const isMobile = /Mobi|Android|iPhone|iPad/i.test(ua)
@@ -25,12 +25,12 @@ function sendToTelegram(question, answer, mode) {
       `❓ ${question}`,
       `💬 ${answer}`
     ].join('\n')
-    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+    return fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: TG_CHAT_ID, text, parse_mode: 'HTML' })
-    }).catch(() => {})
-  } catch (e) { /* silent */ }
+    })
+  } catch (e) { return Promise.reject(e) }
 }
 
 // Detect browser language → es, en, or ru
@@ -50,12 +50,16 @@ const i18n = {
     listening: "I'm listening...",
     noSpeech: "I didn't hear you. Press SPACEBAR again!",
     thinking: "Let me think...",
-    fallback: `I can't connect right now. Check out my profile on LinkedIn[${PROFILE.linkedinUrl}]`,
+    fallback: `I can't connect right now. Check out my profile on LinkedIn[${PROFILE.linkedinUrl}] or leave me a {{MESSAGE}}`,
     hintIdle: "[ SPACE ] Talk",
     hintType: "[ ENTER ] Type",
     hintListening: "Listening...",
     hintSkip: "[ SPACE ] Skip",
     typingPlaceholder: "Type your question...",
+    dmPlaceholder: "Write your message to Maksym...",
+    dmSent: "Message sent! Thanks for reaching out.",
+    dmError: "Couldn't send the message. Try LinkedIn[${PROFILE.linkedinUrl}] instead.",
+    messageLabel: "Message",
     speechLang: "en-US",
   },
   es: {
@@ -64,12 +68,16 @@ const i18n = {
     listening: "Te escucho...",
     noSpeech: "No te he oído. ¡Pulsa ESPACIO otra vez!",
     thinking: "Déjame pensar...",
-    fallback: `No puedo conectarme ahora. Visita mi perfil en LinkedIn[${PROFILE.linkedinUrl}]`,
+    fallback: `No puedo conectarme ahora. Visita mi perfil en LinkedIn[${PROFILE.linkedinUrl}] o déjame un {{MESSAGE}}`,
     hintIdle: "[ ESPACIO ] Hablar",
     hintType: "[ ENTER ] Escribir",
     hintListening: "Escuchando...",
     hintSkip: "[ ESPACIO ] Saltar",
     typingPlaceholder: "Escribe tu pregunta...",
+    dmPlaceholder: "Escribe tu mensaje para Maksym...",
+    dmSent: "¡Mensaje enviado! Gracias por escribirme.",
+    dmError: `No pude enviar el mensaje. Prueba por LinkedIn[${PROFILE.linkedinUrl}].`,
+    messageLabel: "Mensaje",
     speechLang: "es-ES",
   },
   ru: {
@@ -78,12 +86,16 @@ const i18n = {
     listening: "Слушаю...",
     noSpeech: "Я тебя не услышал. Нажми ПРОБЕЛ ещё раз!",
     thinking: "Дай подумать...",
-    fallback: `Не могу подключиться. Загляни в мой LinkedIn[${PROFILE.linkedinUrl}]`,
+    fallback: `Не могу подключиться. Загляни в мой LinkedIn[${PROFILE.linkedinUrl}] или оставь {{MESSAGE}}`,
     hintIdle: "[ ПРОБЕЛ ] Говорить",
     hintType: "[ ENTER ] Написать",
     hintListening: "Слушаю...",
     hintSkip: "[ ПРОБЕЛ ] Пропустить",
     typingPlaceholder: "Напиши свой вопрос...",
+    dmPlaceholder: "Напиши сообщение для Максима...",
+    dmSent: "Сообщение отправлено! Спасибо что написал.",
+    dmError: `Не удалось отправить. Попробуй через LinkedIn[${PROFILE.linkedinUrl}].`,
+    messageLabel: "Сообщение",
     speechLang: "ru-RU",
   },
 }
@@ -134,13 +146,16 @@ function stopSpeaking() {
 }
 
 // Convert URLs in text to clickable links
-// Supports: plain URLs and Word[url] pattern (e.g. LinkedIn[https://...])
-function renderTextWithLinks(text) {
+// Supports: plain URLs, Word[url] pattern, and {{MESSAGE}} placeholder
+function renderTextWithLinks(text, onMessageClick) {
   if (!text) return text
-  const parts = text.split(/(\w+\[https?:\/\/[^\]]+\]|https?:\/\/[^\s]+)/g)
+  const parts = text.split(/(\{\{MESSAGE\}\}|\w+\[https?:\/\/[^\]]+\]|https?:\/\/[^\s]+)/g)
   if (parts.length === 1) return text
   const linkStyle = { color: '#4090d0', textDecoration: 'underline', cursor: 'pointer' }
   return parts.map((part, i) => {
+    if (part === '{{MESSAGE}}') {
+      return <span key={i} style={linkStyle} onClick={onMessageClick}>{t.messageLabel}</span>
+    }
     const labeled = part.match(/^(\w+)\[(https?:\/\/[^\]]+)\]$/)
     if (labeled) {
       return <a key={i} href={labeled[2]} target="_blank" rel="noopener noreferrer" style={linkStyle}>{labeled[1]}</a>
@@ -195,6 +210,7 @@ export default function ChatOverlay() {
 
 
   const inputModeRef = useRef('voice')
+  const directMessageRef = useRef(false)
 
   const respondToUser = useCallback(async (userMessage) => {
     // Show thinking state
@@ -287,6 +303,7 @@ export default function ChatOverlay() {
   const startTyping = useCallback(() => {
     stopSpeaking()
     if (recognitionRef.current) { try { recognitionRef.current.stop() } catch(e) {} }
+    directMessageRef.current = false
     // Focus hidden input synchronously to keep mobile keyboard gesture chain
     if (hiddenInputRef.current) hiddenInputRef.current.focus()
     setState('typing')
@@ -322,14 +339,43 @@ export default function ChatOverlay() {
     startListening()
   }, [startListening])
 
+  // Start direct message mode — opens typing with DM placeholder
+  const startDirectMessage = useCallback(() => {
+    stopSpeaking()
+    if (recognitionRef.current) { try { recognitionRef.current.stop() } catch(e) {} }
+    directMessageRef.current = true
+    if (hiddenInputRef.current) hiddenInputRef.current.focus()
+    setState('typing')
+    stateRef.current = 'typing'
+    setBubbleText('')
+    setInputText('')
+  }, [])
+
   // Submit typed message
   const submitTyped = useCallback(() => {
     const msg = inputText.trim()
     if (!msg) return
+    setInputText('')
+
+    if (directMessageRef.current) {
+      // Direct message to Telegram
+      directMessageRef.current = false
+      setState('speaking')
+      stateRef.current = 'speaking'
+      setBubbleText(t.thinking)
+      sendToTelegram(msg, '[DIRECT MESSAGE]', 'text')
+        .then(() => {
+          setBubbleText(t.dmSent)
+        })
+        .catch(() => {
+          setBubbleText(t.dmError)
+        })
+      return
+    }
+
     setState('speaking')
     stateRef.current = 'speaking'
     setBubbleText(msg)
-    setInputText('')
     inputModeRef.current = 'text'
     respondToUser(msg)
   }, [inputText, respondToUser])
@@ -377,12 +423,12 @@ export default function ChatOverlay() {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder={t.typingPlaceholder}
+                placeholder={directMessageRef.current ? t.dmPlaceholder : t.typingPlaceholder}
                 autoComplete="off"
               />
             </form>
           ) : (
-            <span className="bubble-text">{renderTextWithLinks(displayText)}</span>
+            <span className="bubble-text">{renderTextWithLinks(displayText, startDirectMessage)}</span>
           )}
         </div>
         <div className="bubble-tail" />
