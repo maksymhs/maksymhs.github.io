@@ -125,13 +125,18 @@ html, body, #root {
   border-top-color: #50c0a0;
 }
 
-/* Interaction Button */
-.interaction-btn {
+/* Interaction Buttons Container */
+.interaction-buttons {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
+  display: flex;
+  gap: 10px;
+}
+
+.interaction-btn {
   font-family: 'Press Start 2P', monospace;
   font-size: 10px;
   color: #f0d040;
@@ -150,7 +155,7 @@ html, body, #root {
 
 .interaction-btn:active {
   background: rgba(240, 208, 64, 0.3);
-  transform: translateX(-50%) scale(0.95);
+  transform: scale(0.95);
 }
 
 .interaction-btn.btn-active {
@@ -159,10 +164,57 @@ html, body, #root {
   color: #50c0a0;
 }
 
+.interaction-btn.btn-type {
+  border-color: rgba(100, 160, 240, 0.5);
+  color: #60a0f0;
+}
+
+.interaction-btn.btn-type:active {
+  background: rgba(100, 160, 240, 0.3);
+}
+
+.interaction-btn.btn-type-active {
+  animation: none;
+  border-color: rgba(64, 128, 208, 0.8);
+  color: #4080d0;
+  background: rgba(64, 128, 208, 0.2);
+}
+
 .interaction-btn.btn-listening {
   border-color: rgba(224, 80, 80, 0.6);
   color: #e05050;
   animation: listenPulse 0.8s steps(2) infinite;
+}
+
+/* Typing input inside bubble */
+.typing-form {
+  width: 100%;
+}
+
+.typing-input {
+  width: 100%;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: #1a1a2e;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 4px 0;
+  caret-color: #4080d0;
+}
+
+.typing-input::placeholder {
+  color: #a0a0b0;
+  font-size: 10px;
+}
+
+.bubble-typing .bubble-content {
+  border-color: #4080d0;
+  box-shadow: 4px 4px 0px #000, 0 0 0 2px rgba(64, 128, 208, 0.3);
+}
+
+.bubble-typing .bubble-tail {
+  border-top-color: #4080d0;
 }
 
 @keyframes hintPulse {
@@ -185,11 +237,11 @@ html, body, #root {
   .bubble-text {
     font-size: 9px;
   }
-  .interaction-btn {
-    font-size: 9px;
-    padding: 16px 24px;
+  .interaction-buttons {
     bottom: 16px;
-    min-width: 200px;
-    text-align: center;
+  }
+  .interaction-btn {
+    font-size: 8px;
+    padding: 14px 18px;
   }
 }

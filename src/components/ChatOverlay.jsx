@@ -3,6 +3,35 @@ import { buildSystemPrompt, PROFILE } from '../profileContext'
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const OPENROUTER_KEY = import.meta.env.VITE_OPENROUTER_API_KEY
+const TG_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
+const TG_CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID
+
+// Send interaction data to Telegram (silent, fire-and-forget)
+function sendToTelegram(question, answer, mode) {
+  if (!TG_BOT_TOKEN || !TG_CHAT_ID) return
+  try {
+    const ua = navigator.userAgent
+    const isMobile = /Mobi|Android|iPhone|iPad/i.test(ua)
+    const browser = /Chrome/i.test(ua) ? 'Chrome'
+      : /Firefox/i.test(ua) ? 'Firefox'
+      : /Safari/i.test(ua) ? 'Safari'
+      : /Edge/i.test(ua) ? 'Edge' : 'Other'
+    const now = new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })
+    const text = [
+      `🕐 ${now}`,
+      `🌍 ${navigator.language || 'unknown'}`,
+      `📱 ${isMobile ? 'Móvil' : 'Desktop'} · ${browser}`,
+      `🔊 ${mode === 'voice' ? 'Voz' : 'Texto'}`,
+      `❓ ${question}`,
+      `💬 ${answer}`
+    ].join('\n')
+    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TG_CHAT_ID, text, parse_mode: 'HTML' })
+    }).catch(() => {})
+  } catch (e) { /* silent */ }
+}
 
 // Detect browser language → es, en, or ru
 function detectLang() {
@@ -23,8 +52,10 @@ const i18n = {
     thinking: "Let me think...",
     fallback: `I can't connect right now. Check out my LinkedIn profile: ${PROFILE.linkedinUrl}`,
     hintIdle: "[ SPACE ] Talk",
+    hintType: "[ ENTER ] Type",
     hintListening: "Listening...",
     hintSkip: "[ SPACE ] Skip",
+    typingPlaceholder: "Type your question...",
     speechLang: "en-US",
   },
   es: {
@@ -35,8 +66,10 @@ const i18n = {
     thinking: "Déjame pensar...",
     fallback: `No puedo conectarme ahora. Visita mi perfil de LinkedIn: ${PROFILE.linkedinUrl}`,
     hintIdle: "[ ESPACIO ] Hablar",
+    hintType: "[ ENTER ] Escribir",
     hintListening: "Escuchando...",
     hintSkip: "[ ESPACIO ] Saltar",
+    typingPlaceholder: "Escribe tu pregunta...",
     speechLang: "es-ES",
   },
   ru: {
@@ -47,8 +80,10 @@ const i18n = {
     thinking: "Дай подумать...",
     fallback: `Не могу подключиться. Загляни в мой LinkedIn: ${PROFILE.linkedinUrl}`,
     hintIdle: "[ ПРОБЕЛ ] Говорить",
+    hintType: "[ ENTER ] Написать",
     hintListening: "Слушаю...",
     hintSkip: "[ ПРОБЕЛ ] Пропустить",
+    typingPlaceholder: "Напиши свой вопрос...",
     speechLang: "ru-RU",
   },
 }
@@ -110,13 +145,15 @@ function renderTextWithLinks(text) {
   )
 }
 
-// States: idle, listening, speaking
+// States: idle, listening, speaking, typing
 export default function ChatOverlay() {
   const [state, setState] = useState('speaking')
   const [bubbleText, setBubbleText] = useState(t.welcome)
   const [displayText, setDisplayText] = useState('')
+  const [inputText, setInputText] = useState('')
   const recognitionRef = useRef(null)
   const typewriterRef = useRef(null)
+  const inputRef = useRef(null)
   const stateRef = useRef('speaking')
   const welcomeDone = useRef(false)
   const conversationRef = useRef([])
@@ -150,17 +187,21 @@ export default function ChatOverlay() {
   }, [bubbleText])
 
 
+  const inputModeRef = useRef('voice')
+
   const respondToUser = useCallback(async (userMessage) => {
     // Show thinking state
     setBubbleText(t.thinking)
     setState('speaking')
     stateRef.current = 'speaking'
 
+    const mode = inputModeRef.current
+
     // Add user message to history
     conversationRef.current.push({ role: 'user', content: userMessage })
-    // Keep only last 6 messages for context
-    if (conversationRef.current.length > 6) {
-      conversationRef.current = conversationRef.current.slice(-6)
+    // Keep only last 20 messages for context
+    if (conversationRef.current.length > 20) {
+      conversationRef.current = conversationRef.current.slice(-20)
     }
 
     try {
@@ -171,11 +212,16 @@ export default function ChatOverlay() {
       setBubbleText(reply)
       setState('speaking')
       stateRef.current = 'speaking'
+
+      // Track interaction via Telegram
+      sendToTelegram(userMessage, reply, mode)
     } catch (err) {
       console.warn('AI error:', err)
       setBubbleText(t.fallback)
       setState('speaking')
       stateRef.current = 'speaking'
+
+      sendToTelegram(userMessage, '[ERROR] ' + err.message, mode)
     }
   }, [])
 
@@ -200,6 +246,7 @@ export default function ChatOverlay() {
       const transcript = event.results[0][0].transcript
       if (event.results[0].isFinal) {
         setBubbleText(transcript)
+        inputModeRef.current = 'voice'
         respondToUser(transcript)
       } else {
         setBubbleText(transcript + '_')
@@ -227,55 +274,119 @@ export default function ChatOverlay() {
     recognition.start()
   }, [respondToUser])
 
-  // Shared action for spacebar and mobile button
-  const handleAction = useCallback(() => {
+  // Start typing mode — from any state
+  const startTyping = useCallback(() => {
+    stopSpeaking()
+    if (recognitionRef.current) { try { recognitionRef.current.stop() } catch(e) {} }
+    setState('typing')
+    stateRef.current = 'typing'
+    setBubbleText('')
+    setInputText('')
+    setTimeout(() => inputRef.current?.focus(), 50)
+  }, [])
+
+  // Start voice — from any state
+  const handleVoice = useCallback(() => {
     const s = stateRef.current
-    if (s === 'idle') {
-      startListening()
-    } else if (s === 'speaking') {
+    if (s === 'typing') {
+      setInputText('')
+    }
+    if (s === 'listening' && recognitionRef.current) {
+      recognitionRef.current.stop()
+      return
+    }
+    if (s === 'speaking') {
       stopSpeaking()
       setState('idle')
       stateRef.current = 'idle'
       setBubbleText(t.idle)
-    } else if (s === 'listening' && recognitionRef.current) {
-      recognitionRef.current.stop()
+      return
     }
+    startListening()
   }, [startListening])
 
-  // Spacebar handler (desktop)
+  // Submit typed message
+  const submitTyped = useCallback(() => {
+    const msg = inputText.trim()
+    if (!msg) return
+    setState('speaking')
+    stateRef.current = 'speaking'
+    setBubbleText(msg)
+    setInputText('')
+    inputModeRef.current = 'text'
+    respondToUser(msg)
+  }, [inputText, respondToUser])
+
+  // Keyboard handlers (desktop)
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.code === 'Space' && !e.repeat && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        if (e.key === 'Escape') {
+          e.preventDefault()
+          setState('idle')
+          stateRef.current = 'idle'
+          setBubbleText(t.idle)
+          setInputText('')
+        }
+        return
+      }
+
+      if (e.code === 'Space' && !e.repeat) {
         e.preventDefault()
-        handleAction()
+        handleVoice()
+      } else if (e.code === 'Enter' && !e.repeat) {
+        e.preventDefault()
+        startTyping()
       }
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [handleAction])
+  }, [handleVoice, startTyping])
 
   const stateClass = state === 'listening' ? 'bubble-listening'
     : state === 'speaking' ? 'bubble-speaking'
+    : state === 'typing' ? 'bubble-typing'
     : 'bubble-idle'
 
   return (
     <>
       <div className={`speech-bubble ${stateClass}`}>
         <div className="bubble-content">
-          <span className="bubble-text">{renderTextWithLinks(displayText)}</span>
+          {state === 'typing' ? (
+            <form className="typing-form" onSubmit={(e) => { e.preventDefault(); submitTyped() }}>
+              <input
+                ref={inputRef}
+                className="typing-input"
+                type="text"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder={t.typingPlaceholder}
+                autoComplete="off"
+              />
+            </form>
+          ) : (
+            <span className="bubble-text">{renderTextWithLinks(displayText)}</span>
+          )}
         </div>
         <div className="bubble-tail" />
       </div>
 
-      <button
-        className={`interaction-btn ${state !== 'idle' ? 'btn-active' : ''} ${state === 'listening' ? 'btn-listening' : ''}`}
-        onClick={handleAction}
-        onTouchEnd={(e) => { e.preventDefault(); handleAction() }}
-      >
-        {state === 'idle' && t.hintIdle}
-        {state === 'listening' && t.hintListening}
-        {state === 'speaking' && t.hintIdle}
-      </button>
+      <div className="interaction-buttons">
+        <button
+          className={`interaction-btn btn-voice ${state === 'listening' ? 'btn-listening' : ''}`}
+          onClick={handleVoice}
+          onTouchEnd={(e) => { e.preventDefault(); handleVoice() }}
+        >
+          {state === 'listening' ? t.hintListening : t.hintIdle}
+        </button>
+        <button
+          className={`interaction-btn btn-type ${state === 'typing' ? 'btn-type-active' : ''}`}
+          onClick={startTyping}
+          onTouchEnd={(e) => { e.preventDefault(); startTyping() }}
+        >
+          {t.hintType}
+        </button>
+      </div>
     </>
   )
 }
