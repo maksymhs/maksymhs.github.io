@@ -46,3 +46,7 @@ Edita estos archivos para personalizar tu CV:
 ```bash
 npm run build
 ```
+
+## Licencia
+
+Este proyecto está bajo la [Licencia MIT](./LICENSE). Puedes usar, copiar, modificar y distribuir este proyecto libremente, siempre que incluyas el aviso de copyright original y la licencia. © 2026 Maksym Herasymenko
