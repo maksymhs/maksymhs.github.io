@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 
 // Helper: pixel-art voxel
 function Vox({ position, args = [1, 1, 1], color, castShadow = true }) {
@@ -11,14 +12,32 @@ function Vox({ position, args = [1, 1, 1], color, castShadow = true }) {
   )
 }
 
+const _headWorldPos = new THREE.Vector3()
+const _camDir = new THREE.Vector3()
+
 function Head({ position }) {
   const headRef = useRef()
 
   useFrame((state) => {
     if (headRef.current) {
-      const t = state.clock.elapsedTime
-      headRef.current.rotation.y = Math.sin(t * 0.5) * 0.15
-      headRef.current.rotation.z = Math.sin(t * 0.3) * 0.05
+      // Get head world position
+      headRef.current.getWorldPosition(_headWorldPos)
+      // Direction from head to camera
+      _camDir.copy(state.camera.position).sub(_headWorldPos)
+
+      // Target Y rotation (left-right)
+      const targetY = Math.atan2(_camDir.x, _camDir.z)
+      // Target X rotation (up-down)
+      const dist = Math.sqrt(_camDir.x * _camDir.x + _camDir.z * _camDir.z)
+      const targetX = -Math.atan2(_camDir.y - 0.3, dist)
+
+      // Clamp rotations so head doesn't spin unnaturally
+      const clampY = THREE.MathUtils.clamp(targetY, -0.8, 0.8)
+      const clampX = THREE.MathUtils.clamp(targetX, -0.4, 0.4)
+
+      // Smooth lerp
+      headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, clampY, 0.05)
+      headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, clampX, 0.05)
     }
   })
 
