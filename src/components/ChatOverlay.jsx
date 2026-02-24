@@ -180,6 +180,30 @@ function getMaleVoice(langCode) {
 if (window.speechSynthesis) {
   window.speechSynthesis.getVoices()
   window.speechSynthesis.onvoiceschanged = () => { _voicesLoaded = true }
+  // Chrome mobile bug: speechSynthesis pauses after ~15s, keep it alive
+  setInterval(() => {
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+      window.speechSynthesis.pause()
+      window.speechSynthesis.resume()
+    }
+  }, 10000)
+}
+
+// Unlock TTS on first user interaction (iOS Safari requirement)
+const unlockTTS = () => {
+  warmupTTS()
+  document.removeEventListener('touchstart', unlockTTS)
+  document.removeEventListener('click', unlockTTS)
+}
+document.addEventListener('touchstart', unlockTTS, { once: true })
+document.addEventListener('click', unlockTTS, { once: true })
+
+// Warm up TTS on mobile — must be called synchronously in a user gesture
+function warmupTTS() {
+  if (!window.speechSynthesis) return
+  const warm = new SpeechSynthesisUtterance('')
+  warm.volume = 0
+  window.speechSynthesis.speak(warm)
 }
 
 // Text-to-speech using Web Speech Synthesis API
@@ -382,6 +406,7 @@ export default function ChatOverlay() {
 
   // Start voice — from any state
   const handleVoice = useCallback(() => {
+    warmupTTS() // Unlock speechSynthesis on mobile within user gesture
     const s = stateRef.current
     if (s === 'typing') {
       setInputText('')
