@@ -274,7 +274,7 @@ export default function ChatOverlay() {
       >
         {state === 'idle' && t.hintIdle}
         {state === 'listening' && t.hintListening}
-        {state === 'speaking' && t.hintSkip}
+        {state === 'speaking' && t.hintIdle}
       </button>
     </>
   )
