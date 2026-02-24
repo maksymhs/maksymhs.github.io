@@ -67,13 +67,13 @@ function Body({ position }) {
   return (
     <group position={position}>
       {/* Torso - black t-shirt */}
-      <Vox position={[0, 0, 0]} args={[0.5, 0.48, 0.32]} color="#f0f0f0" />
+      <Vox position={[0, 0, 0]} args={[0.5, 0.48, 0.32]} color="#f0d040" />
 
       {/* T-shirt logo (small detail) */}
       <Vox position={[-0.08, 0.08, 0.165]} args={[0.12, 0.06, 0.01]} color="#1a1a1a" />
 
       {/* Collar - round neck */}
-      <Vox position={[0, 0.22, 0.06]} args={[0.3, 0.06, 0.2]} color="#f0f0f0" />
+      <Vox position={[0, 0.22, 0.06]} args={[0.3, 0.06, 0.2]} color="#f0d040" />
       {/* Neck */}
       <Vox position={[0, 0.26, 0]} args={[0.16, 0.06, 0.14]} color="#f5dcc0" />
     </group>
@@ -98,14 +98,14 @@ function Arms({ position }) {
     <group position={position}>
       {/* Left arm */}
       <group ref={leftArmRef} position={[-0.34, 0.08, 0]}>
-        <Vox position={[0, 0, 0]} args={[0.16, 0.36, 0.16]} color="#f0f0f0" />
+        <Vox position={[0, 0, 0]} args={[0.16, 0.36, 0.16]} color="#f0d040" />
         {/* Hand */}
         <Vox position={[0, -0.22, 0]} args={[0.12, 0.12, 0.12]} color="#f5dcc0" />
       </group>
 
       {/* Right arm */}
       <group ref={rightArmRef} position={[0.34, 0.08, 0]}>
-        <Vox position={[0, 0, 0]} args={[0.16, 0.36, 0.16]} color="#f0f0f0" />
+        <Vox position={[0, 0, 0]} args={[0.16, 0.36, 0.16]} color="#f0d040" />
         {/* Hand */}
         <Vox position={[0, -0.22, 0]} args={[0.12, 0.12, 0.12]} color="#f5dcc0" />
       </group>
@@ -149,11 +149,11 @@ export default function Character({ position = [0, 0, 0], seated = false }) {
         {/* Arms reaching forward toward desk */}
         <group position={[0, 0.79, 0]}>
           <group position={[-0.34, 0.04, 0]}>
-            <Vox position={[0, 0, 0.08]} args={[0.16, 0.16, 0.3]} color="#f0f0f0" />
+            <Vox position={[0, 0, 0.08]} args={[0.16, 0.16, 0.3]} color="#f0d040" />
             <Vox position={[0, 0, 0.26]} args={[0.12, 0.12, 0.12]} color="#f5dcc0" />
           </group>
           <group position={[0.34, 0.04, 0]}>
-            <Vox position={[0, 0, 0.08]} args={[0.16, 0.16, 0.3]} color="#f0f0f0" />
+            <Vox position={[0, 0, 0.08]} args={[0.16, 0.16, 0.3]} color="#f0d040" />
             <Vox position={[0, 0, 0.26]} args={[0.12, 0.12, 0.12]} color="#f5dcc0" />
           </group>
         </group>
