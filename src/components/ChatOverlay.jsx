@@ -50,7 +50,7 @@ const i18n = {
     listening: "I'm listening...",
     noSpeech: "I didn't hear you. Press SPACEBAR again!",
     thinking: "Let me think...",
-    fallback: `I can't connect right now. Check out my LinkedIn profile: ${PROFILE.linkedinUrl}`,
+    fallback: `I can't connect right now. Check out my profile on LinkedIn[${PROFILE.linkedinUrl}]`,
     hintIdle: "[ SPACE ] Talk",
     hintType: "[ ENTER ] Type",
     hintListening: "Listening...",
@@ -64,7 +64,7 @@ const i18n = {
     listening: "Te escucho...",
     noSpeech: "No te he oído. ¡Pulsa ESPACIO otra vez!",
     thinking: "Déjame pensar...",
-    fallback: `No puedo conectarme ahora. Visita mi perfil de LinkedIn: ${PROFILE.linkedinUrl}`,
+    fallback: `No puedo conectarme ahora. Visita mi perfil en LinkedIn[${PROFILE.linkedinUrl}]`,
     hintIdle: "[ ESPACIO ] Hablar",
     hintType: "[ ENTER ] Escribir",
     hintListening: "Escuchando...",
@@ -78,7 +78,7 @@ const i18n = {
     listening: "Слушаю...",
     noSpeech: "Я тебя не услышал. Нажми ПРОБЕЛ ещё раз!",
     thinking: "Дай подумать...",
-    fallback: `Не могу подключиться. Загляни в мой LinkedIn: ${PROFILE.linkedinUrl}`,
+    fallback: `Не могу подключиться. Загляни в мой LinkedIn[${PROFILE.linkedinUrl}]`,
     hintIdle: "[ ПРОБЕЛ ] Говорить",
     hintType: "[ ENTER ] Написать",
     hintListening: "Слушаю...",
@@ -134,15 +134,22 @@ function stopSpeaking() {
 }
 
 // Convert URLs in text to clickable links
+// Supports: plain URLs and Word[url] pattern (e.g. LinkedIn[https://...])
 function renderTextWithLinks(text) {
   if (!text) return text
-  const parts = text.split(/(https?:\/\/[^\s]+)/g)
+  const parts = text.split(/(\w+\[https?:\/\/[^\]]+\]|https?:\/\/[^\s]+)/g)
   if (parts.length === 1) return text
-  return parts.map((part, i) =>
-    /^https?:\/\//.test(part)
-      ? <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#4090d0', textDecoration: 'underline', cursor: 'pointer' }}>{part}</a>
-      : part
-  )
+  const linkStyle = { color: '#4090d0', textDecoration: 'underline', cursor: 'pointer' }
+  return parts.map((part, i) => {
+    const labeled = part.match(/^(\w+)\[(https?:\/\/[^\]]+)\]$/)
+    if (labeled) {
+      return <a key={i} href={labeled[2]} target="_blank" rel="noopener noreferrer" style={linkStyle}>{labeled[1]}</a>
+    }
+    if (/^https?:\/\//.test(part)) {
+      return <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={linkStyle}>{part}</a>
+    }
+    return part
+  })
 }
 
 // States: idle, listening, speaking, typing
