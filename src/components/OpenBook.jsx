@@ -184,20 +184,7 @@ export default function OpenBook({ book, onClose }) {
         </group>
       )}
 
-      {/* Close hint — 3D Text */}
-      {showContent && (
-        <Text
-          position={[0, -(BH / 2 + 0.03), BT / 2 + 0.003]}
-          fontSize={0.010}
-          color="#ffffff"
-          anchorX="center"
-          anchorY="middle"
-          font="/fonts/PressStart2P-Regular.ttf"
-          fillOpacity={0.5}
-        >
-          {isMobile ? 'Tap to close' : '[ ESC ] Close'}
-        </Text>
-      )}
+      
     </group>
   )
 }

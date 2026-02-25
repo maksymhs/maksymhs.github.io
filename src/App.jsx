@@ -197,6 +197,7 @@ export default function App() {
       </div>
 
       <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
+      <FloatingScrollsOverlay show={!!selectedBook} onClose={handleCloseBook} />
       <ChatOverlay visible={view === 'default'} />
 
     </>
