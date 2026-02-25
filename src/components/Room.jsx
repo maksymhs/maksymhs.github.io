@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useState } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
 import * as THREE from 'three'
 import { lang } from '../i18n'
@@ -662,37 +662,71 @@ function CoffeeMug() {
   )
 }
 
+function GitHubMark() {
+  const texture = useLoader(THREE.TextureLoader, '/images/github-mark.png')
+  texture.magFilter = THREE.NearestFilter
+  texture.minFilter = THREE.NearestFilter
+  texture.generateMipmaps = false
+  return (
+    <mesh position={[0, 0, 0.045]}>
+      <planeGeometry args={[0.42, 0.42]} />
+      <meshLambertMaterial map={texture} transparent flatShading />
+    </mesh>
+  )
+}
+
 function WallArt() {
   return (
     <group>
-      {/* Pixel art frame 1 - heart (on right solid section of back wall) */}
-      <group position={[3, 2.2, -3.95]}>
-        <Vox position={[0, 0, 0]} args={[0.7, 0.5, 0.06]} color="#f0f0e0" />
-        {/* Pixel heart */}
-        {[
-          [-0.1, 0.1], [0.1, 0.1],
-          [-0.2, 0.05], [-0.1, 0.05], [0, 0.05], [0.1, 0.05], [0.2, 0.05],
-          [-0.2, -0.0], [-0.1, -0.0], [0, -0.0], [0.1, -0.0], [0.2, -0.0],
-          [-0.1, -0.1], [0, -0.1], [0.1, -0.1],
-          [0, -0.15],
-        ].map(([x, y], i) => (
-          <Vox key={i} position={[x, y, 0.04]} args={[0.09, 0.045, 0.02]} color="#ff5080" />
-        ))}
+      {/* Pixel art frame 1 - GitHub logo (on right solid section of back wall) */}
+      <group
+        position={[3, 2.2, -3.95]}
+        onClick={(e) => { e.stopPropagation(); window.open('https://github.com/maksymhs', '_blank') }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        {/* Frame */}
+        <Vox position={[0, 0, 0]} args={[0.7, 0.7, 0.06]} color="#f0f0e0" />
+        {/* White background */}
+        <Vox position={[0, 0, 0.03]} args={[0.55, 0.55, 0.02]} color="#ffffff" />
+        {/* GitHub mark texture */}
+        <GitHubMark />
       </group>
 
-      {/* Pixel art frame 2 - star (on left solid section of back wall) */}
-      <group position={[-3, 2.4, -3.95]}>
-        <Vox position={[0, 0, 0]} args={[0.5, 0.65, 0.06]} color="#f0f0e0" />
-        {/* Pixel star */}
-        {[
-          [0, 0.2],
-          [-0.05, 0.1], [0, 0.1], [0.05, 0.1],
-          [-0.15, 0.05], [-0.1, 0.05], [-0.05, 0.05], [0, 0.05], [0.05, 0.05], [0.1, 0.05], [0.15, 0.05],
-          [-0.1, 0], [-0.05, 0], [0, 0], [0.05, 0], [0.1, 0],
-          [-0.1, -0.05], [0.1, -0.05],
-          [-0.15, -0.1], [0.15, -0.1],
-        ].map(([x, y], i) => (
-          <Vox key={i} position={[x, y, 0.04]} args={[0.045, 0.045, 0.02]} color="#f0d040" />
+      {/* Pixel art frame 2 - LinkedIn logo (on left solid section of back wall) */}
+      <group
+        position={[-3, 2.2, -3.95]}
+        onClick={(e) => { e.stopPropagation(); window.open('https://www.linkedin.com/in/herasymenko', '_blank') }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        {/* Frame */}
+        <Vox position={[0, 0, 0]} args={[0.7, 0.7, 0.06]} color="#f0f0e0" />
+        {/* Blue background with rounded corners */}
+        <Vox position={[0, 0, 0.03]} args={[0.55, 0.55, 0.02]} color="#286890" />
+        {/* Rounded corners cut (match frame color to simulate rounding) */}
+        {[[-0.245, 0.245], [0.245, 0.245], [-0.245, -0.245], [0.245, -0.245]].map(([x, y], i) => (
+          <Vox key={`rc${i}`} position={[x, y, 0.035]} args={[0.06, 0.06, 0.015]} color="#f0f0e0" />
+        ))}
+        {/* Letter "i" - left side */}
+        {/* Dot */}
+        <Vox position={[-0.12, 0.14, 0.045]} args={[0.05, 0.05, 0.01]} color="#ffffff" />
+        {/* Stem */}
+        {[0.07, 0.035, 0, -0.035, -0.07, -0.105].map((y, i) => (
+          <Vox key={`is${i}`} position={[-0.12, y, 0.045]} args={[0.05, 0.035, 0.01]} color="#ffffff" />
+        ))}
+        {/* Letter "n" - right side */}
+        {/* Left vertical */}
+        {[0.07, 0.035, 0, -0.035, -0.07, -0.105].map((y, i) => (
+          <Vox key={`nl${i}`} position={[0.0, y, 0.045]} args={[0.05, 0.035, 0.01]} color="#ffffff" />
+        ))}
+        {/* Top curve */}
+        <Vox position={[0.05, 0.07, 0.045]} args={[0.05, 0.035, 0.01]} color="#ffffff" />
+        <Vox position={[0.1, 0.07, 0.045]} args={[0.05, 0.035, 0.01]} color="#ffffff" />
+        <Vox position={[0.1, 0.105, 0.045]} args={[0.05, 0.035, 0.01]} color="#ffffff" />
+        {/* Right vertical */}
+        {[0.035, 0, -0.035, -0.07, -0.105].map((y, i) => (
+          <Vox key={`nr${i}`} position={[0.14, y, 0.045]} args={[0.05, 0.035, 0.01]} color="#ffffff" />
         ))}
       </group>
     </group>
