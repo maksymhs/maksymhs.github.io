@@ -675,13 +675,17 @@ function GitHubMark() {
   )
 }
 
-function WallArt() {
+function WallArt({ onGithubClick, onLinkedinClick, onBack, view }) {
   return (
     <group>
       {/* Pixel art frame 1 - GitHub logo (on right solid section of back wall) */}
       <group
         position={[3, 2.2, -3.95]}
-        onClick={(e) => { e.stopPropagation(); window.open('https://github.com/maksymhs', '_blank') }}
+        onClick={(e) => {
+          e.stopPropagation()
+          if (view === 'github') { window.open('https://github.com/maksymhs', '_blank'); onBack?.() }
+          else onGithubClick?.()
+        }}
         onPointerOver={() => (document.body.style.cursor = 'pointer')}
         onPointerOut={() => (document.body.style.cursor = 'auto')}
       >
@@ -696,7 +700,11 @@ function WallArt() {
       {/* Pixel art frame 2 - LinkedIn logo (on left solid section of back wall) */}
       <group
         position={[-3, 2.2, -3.95]}
-        onClick={(e) => { e.stopPropagation(); window.open('https://www.linkedin.com/in/herasymenko', '_blank') }}
+        onClick={(e) => {
+          e.stopPropagation()
+          if (view === 'linkedin') { window.open('https://www.linkedin.com/in/herasymenko', '_blank'); onBack?.() }
+          else onLinkedinClick?.()
+        }}
         onPointerOver={() => (document.body.style.cursor = 'pointer')}
         onPointerOut={() => (document.body.style.cursor = 'auto')}
       >
@@ -1511,7 +1519,7 @@ function Outdoor() {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack }) {
   return (
     <group>
       <Floor />
@@ -1542,7 +1550,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <Rug />
       <LivingRug />
       <CoffeeMug />
-      <WallArt />
+      <WallArt onGithubClick={onGithubFrameClick} onLinkedinClick={onLinkedinFrameClick} onBack={onBack} view={view} />
       <Lamp />
       <Cat />
       <Outdoor />

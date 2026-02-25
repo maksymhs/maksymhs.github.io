@@ -12,8 +12,10 @@ import SplashScreen from './components/SplashScreen.jsx'
 const DEFAULT_CAM = { position: [0, 2.5, 2.8], target: [0, 1.2, -0.5] }
 const BOOKSHELF_CAM = { position: [2.8, 1.8, -1.5], target: [3.8, 1.4, -1.5] }
 const CHEST_CAM = { position: [-1.8, 1.8, -1.8], target: [-3.2, 0.8, -3.2] }
+const GITHUB_CAM = { position: [2.5, 2.2, -2.5], target: [3, 2.2, -3.95] }
+const LINKEDIN_CAM = { position: [-2.5, 2.2, -2.5], target: [-3, 2.2, -3.95] }
 
-const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM }
+const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM }
 
 function CameraAnimator({ view, controlsRef, onTransitionEnd }) {
   const animating = useRef(false)
@@ -83,6 +85,14 @@ export default function App() {
   const handleChestClick = useCallback(() => {
     setView('chest')
     setChestOpen(true)
+  }, [])
+
+  const handleGithubFrameClick = useCallback(() => {
+    setView('github')
+  }, [])
+
+  const handleLinkedinFrameClick = useCallback(() => {
+    setView('linkedin')
   }, [])
 
   const handleBookClick = useCallback((bookData) => {
@@ -170,7 +180,7 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} />
             <Character position={[0, 0, -0.6]} seated />
           </Suspense>
 
@@ -199,6 +209,26 @@ export default function App() {
 
       <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
       <FloatingScrollsOverlay show={!!selectedBook} onClose={handleCloseBook} />
+      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin'} onClose={handleBack} />
+      {(view === 'github' || view === 'linkedin') && (
+        <div
+          onClick={() => {
+            if (view === 'github') window.open('https://github.com/maksymhs', '_blank')
+            if (view === 'linkedin') window.open('https://www.linkedin.com/in/herasymenko', '_blank')
+            handleBack()
+          }}
+          style={{
+            position: 'absolute', top: '70px', left: '50%', transform: 'translateX(-50%)',
+            fontFamily: "'Press Start 2P', monospace", fontSize: window.innerWidth < 768 ? '9px' : '11px',
+            color: '#fff', cursor: 'pointer', pointerEvents: 'auto',
+            textShadow: '0 0 10px rgba(0,0,0,0.9), 2px 2px 0 #000',
+            zIndex: 100, whiteSpace: 'nowrap',
+            padding: '10px 20px', background: 'rgba(0,0,0,0.5)', borderRadius: '4px',
+          }}
+        >
+          {view === 'github' ? '[ Click ] Visit GitHub' : '[ Click ] Visit LinkedIn'}
+        </div>
+      )}
       <ChatOverlay visible={view === 'default'} />
       <SplashScreen />
 
