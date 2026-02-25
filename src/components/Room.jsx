@@ -780,8 +780,8 @@ function isInsideObstacle(x, z) {
   return false
 }
 
-function Cat() {
-  const catRef = useRef()
+function Cat({ onClick, catRef: externalRef }) {
+  const catRef = externalRef || useRef()
   const legsRef = useRef({ fl: null, fr: null, bl: null, br: null })
   // Waypoints designed to walk AROUND furniture in a clear path
   const waypoints = useMemo(() => [
@@ -866,7 +866,13 @@ function Cat() {
   })
 
   return (
-    <group ref={catRef} position={[1.5, 0, 1]}>
+    <group
+      ref={catRef}
+      position={[1.5, 0, 1]}
+      onClick={(e) => { e.stopPropagation(); onClick?.() }}
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'auto')}
+    >
       {/* Body */}
       <Vox position={[0, 0.22, 0]} args={[0.2, 0.16, 0.34]} color="#f0a860" />
       {/* Stripes */}
@@ -1519,7 +1525,7 @@ function Outdoor() {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef }) {
   return (
     <group>
       <Floor />
@@ -1552,7 +1558,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <CoffeeMug />
       <WallArt onGithubClick={onGithubFrameClick} onLinkedinClick={onLinkedinFrameClick} onBack={onBack} view={view} />
       <Lamp />
-      <Cat />
+      <Cat onClick={onCatClick} catRef={catRef} />
       <Outdoor />
     </group>
   )

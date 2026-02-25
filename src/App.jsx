@@ -15,9 +15,11 @@ const CHEST_CAM = { position: [-1.8, 1.8, -1.8], target: [-3.2, 0.8, -3.2] }
 const GITHUB_CAM = { position: [2.5, 2.2, -2.5], target: [3, 2.2, -3.95] }
 const LINKEDIN_CAM = { position: [-2.5, 2.2, -2.5], target: [-3, 2.2, -3.95] }
 
+const CAT_CAM_OFFSET = { x: 0, y: 1.2, z: 1.5 }
+
 const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM }
 
-function CameraAnimator({ view, controlsRef, onTransitionEnd }) {
+function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef }) {
   const animating = useRef(false)
   const targetPos = useRef(new THREE.Vector3())
   const targetLook = useRef(new THREE.Vector3())
@@ -28,7 +30,6 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd }) {
       prevView.current = view
 
       const cam = CAM_MAP[view] || DEFAULT_CAM
-      // When returning to default, snap immediately so OrbitControls can take over
       if (view === 'default') {
         camera.position.set(...cam.position)
         if (controlsRef.current) {
@@ -41,6 +42,34 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd }) {
       }
 
       animating.current = true
+    }
+
+    // Follow cat: camera behind cat looking in its heading direction
+    if (view === 'cat' && catRef?.current) {
+      const cp = catRef.current.position
+      const ry = catRef.current.rotation.y
+      // Behind the cat (opposite of heading) + elevated
+      const behindDist = 1.2
+      const camHeight = 0.8
+      targetPos.current.set(
+        cp.x - Math.sin(ry) * behindDist,
+        cp.y + camHeight,
+        cp.z - Math.cos(ry) * behindDist
+      )
+      // Look ahead of the cat in its heading direction
+      const lookAhead = 0.5
+      targetLook.current.set(
+        cp.x + Math.sin(ry) * lookAhead,
+        cp.y + 0.25,
+        cp.z + Math.cos(ry) * lookAhead
+      )
+
+      camera.position.lerp(targetPos.current, 0.04)
+      if (controlsRef.current) {
+        controlsRef.current.target.lerp(targetLook.current, 0.04)
+        controlsRef.current.update()
+      }
+      return
     }
 
     if (!animating.current) return
@@ -77,6 +106,7 @@ export default function App() {
   const [chestOpen, setChestOpen] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
   const [cardSelected, setCardSelected] = useState(false)
+  const catRef = useRef()
 
   const handleBookshelfClick = useCallback(() => {
     setView('bookshelf')
@@ -93,6 +123,10 @@ export default function App() {
 
   const handleLinkedinFrameClick = useCallback(() => {
     setView('linkedin')
+  }, [])
+
+  const handleCatClick = useCallback(() => {
+    setView('cat')
   }, [])
 
   const handleBookClick = useCallback((bookData) => {
@@ -180,11 +214,11 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} />
             <Character position={[0, 0, -0.6]} seated />
           </Suspense>
 
-          <CameraAnimator view={view} controlsRef={controlsRef} />
+          <CameraAnimator view={view} controlsRef={controlsRef} catRef={catRef} />
 
           <OpenBook book={selectedBook} onClose={handleCloseBook} />
           <FloatingScrolls open={chestOpen} view={view} onCardSelect={setCardSelected} />
@@ -209,7 +243,7 @@ export default function App() {
 
       <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
       <FloatingScrollsOverlay show={!!selectedBook} onClose={handleCloseBook} />
-      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin'} onClose={handleBack} />
+      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin' || view === 'cat'} onClose={handleBack} />
       {(view === 'github' || view === 'linkedin') && (
         <div
           onClick={() => {
