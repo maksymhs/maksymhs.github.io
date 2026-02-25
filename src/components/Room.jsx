@@ -343,12 +343,18 @@ function Chair() {
   )
 }
 
-function Bookshelf() {
+function Bookshelf({ onClick }) {
   const bookColors = ['#e04040', '#4080e0', '#40c060', '#e0a020', '#a050d0', '#30b0a0', '#e07020', '#e040a0']
   const bookHeights = [0.38, 0.42, 0.35, 0.44, 0.4, 0.36, 0.43, 0.37]
 
   return (
-    <group position={[3.8, 0, -1.5]} rotation={[0, -Math.PI / 2, 0]}>
+    <group
+      position={[3.8, 0, -1.5]}
+      rotation={[0, -Math.PI / 2, 0]}
+      onClick={(e) => { e.stopPropagation(); onClick?.() }}
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'auto')}
+    >
       {/* Shelf boards */}
       {[0.5, 1.3, 2.1, 2.9].map((y, i) => (
         <Vox key={i} position={[0, y, 0]} args={[0.9, 0.06, 0.4]} color="#c07830" />
@@ -388,6 +394,57 @@ function Bookshelf() {
       {/* Leaning photo frame */}
       <Vox position={[0.3, 2.98, 0.08]} args={[0.14, 0.18, 0.02]} color="#f0e8d0" />
       <Vox position={[0.3, 2.98, 0.09]} args={[0.1, 0.14, 0.01]} color="#80c0a0" />
+    </group>
+  )
+}
+
+function Chest({ onClick, open }) {
+  const lidRef = useRef()
+  const targetAngle = open ? -Math.PI / 2 : 0
+
+  useFrame(() => {
+    if (!lidRef.current) return
+    lidRef.current.rotation.x += (targetAngle - lidRef.current.rotation.x) * 0.08
+  })
+
+  return (
+    <group
+      position={[-3.2, 0, -3.2]}
+      rotation={[0, Math.PI / 4, 0]}
+      onClick={(e) => { e.stopPropagation(); onClick?.() }}
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'auto')}
+    >
+      {/* Base box */}
+      <Vox position={[0, 0.25, 0]} args={[0.85, 0.5, 0.55]} color="#8b6914" />
+      {/* Front face detail */}
+      <Vox position={[0, 0.25, 0.28]} args={[0.72, 0.38, 0.01]} color="#a07818" />
+      {/* Metal bands */}
+      <Vox position={[0, 0.12, 0.285]} args={[0.87, 0.04, 0.01]} color="#b8960c" />
+      <Vox position={[0, 0.38, 0.285]} args={[0.87, 0.04, 0.01]} color="#b8960c" />
+      {/* Side bands */}
+      <Vox position={[-0.43, 0.25, 0]} args={[0.01, 0.52, 0.57]} color="#b8960c" />
+      <Vox position={[0.43, 0.25, 0]} args={[0.01, 0.52, 0.57]} color="#b8960c" />
+      {/* Lock */}
+      <Vox position={[0, 0.32, 0.29]} args={[0.1, 0.1, 0.02]} color="#d4a800" />
+      {/* Bottom trim */}
+      <Vox position={[0, 0.01, 0]} args={[0.9, 0.02, 0.58]} color="#705010" />
+      {/* Feet */}
+      {[[-0.34, 0.02, -0.2], [0.34, 0.02, -0.2], [-0.34, 0.02, 0.2], [0.34, 0.02, 0.2]].map((pos, i) => (
+        <Vox key={i} position={pos} args={[0.07, 0.04, 0.07]} color="#604008" />
+      ))}
+      {/* Lid - pivots from back edge */}
+      <group position={[0, 0.5, -0.275]} ref={lidRef}>
+        <Vox position={[0, 0.06, 0.275]} args={[0.85, 0.12, 0.55]} color="#9a7416" />
+        {/* Lid top detail */}
+        <Vox position={[0, 0.12, 0.275]} args={[0.72, 0.02, 0.42]} color="#a88020" />
+        {/* Metal band on lid */}
+        <Vox position={[0, 0.07, 0.555]} args={[0.87, 0.04, 0.01]} color="#b8960c" />
+        {/* Hinges */}
+        {[-0.3, 0.3].map((x, i) => (
+          <Vox key={i} position={[x, 0.02, 0.005]} args={[0.07, 0.05, 0.05]} color="#d4a800" />
+        ))}
+      </group>
     </group>
   )
 }
@@ -512,6 +569,9 @@ const obstacles = [
   [1.7, 3.9, 1.2, 3.9],      // Bed
   [-3.4, -2.2, 1.4, 3.6],    // Sofa
   [3.2, 4.0, -2.1, -0.9],    // Bookshelf
+  [-3.8, -2.5, -3.8, -2.5],  // Chest (diagonal in corner)
+  [-3.6, -3.0, -1.8, -1.2],  // Plant (left wall)
+  [1.2, 1.8, -3.8, -3.2],   // Plant (back wall)
   [-2.5, -1.1, 2.1, 2.9],    // Coffee table
   [-3.7, -3.1, 0.8, 1.6],    // Floor lamp
   [1.2, 2.0, 3.0, 3.8],      // Nightstand
@@ -537,8 +597,9 @@ function Cat() {
     [1.8, -3.2],     // Along back wall
     [0, -3.2],       // Center back wall
     [-1.8, -3.2],    // Left side back wall
-    [-3.2, -3.2],    // Back-left corner
-    [-3.2, -1],      // Walk down left wall
+    [-2.5, -3.2],    // Near back-left corner (avoid chest)
+    [-2.5, -2.5],    // Around chest (front)
+    [-3.2, -0.8],    // Past chest toward left wall
     [-3.2, 0.5],     // Mid left wall
     [-1.8, 0.5],     // Toward center
     [-1, 1.2],       // Center of room
@@ -1262,7 +1323,7 @@ function Outdoor() {
   )
 }
 
-export default function Room() {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen }) {
   return (
     <group>
       <Floor />
@@ -1273,7 +1334,8 @@ export default function Room() {
       <Keyboard />
       <Mouse />
       <Chair />
-      <Bookshelf />
+      <Bookshelf onClick={onBookshelfClick} />
+      <Chest onClick={onChestClick} open={chestOpen} />
       <Bed />
       <BedRug />
       <Sofa />
@@ -1287,7 +1349,7 @@ export default function Room() {
       <WallShelf />
       <Curtain position={[0, 2, -3.97]} />
       <Curtain position={[-3.97, 2, 0]} rotation={[0, Math.PI / 2, 0]} />
-      <Plant position={[-3.5, 0, -3.5]} />
+      <Plant position={[-3.3, 0, -1.5]} />
       <Plant position={[1.5, 0, -3.5]} />
       <Rug />
       <LivingRug />

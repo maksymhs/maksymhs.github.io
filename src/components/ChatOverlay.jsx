@@ -254,7 +254,7 @@ function renderTextWithLinks(text, onMessageClick) {
 }
 
 // States: idle, listening, speaking, typing
-export default function ChatOverlay() {
+export default function ChatOverlay({ visible = true }) {
   const [state, setState] = useState('speaking')
   const [bubbleText, setBubbleText] = useState(t.welcome)
   const [displayText, setDisplayText] = useState('')
@@ -499,8 +499,14 @@ export default function ChatOverlay() {
     : state === 'typing' ? 'bubble-typing'
     : 'bubble-idle'
 
+  const overlayStyle = {
+    opacity: visible ? 1 : 0,
+    pointerEvents: visible ? 'auto' : 'none',
+    transition: 'opacity 0.4s ease',
+  }
+
   return (
-    <>
+    <div style={overlayStyle}>
       <div className={`speech-bubble ${stateClass}`}>
         <div className="bubble-content">
           {state === 'typing' ? (
@@ -567,6 +573,6 @@ export default function ChatOverlay() {
         tabIndex={-1}
         aria-hidden="true"
       />
-    </>
+    </div>
   )
 }
