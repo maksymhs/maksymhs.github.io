@@ -122,7 +122,7 @@ async function askAI(conversationHistory) {
       'X-Title': 'Maksym Portfolio'
     },
     body: JSON.stringify({
-      model: 'google/gemini-2.0-flash-lite-001',
+      model: 'openai/gpt-oss-20b',
       messages: [
         { role: 'system', content: systemPrompt },
         ...conversationHistory
