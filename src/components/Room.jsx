@@ -459,25 +459,28 @@ function Book({ data, basePosition, onBookClick, interactive }) {
       }}
     >
       {/* Book body */}
-      <mesh castShadow>
+      <mesh>
         <boxGeometry args={[0.14, data.height, 0.24]} />
         <meshLambertMaterial color={hovered && interactive ? '#ffffff' : data.color} flatShading />
       </mesh>
       {/* Spine label — on the front face (z+), vertical like a real book */}
-      <Text
-        position={[0, 0, 0.121]}
-        rotation={[0, 0, -Math.PI / 2]}
-        fontSize={0.04}
-        color="#ffffff"
-        fillOpacity={0.45}
-        anchorX="center"
-        anchorY="middle"
-        maxWidth={data.height * 0.85}
-        textAlign="center"
-        font="/fonts/PressStart2P-Regular.ttf"
-      >
-        {data.label}
-      </Text>
+      <group castShadow={false}>
+        <Text
+          position={[0, 0, 0.121]}
+          rotation={[0, 0, -Math.PI / 2]}
+          fontSize={0.04}
+          color="#ffffff"
+          fillOpacity={0.45}
+          anchorX="center"
+          anchorY="middle"
+          maxWidth={data.height * 0.85}
+          textAlign="center"
+          font="/fonts/PressStart2P-Regular.ttf"
+          castShadow={false}
+        >
+          {data.label}
+        </Text>
+      </group>
     </group>
   )
 }
