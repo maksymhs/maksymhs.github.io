@@ -147,39 +147,96 @@ function fireKey(key, type = 'keydown') {
   window.dispatchEvent(new KeyboardEvent(type, { key, bubbles: true }))
 }
 
-const dpadBtn = {
-  width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-  background: 'rgba(255,255,255,0.15)', border: '2px solid rgba(255,255,255,0.3)',
-  borderRadius: '8px', color: '#fff', fontSize: '18px', fontFamily: 'monospace',
-  touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', cursor: 'pointer',
+function pressKey(key) { return { onTouchStart: (e) => { e.preventDefault(); fireKey(key) }, onTouchEnd: () => fireKey(key, 'keyup'), onMouseDown: (e) => { e.preventDefault(); fireKey(key) }, onMouseUp: () => fireKey(key, 'keyup'), onMouseLeave: () => fireKey(key, 'keyup') } }
+function tapKey(key) { return { onTouchStart: (e) => { e.preventDefault(); fireKey(key) }, onMouseDown: (e) => { e.preventDefault(); fireKey(key) } } }
+
+function GameDPad() {
+  return (
+    <>
+      {/* Left side: ◀ ▶ — bottom-left */}
+      <div style={{
+        position: 'absolute', bottom: '40px', left: '20px',
+        zIndex: 200, pointerEvents: 'auto', display: 'flex', gap: '8px', alignItems: 'center',
+      }}>
+        <button style={catBtn} {...pressKey('ArrowLeft')}>◀</button>
+        <button style={catBtn} {...pressKey('ArrowRight')}>▶</button>
+      </div>
+
+      {/* Right side: ▲ ▼ + DROP — bottom-right */}
+      <div style={{
+        position: 'absolute', bottom: '40px', right: '20px',
+        zIndex: 200, pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+      }}>
+        <button style={catBtn} {...pressKey('ArrowUp')}>▲</button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button style={catBtn} {...pressKey('ArrowDown')}>▼</button>
+          <button style={{
+            ...catBtn, width: '68px', height: '68px', fontSize: '13px',
+            fontFamily: "'Press Start 2P', monospace", background: 'rgba(100,180,255,0.4)',
+            border: '2px solid rgba(140,200,255,0.6)',
+          }} {...tapKey(' ')}>DROP</button>
+        </div>
+      </div>
+
+      {/* Exit button — top-left */}
+      <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 200, pointerEvents: 'auto' }}>
+        <button
+          style={{ ...catBtn, width: 'auto', height: 'auto', padding: '10px 18px', borderRadius: '12px', fontSize: '11px', fontFamily: "'Press Start 2P', monospace" }}
+          {...tapKey('Escape')}
+        >
+          ← EXIT
+        </button>
+      </div>
+    </>
+  )
 }
 
-function DPad() {
+const catBtn = {
+  width: '58px', height: '58px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  background: 'rgba(0,0,0,0.35)', border: '2px solid rgba(255,255,255,0.4)',
+  borderRadius: '50%', color: '#fff', fontSize: '22px', fontFamily: 'monospace',
+  touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', cursor: 'pointer',
+  backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
+}
+
+function CatDPad() {
   return (
-    <div style={{
-      position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
-      zIndex: 200, pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-    }}>
-      {/* Up */}
-      <button style={dpadBtn} onTouchStart={(e) => { e.preventDefault(); fireKey('ArrowUp') }} onTouchEnd={() => fireKey('ArrowUp', 'keyup')}>▲</button>
-      <div style={{ display: 'flex', gap: '4px' }}>
-        {/* Left */}
-        <button style={dpadBtn} onTouchStart={(e) => { e.preventDefault(); fireKey('ArrowLeft') }} onTouchEnd={() => fireKey('ArrowLeft', 'keyup')}>◀</button>
-        {/* Space / Drop */}
-        <button style={{ ...dpadBtn, fontSize: '10px', fontFamily: "'Press Start 2P', monospace" }} onTouchStart={(e) => { e.preventDefault(); fireKey(' ') }}>DROP</button>
-        {/* Right */}
-        <button style={dpadBtn} onTouchStart={(e) => { e.preventDefault(); fireKey('ArrowRight') }} onTouchEnd={() => fireKey('ArrowRight', 'keyup')}>▶</button>
+    <>
+      {/* Left side: ◀ ▶ (turning) — bottom-left */}
+      <div style={{
+        position: 'absolute', bottom: '40px', left: '20px',
+        zIndex: 200, pointerEvents: 'auto', display: 'flex', gap: '8px', alignItems: 'center',
+      }}>
+        <button style={catBtn} {...pressKey('ArrowLeft')}>◀</button>
+        <button style={catBtn} {...pressKey('ArrowRight')}>▶</button>
       </div>
-      {/* Down */}
-      <button style={dpadBtn} onTouchStart={(e) => { e.preventDefault(); fireKey('ArrowDown') }} onTouchEnd={() => fireKey('ArrowDown', 'keyup')}>▼</button>
-      {/* ESC button */}
-      <button
-        style={{ ...dpadBtn, width: 'auto', padding: '8px 16px', fontSize: '10px', fontFamily: "'Press Start 2P', monospace", marginTop: '8px' }}
-        onTouchStart={(e) => { e.preventDefault(); fireKey('Escape') }}
-      >
-        ← EXIT
-      </button>
-    </div>
+
+      {/* Right side: ▲ ▼ (forward/back) + JUMP — bottom-right */}
+      <div style={{
+        position: 'absolute', bottom: '40px', right: '20px',
+        zIndex: 200, pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+      }}>
+        <button style={catBtn} {...pressKey('ArrowUp')}>▲</button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button style={catBtn} {...pressKey('ArrowDown')}>▼</button>
+          <button style={{
+            ...catBtn, width: '68px', height: '68px', fontSize: '13px',
+            fontFamily: "'Press Start 2P', monospace", background: 'rgba(255,180,60,0.4)',
+            border: '2px solid rgba(255,200,100,0.6)',
+          }} {...pressKey(' ')}>JUMP</button>
+        </div>
+      </div>
+
+      {/* Exit button — top-left */}
+      <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 200, pointerEvents: 'auto' }}>
+        <button
+          style={{ ...catBtn, width: 'auto', height: 'auto', padding: '10px 18px', borderRadius: '12px', fontSize: '11px', fontFamily: "'Press Start 2P', monospace" }}
+          {...tapKey('Escape')}
+        >
+          ← EXIT
+        </button>
+      </div>
+    </>
   )
 }
 
@@ -361,7 +418,8 @@ export default function App() {
           {view === 'github' ? '[ Click ] Visit GitHub' : '[ Click ] Visit LinkedIn'}
         </div>
       )}
-      {isMobile && (gameActive || view === 'outdoor') && <DPad />}
+      {isMobile && gameActive && <GameDPad />}
+      {isMobile && view === 'outdoor' && <CatDPad />}
       <ChatOverlay visible={view === 'default'} />
       <SplashScreen />
 
