@@ -168,6 +168,17 @@ function Walls() {
 }
 
 function Desk() {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const drawerRef = useRef()
+  const slideRef = useRef(0)
+
+  useFrame(() => {
+    if (!drawerRef.current) return
+    const target = drawerOpen ? 0.4 : 0
+    slideRef.current += (target - slideRef.current) * 0.1
+    drawerRef.current.position.z = slideRef.current
+  })
+
   return (
     <group position={[0, 0, -1.8]}>
       {/* Table top */}
@@ -176,9 +187,26 @@ function Desk() {
       {[[-1.05, 0.37, -0.38], [1.05, 0.37, -0.38], [-1.05, 0.37, 0.38], [1.05, 0.37, 0.38]].map((pos, i) => (
         <Vox key={i} position={pos} args={[0.12, 0.75, 0.12]} color="#a06020" />
       ))}
-      {/* Drawer */}
-      <Vox position={[0.6, 0.55, 0]} args={[0.6, 0.25, 0.8]} color="#b06828" />
-      <Vox position={[0.6, 0.55, 0.42]} args={[0.12, 0.06, 0.04]} color="#f0c040" />
+      {/* Drawer - slides out */}
+      <group
+        ref={drawerRef}
+        onClick={(e) => { e.stopPropagation(); setDrawerOpen(!drawerOpen) }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        {/* Front panel */}
+        <Vox position={[0.6, 0.55, 0.39]} args={[0.6, 0.25, 0.04]} color="#b06828" />
+        {/* Back panel */}
+        <Vox position={[0.6, 0.55, -0.39]} args={[0.6, 0.25, 0.04]} color="#a05820" />
+        {/* Left side */}
+        <Vox position={[0.31, 0.55, 0]} args={[0.04, 0.25, 0.74]} color="#a05820" />
+        {/* Right side */}
+        <Vox position={[0.89, 0.55, 0]} args={[0.04, 0.25, 0.74]} color="#a05820" />
+        {/* Bottom */}
+        <Vox position={[0.6, 0.44, 0]} args={[0.54, 0.03, 0.74]} color="#c08038" />
+        {/* Handle */}
+        <Vox position={[0.6, 0.55, 0.42]} args={[0.12, 0.06, 0.04]} color="#f0c040" />
+      </group>
     </group>
   )
 }
@@ -845,18 +873,24 @@ function WallArt({ onGithubClick, onLinkedinClick, onBack, view }) {
 }
 
 function Lamp() {
+  const [on, setOn] = useState(true)
   return (
-    <group position={[-0.9, 0.82, -1.9]}>
+    <group
+      position={[-0.9, 0.82, -1.9]}
+      onClick={(e) => { e.stopPropagation(); setOn(!on) }}
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'auto')}
+    >
       {/* Base */}
       <Vox position={[0, 0, 0]} args={[0.16, 0.06, 0.16]} color="#f0c040" />
       {/* Stem */}
       <Vox position={[0, 0.25, 0]} args={[0.06, 0.5, 0.06]} color="#f0c040" />
       {/* Shade - blocky trapezoid look */}
-      <Vox position={[0, 0.52, 0]} args={[0.28, 0.06, 0.28]} color="#fff0c0" />
-      <Vox position={[0, 0.56, 0]} args={[0.24, 0.06, 0.24]} color="#fff0c0" />
-      <Vox position={[0, 0.6, 0]} args={[0.2, 0.06, 0.2]} color="#fff0c0" />
+      <Vox position={[0, 0.52, 0]} args={[0.28, 0.06, 0.28]} color={on ? '#fff0c0' : '#908878'} />
+      <Vox position={[0, 0.56, 0]} args={[0.24, 0.06, 0.24]} color={on ? '#fff0c0' : '#888070'} />
+      <Vox position={[0, 0.6, 0]} args={[0.2, 0.06, 0.2]} color={on ? '#fff0c0' : '#807868'} />
       {/* Lamp light */}
-      <pointLight position={[0, 0.45, 0]} intensity={0.8} color="#ffe080" distance={3} />
+      {on && <pointLight position={[0, 0.45, 0]} intensity={0.8} color="#ffe080" distance={3} />}
     </group>
   )
 }
@@ -1222,7 +1256,7 @@ function WallShelf() {
 }
 
 
-function CoffeeTable() {
+function CoffeeTable({ onHeadphonesClick }) {
   return (
     <group position={[-1.8, 0, 2.5]}>
       {/* Top */}
@@ -1231,9 +1265,27 @@ function CoffeeTable() {
       {[[-0.35, 0.16, -0.18], [0.35, 0.16, -0.18], [-0.35, 0.16, 0.18], [0.35, 0.16, 0.18]].map((pos, i) => (
         <Vox key={i} position={pos} args={[0.08, 0.32, 0.08]} color="#906830" />
       ))}
-      {/* Book stack on table */}
-      <Vox position={[-0.2, 0.42, 0]} args={[0.24, 0.04, 0.18]} color="#4080c0" />
-      <Vox position={[-0.2, 0.46, 0]} args={[0.22, 0.04, 0.16]} color="#c05040" />
+      {/* Headphones */}
+      <group
+        position={[-0.2, 0.4, 0]}
+        onClick={(e) => { e.stopPropagation(); onHeadphonesClick?.() }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        {/* Headband */}
+        <Vox position={[0, 0.1, 0]} args={[0.28, 0.03, 0.06]} color="#303030" />
+        <Vox position={[-0.14, 0.06, 0]} args={[0.03, 0.1, 0.06]} color="#303030" />
+        <Vox position={[0.14, 0.06, 0]} args={[0.03, 0.1, 0.06]} color="#303030" />
+        {/* Left ear cup */}
+        <Vox position={[-0.16, 0, 0]} args={[0.08, 0.12, 0.12]} color="#404040" />
+        <Vox position={[-0.16, 0, 0.05]} args={[0.06, 0.1, 0.03]} color="#505050" />
+        {/* Right ear cup */}
+        <Vox position={[0.16, 0, 0]} args={[0.08, 0.12, 0.12]} color="#404040" />
+        <Vox position={[0.16, 0, 0.05]} args={[0.06, 0.1, 0.03]} color="#505050" />
+        {/* Cushion pads */}
+        <Vox position={[-0.16, 0, 0.07]} args={[0.05, 0.08, 0.02]} color="#606060" />
+        <Vox position={[0.16, 0, 0.07]} args={[0.05, 0.08, 0.02]} color="#606060" />
+      </group>
       {/* Small plant on table */}
       <Vox position={[0.25, 0.42, 0]} args={[0.1, 0.08, 0.1]} color="#d07040" />
       <Vox position={[0.25, 0.5, 0]} args={[0.08, 0.08, 0.08]} color="#50b050" />
@@ -1277,18 +1329,24 @@ function Curtain({ position, rotation }) {
 }
 
 function FloorLamp() {
+  const [on, setOn] = useState(true)
   return (
-    <group position={[-3.4, 0, 1.2]}>
+    <group
+      position={[-3.4, 0, 1.2]}
+      onClick={(e) => { e.stopPropagation(); setOn(!on) }}
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'auto')}
+    >
       {/* Base */}
       <Vox position={[0, 0.04, 0]} args={[0.3, 0.08, 0.3]} color="#404040" />
       {/* Pole */}
       <Vox position={[0, 0.8, 0]} args={[0.06, 1.5, 0.06]} color="#505050" />
       {/* Shade */}
-      <Vox position={[0, 1.6, 0]} args={[0.4, 0.06, 0.4]} color="#f8e0b0" />
-      <Vox position={[0, 1.54, 0]} args={[0.35, 0.06, 0.35]} color="#f0d8a8" />
-      <Vox position={[0, 1.48, 0]} args={[0.3, 0.06, 0.3]} color="#e8d0a0" />
+      <Vox position={[0, 1.6, 0]} args={[0.4, 0.06, 0.4]} color={on ? '#f8e0b0' : '#908070'} />
+      <Vox position={[0, 1.54, 0]} args={[0.35, 0.06, 0.35]} color={on ? '#f0d8a8' : '#887868'} />
+      <Vox position={[0, 1.48, 0]} args={[0.3, 0.06, 0.3]} color={on ? '#e8d0a0' : '#807060'} />
       {/* Warm glow */}
-      <pointLight position={[0, 1.4, 0]} intensity={0.6} color="#ffe0a0" distance={4} />
+      {on && <pointLight position={[0, 1.4, 0]} intensity={0.6} color="#ffe0a0" distance={4} />}
     </group>
   )
 }
@@ -1327,6 +1385,7 @@ function BedRug() {
 }
 
 function Nightstand() {
+  const [lampOn, setLampOn] = useState(true)
   return (
     <group position={[1.6, 0, 3.4]}>
       {/* Top */}
@@ -1345,11 +1404,17 @@ function Nightstand() {
       {/* Alarm clock on top */}
       <Vox position={[0.1, 0.6, 0.05]} args={[0.12, 0.1, 0.06]} color="#e05050" />
       <Vox position={[0.1, 0.6, 0.08]} args={[0.08, 0.06, 0.01]} color="#f0f0e0" />
-      {/* Small lamp on nightstand */}
-      <Vox position={[-0.12, 0.58, 0]} args={[0.08, 0.06, 0.08]} color="#e0c080" />
-      <Vox position={[-0.12, 0.66, 0]} args={[0.04, 0.1, 0.04]} color="#e0c080" />
-      <Vox position={[-0.12, 0.74, 0]} args={[0.14, 0.06, 0.14]} color="#fff0d0" />
-      <pointLight position={[-0.12, 0.8, 0]} intensity={0.3} color="#ffe080" distance={2} />
+      {/* Small lamp on nightstand - clickable */}
+      <group
+        onClick={(e) => { e.stopPropagation(); setLampOn(!lampOn) }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        <Vox position={[-0.12, 0.58, 0]} args={[0.08, 0.06, 0.08]} color="#e0c080" />
+        <Vox position={[-0.12, 0.66, 0]} args={[0.04, 0.1, 0.04]} color="#e0c080" />
+        <Vox position={[-0.12, 0.74, 0]} args={[0.14, 0.06, 0.14]} color={lampOn ? '#fff0d0' : '#908070'} />
+      </group>
+      {lampOn && <pointLight position={[-0.12, 0.8, 0]} intensity={0.3} color="#ffe080" distance={2} />}
     </group>
   )
 }
@@ -1629,7 +1694,7 @@ function Outdoor() {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick }) {
   return (
     <group>
       <Floor />
@@ -1646,7 +1711,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <BedRug />
       <Sofa />
       <Nightstand />
-      <CoffeeTable />
+      <CoffeeTable onHeadphonesClick={onHeadphonesClick} />
       <CeilingLamp />
       <FloorLamp />
       <WallClock />
