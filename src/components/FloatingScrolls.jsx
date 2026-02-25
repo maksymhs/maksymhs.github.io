@@ -92,7 +92,7 @@ function useIsMobile() {
   return mobile
 }
 
-function MagicCard({ data, color, targetPos, delay, open, onSelect, selected, anySelected, parentRef, cardScale = 1 }) {
+function MagicCard({ data, color, targetPos, delay, open, onSelect, selected, anySelected, parentRef, cardScale = 1, isMobile = false }) {
   const groupRef = useRef()
   const innerRef = useRef()
   const glowRef = useRef()
@@ -135,7 +135,7 @@ function MagicCard({ data, color, targetPos, delay, open, onSelect, selected, an
     // Compute camera center in parent local space
     const camDir = new THREE.Vector3()
     camera.getWorldDirection(camDir)
-    const camCenter = camera.position.clone().add(camDir.multiplyScalar(1.2))
+    const camCenter = camera.position.clone().add(camDir.multiplyScalar(isMobile ? 0.85 : 1.2))
     if (parentRef?.current) {
       parentRef.current.worldToLocal(camCenter)
     }
@@ -273,24 +273,24 @@ function MagicCard({ data, color, targetPos, delay, open, onSelect, selected, an
             rotation={[0, Math.PI, 0]}
             transform
             occlude={false}
-            distanceFactor={0.5}
-            style={{ pointerEvents: 'none', width: '180px', imageRendering: 'pixelated' }}
+            distanceFactor={isMobile ? 0.35 : 0.5}
+            style={{ pointerEvents: 'none', width: isMobile ? '140px' : '180px', imageRendering: 'pixelated' }}
           >
             <div style={{
               fontFamily: "'Press Start 2P', monospace",
               background: 'linear-gradient(180deg, #fdf8e8, #f0e8d0)',
               border: '2px solid ' + color,
-              padding: '12px 10px',
+              padding: isMobile ? '8px 6px' : '12px 10px',
               boxShadow: '0 0 12px rgba(200,160,30,0.3), 3px 3px 0 #000',
               WebkitFontSmoothing: 'none',
               MozOsxFontSmoothing: 'unset',
             }}>
-              <p style={{ fontSize: '8px', color, margin: '0 0 4px', fontWeight: 'bold' }}>{data.role}</p>
-              <p style={{ fontSize: '6px', color: '#5a4820', margin: '0 0 8px', fontWeight: 'bold' }}>
+              <p style={{ fontSize: isMobile ? '6px' : '8px', color, margin: '0 0 4px', fontWeight: 'bold' }}>{data.role}</p>
+              <p style={{ fontSize: isMobile ? '5px' : '6px', color: '#5a4820', margin: '0 0 8px', fontWeight: 'bold' }}>
                 {data.company} · {data.period}
               </p>
               <div style={{ width: '40px', height: '2px', background: color, opacity: 0.35, margin: '0 0 8px' }} />
-              <p style={{ fontSize: '6px', color: '#1a1010', lineHeight: '2.2', margin: 0, fontWeight: 'bold' }}>
+              <p style={{ fontSize: isMobile ? '5px' : '6px', color: '#1a1010', lineHeight: '2.2', margin: 0, fontWeight: 'bold' }}>
                 {data.details.split('\n').map((line, i) => (
                   <span key={i}>{line}<br /></span>
                 ))}
@@ -382,6 +382,7 @@ export default function FloatingScrolls({ open, view, onCardSelect }) {
           anySelected={selectedIdx !== null}
           parentRef={parentRef}
           cardScale={cardScale}
+          isMobile={isMobile}
         />
       ))}
     </group>

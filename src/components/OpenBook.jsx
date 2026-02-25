@@ -7,15 +7,17 @@ const BH = 0.52
 const BW = 0.34
 const BT = 0.018
 
-const pageStyle = {
-  width: '220px',
-  height: '300px',
-  padding: '18px 16px',
-  fontFamily: "'Press Start 2P', monospace",
-  overflow: 'hidden',
-  pointerEvents: 'none',
-  display: 'flex',
-  flexDirection: 'column',
+function getPageStyle(isMobile) {
+  return {
+    width: isMobile ? '190px' : '220px',
+    height: isMobile ? '260px' : '300px',
+    padding: isMobile ? '14px 12px' : '18px 16px',
+    fontFamily: "'Press Start 2P', monospace",
+    overflow: 'hidden',
+    pointerEvents: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+  }
 }
 
 function useIsMobile() {
@@ -32,6 +34,11 @@ export default function OpenBook({ book, onClose }) {
   const isMobile = useIsMobile()
   const scale = isMobile ? 0.6 : 1
   const camDist = isMobile ? 0.8 : 0.7
+  const distFactor = isMobile ? 0.48 : 0.58
+  const pageStyle = getPageStyle(isMobile)
+  const titleSize = isMobile ? '11px' : '13px'
+  const subtitleSize = isMobile ? '7px' : '8px'
+  const detailSize = isMobile ? '6px' : '7px'
 
   const groupRef = useRef()
   const leftCover = useRef()
@@ -145,13 +152,13 @@ export default function OpenBook({ book, onClose }) {
           transform
           occlude={false}
           style={{ ...pageStyle, alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}
-          distanceFactor={0.58}
+          distanceFactor={distFactor}
         >
           <div>
-            <h2 style={{ fontSize: '13px', color, lineHeight: '2', margin: '0 0 8px' }}>
+            <h2 style={{ fontSize: titleSize, color, lineHeight: '2', margin: '0 0 8px' }}>
               {book.title}
             </h2>
-            <p style={{ fontSize: '8px', color: '#706858', lineHeight: '1.8', margin: '0 0 12px' }}>
+            <p style={{ fontSize: subtitleSize, color: '#706858', lineHeight: '1.8', margin: '0 0 12px' }}>
               {book.subtitle}
             </p>
             <div style={{ width: '50px', height: '2px', background: color, opacity: 0.35, margin: '0 auto' }} />
@@ -166,9 +173,9 @@ export default function OpenBook({ book, onClose }) {
           transform
           occlude={false}
           style={{ ...pageStyle, justifyContent: 'flex-start' }}
-          distanceFactor={0.58}
+          distanceFactor={distFactor}
         >
-          <p style={{ fontSize: '7px', color: '#3a3828', lineHeight: '2.4', margin: 0 }}>
+          <p style={{ fontSize: detailSize, color: '#3a3828', lineHeight: '2.4', margin: 0 }}>
             {book.details.split('\n').map((line, i) => (
               <span key={i}>{line}<br /></span>
             ))}
@@ -182,11 +189,11 @@ export default function OpenBook({ book, onClose }) {
           position={[0, -(BH / 2 + 0.03), BT / 2 + 0.003]}
           transform
           occlude={false}
-          distanceFactor={0.58}
+          distanceFactor={distFactor}
         >
           <p style={{
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '7px', color: '#fff', opacity: 0.5,
+            fontSize: isMobile ? '5px' : '7px', color: '#fff', opacity: 0.5,
             textAlign: 'center', pointerEvents: 'none', margin: 0, whiteSpace: 'nowrap'
           }}>
             [ ESC ] Close
