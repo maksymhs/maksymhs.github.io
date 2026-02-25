@@ -30,13 +30,19 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd }) {
     targetPos.current.set(...cam.position)
     targetLook.current.set(...cam.target)
 
-    camera.position.lerp(targetPos.current, 0.05)
+    const speed = view === 'default' ? 0.08 : 0.05
+    camera.position.lerp(targetPos.current, speed)
     if (controlsRef.current) {
-      controlsRef.current.target.lerp(targetLook.current, 0.05)
+      controlsRef.current.target.lerp(targetLook.current, speed)
       controlsRef.current.update()
     }
 
     if (camera.position.distanceTo(targetPos.current) < 0.01) {
+      camera.position.copy(targetPos.current)
+      if (controlsRef.current) {
+        controlsRef.current.target.copy(targetLook.current)
+        controlsRef.current.update()
+      }
       animating.current = false
       onTransitionEnd?.()
     }
