@@ -1,5 +1,5 @@
-import React, { useRef, useMemo, useState } from 'react'
-import { useFrame, useLoader } from '@react-three/fiber'
+import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react'
+import { useFrame, useLoader, useThree } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
 import * as THREE from 'three'
 import { SnakeGame, PongGame, TetrisGame } from './MiniGames.jsx'
@@ -56,32 +56,65 @@ function Floor() {
   )
 }
 
-function WindowFrame({ position, rotation, width = 2.8, height = 2.4 }) {
+function WindowFrame({ position, rotation, width = 2.8, height = 2.4, onClick, open }) {
   const hw = width / 2
   const hh = height / 2
   const t = 0.1
+  const slideRef = useRef()
+  const progressRef = useRef(0)
+
+  useFrame((_, delta) => {
+    const target = open ? 1 : 0
+    const diff = target - progressRef.current
+    // Ease-out cubic: fast start, slow finish
+    const speed = Math.max(0.4 * delta, Math.abs(diff) * 2.5 * delta)
+    if (Math.abs(diff) < 0.002) {
+      progressRef.current = target
+    } else {
+      progressRef.current += Math.sign(diff) * speed
+    }
+    if (slideRef.current) {
+      slideRef.current.position.y = progressRef.current * height
+      // Once fully open, hide sliding panel so it doesn't poke above roof
+      if (progressRef.current >= 0.99 && open) {
+        slideRef.current.visible = false
+      } else {
+        slideRef.current.visible = true
+      }
+    }
+  })
+
   return (
     <group position={position} rotation={rotation || [0, 0, 0]}>
-      {/* Glass - transparent */}
-      <mesh>
-        <boxGeometry args={[width, height, 0.02]} />
-        <meshLambertMaterial color="#c0e8ff" transparent opacity={0.15} flatShading />
-      </mesh>
-      {/* Frame borders */}
+      {/* Sliding panel (glass + cross bars + bottom bar) - slides up */}
+      <group ref={slideRef}>
+        {/* Glass - transparent, clickable */}
+        <mesh
+          onClick={(e) => { e.stopPropagation(); onClick?.() }}
+          onPointerOver={() => onClick && (document.body.style.cursor = 'pointer')}
+          onPointerOut={() => onClick && (document.body.style.cursor = 'auto')}
+        >
+          <boxGeometry args={[width, height, 0.02]} />
+          <meshLambertMaterial color="#c0e8ff" transparent opacity={0.15} flatShading />
+        </mesh>
+        {/* Horizontal cross bar */}
+        <Vox position={[0, 0, 0.03]} args={[width, 0.06, 0.04]} color="#f0f0e0" />
+        {/* Vertical cross bar */}
+        <Vox position={[0, 0, 0.03]} args={[0.06, height, 0.04]} color="#f0f0e0" />
+        {/* Bottom bar (slides up with glass) */}
+        <Vox position={[0, -(hh + t / 2), 0.02]} args={[width + t * 2, t, 0.06]} color="#f0f0e0" />
+      </group>
+      {/* Frame borders (fixed) */}
       <Vox position={[0, hh + t / 2, 0.02]} args={[width + t * 2, t, 0.06]} color="#f0f0e0" />
-      <Vox position={[0, -(hh + t / 2), 0.02]} args={[width + t * 2, t, 0.06]} color="#f0f0e0" />
       <Vox position={[-(hw + t / 2), 0, 0.02]} args={[t, height + t * 2, 0.06]} color="#f0f0e0" />
       <Vox position={[hw + t / 2, 0, 0.02]} args={[t, height + t * 2, 0.06]} color="#f0f0e0" />
-      {/* Cross bars */}
-      <Vox position={[0, 0, 0.03]} args={[width, 0.06, 0.04]} color="#f0f0e0" />
-      <Vox position={[0, 0, 0.03]} args={[0.06, height, 0.04]} color="#f0f0e0" />
-      {/* Sill */}
+      {/* Sill (fixed) */}
       <Vox position={[0, -(hh + t), 0.1]} args={[width + 0.3, 0.08, 0.22]} color="#f0f0e0" />
     </group>
   )
 }
 
-function Walls() {
+function Walls({ onWindowClick, windowOpen }) {
   return (
     <group>
       {/* === BACK WALL - split around window (3.6w x 2.6h at y=2, x=0) === */}
@@ -138,8 +171,12 @@ function Walls() {
       <Vox position={[0.35, 1.3, 3.93]} args={[0.08, 0.08, 0.06]} color="#f0c040" />
 
       {/* === DADO RAIL - all walls === */}
-      <Vox position={[0, 1.22, -3.97]} args={[8, 0.08, 0.04]} color="#f0e8d8" />
-      <Vox position={[-3.97, 1.22, 0]} args={[0.04, 0.08, 8]} color="#f0e8d8" />
+      {/* Back wall dado rail - split around window (gap x -1.8 to 1.8) */}
+      <Vox position={[-2.9, 1.22, -3.97]} args={[2.2, 0.08, 0.04]} color="#f0e8d8" />
+      <Vox position={[2.9, 1.22, -3.97]} args={[2.2, 0.08, 0.04]} color="#f0e8d8" />
+      {/* Left wall dado rail - split around window (gap z -1.8 to 1.8) */}
+      <Vox position={[-3.97, 1.22, -2.9]} args={[0.04, 0.08, 2.2]} color="#f0e8d8" />
+      <Vox position={[-3.97, 1.22, 2.9]} args={[0.04, 0.08, 2.2]} color="#f0e8d8" />
       <Vox position={[3.97, 1.22, 0]} args={[0.04, 0.08, 8]} color="#f0e8d8" />
       <Vox position={[0, 1.22, 3.97]} args={[8, 0.08, 0.04]} color="#f0e8d8" />
 
@@ -153,16 +190,20 @@ function Walls() {
       <Vox position={[0, 4.02, 0]} args={[8, 0.08, 8]} color="#f8f4ed" castShadow={false} receiveShadow />
 
       {/* Baseboard trim - all walls */}
-      <Vox position={[0, 0.06, -3.97]} args={[8, 0.12, 0.05]} color="#c0b49c" />
-      <Vox position={[-3.97, 0.06, 0]} args={[0.05, 0.12, 8]} color="#c0b49c" />
+      {/* Back wall baseboard - split around window */}
+      <Vox position={[-2.9, 0.06, -3.97]} args={[2.2, 0.12, 0.05]} color="#c0b49c" />
+      <Vox position={[2.9, 0.06, -3.97]} args={[2.2, 0.12, 0.05]} color="#c0b49c" />
+      {/* Left wall baseboard - split around window */}
+      <Vox position={[-3.97, 0.06, -2.9]} args={[0.05, 0.12, 2.2]} color="#c0b49c" />
+      <Vox position={[-3.97, 0.06, 2.9]} args={[0.05, 0.12, 2.2]} color="#c0b49c" />
       <Vox position={[3.97, 0.06, 0]} args={[0.05, 0.12, 8]} color="#c0b49c" />
       <Vox position={[0, 0.06, 3.97]} args={[8, 0.12, 0.05]} color="#c0b49c" />
 
       {/* Big window - back wall */}
       <WindowFrame position={[0, 2, -3.99]} width={3.6} height={2.6} />
 
-      {/* Big window - left wall */}
-      <WindowFrame position={[-3.99, 2, 0]} rotation={[0, Math.PI / 2, 0]} width={3.6} height={2.6} />
+      {/* Big window - left wall - clickable */}
+      <WindowFrame position={[-3.99, 2, 0]} rotation={[0, Math.PI / 2, 0]} width={3.6} height={2.6} onClick={onWindowClick} open={windowOpen} />
     </group>
   )
 }
@@ -917,9 +958,75 @@ function isInsideObstacle(x, z) {
   return false
 }
 
-function Cat({ onClick, catRef: externalRef }) {
+// Wall colliders — ALWAYS enforced (even when airborne / jumping)
+const wallColliders = [
+  [-4.5, 4.5, -4.5, -3.8],  // back wall
+  [-4.5, 4.5, 3.8, 4.5],    // front wall
+  [-4.5, -3.8, -4.5, 4.5],  // left wall
+  [3.8, 4.5, -4.5, 4.5],    // right wall
+]
+
+// Other colliders — only enforced near ground (can jump over)
+const groundColliders = [
+  // Trees — back side (radius ~0.6)
+  ...[ [-6,-10],[-3,-12],[2,-11],[6,-9],[10,-13],[-10,-14],[14,-11],[-14,-10] ]
+    .map(([x,z]) => [x-0.6, x+0.6, z-0.6, z+0.6]),
+  // Trees — left side
+  ...[ [-10,-4],[-12,2],[-9,7],[-13,10],[-11,-8] ]
+    .map(([x,z]) => [x-0.6, x+0.6, z-0.6, z+0.6]),
+  // Trees — right side
+  ...[ [10,-5],[12,2],[14,8],[11,14],[9,-12] ]
+    .map(([x,z]) => [x-0.6, x+0.6, z-0.6, z+0.6]),
+  // Trees — front side
+  ...[ [-8,10],[-4,12],[3,11],[7,13],[-12,14] ]
+    .map(([x,z]) => [x-0.6, x+0.6, z-0.6, z+0.6]),
+  // Trees — far outside fence
+  ...[ [-20,-20],[20,-18],[-18,18],[18,20],[0,-22],[-22,0],[22,0],[0,22] ]
+    .map(([x,z]) => [x-0.6, x+0.6, z-0.6, z+0.6]),
+  // Benches
+  [-8.6, -7.4, 5.4, 6.6],
+  [9.4, 10.6, -8.6, -7.4],
+  [7.4, 8.6, 11.4, 12.6],
+  // Pond
+  [10.2, 13.8, 4.7, 7.3],
+]
+
+function collideList(x, z, prevX, prevZ, list) {
+  const r = 0.25
+  for (const [x1, x2, z1, z2] of list) {
+    if (x + r > x1 && x - r < x2 && z + r > z1 && z - r < z2) {
+      const inX = prevX + r > x1 && prevX - r < x2
+      const inZ = prevZ + r > z1 && prevZ - r < z2
+      if (!inX) x = prevX
+      if (!inZ) z = prevZ
+      if (x + r > x1 && x - r < x2 && z + r > z1 && z - r < z2) {
+        x = prevX; z = prevZ
+      }
+    }
+  }
+  return [x, z]
+}
+
+function outdoorCollide(x, z, prevX, prevZ, airborne) {
+  // Walls always block
+  ;[x, z] = collideList(x, z, prevX, prevZ, wallColliders)
+  // Ground obstacles only block near ground
+  if (!airborne) {
+    ;[x, z] = collideList(x, z, prevX, prevZ, groundColliders)
+  }
+  return [x, z]
+}
+
+function Cat({ onClick, catRef: externalRef, view }) {
   const catRef = externalRef || useRef()
+  const { camera } = useThree()
   const legsRef = useRef({ fl: null, fr: null, bl: null, br: null })
+  const keysRef = useRef({ up: false, down: false, left: false, right: false, space: false })
+  const outdoorInitRef = useRef(false)
+  const jumpRef = useRef({ phase: null, startTime: 0, startPos: [0, 0, 0] })
+  const catVelRef = useRef({ y: 0, fx: 0, fz: 0, grounded: true })
+  const catHeadingRef = useRef(-Math.PI / 2)
+  const catSpeedRef = useRef(0) // current ground speed for acceleration
   // Waypoints designed to walk AROUND furniture in a clear path
   const waypoints = useMemo(() => [
     [1.5, 0],        // In front of desk, right side
@@ -943,10 +1050,249 @@ function Cat({ onClick, catRef: externalRef }) {
   ], [])
   const stateRef = useRef({ wp: 0, waiting: 0 })
 
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'w') keysRef.current.up = true
+      if (e.key === 'ArrowDown' || e.key === 's') keysRef.current.down = true
+      if (e.key === 'ArrowLeft' || e.key === 'a') keysRef.current.left = true
+      if (e.key === 'ArrowRight' || e.key === 'd') keysRef.current.right = true
+      if (e.key === ' ') { e.preventDefault(); keysRef.current.space = true }
+    }
+    const onKeyUp = (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'w') keysRef.current.up = false
+      if (e.key === 'ArrowDown' || e.key === 's') keysRef.current.down = false
+      if (e.key === 'ArrowLeft' || e.key === 'a') keysRef.current.left = false
+      if (e.key === 'ArrowRight' || e.key === 'd') keysRef.current.right = false
+      if (e.key === ' ') keysRef.current.space = false
+    }
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('keyup', onKeyUp)
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keyup', onKeyUp)
+    }
+  }, [])
+
   useFrame((state) => {
     if (!catRef.current) return
-    const s = stateRef.current
     const t = state.clock.elapsedTime
+
+    // Outdoor mode
+    if (view === 'outdoor') {
+      // Start walk+jump animation on first frame
+      if (!outdoorInitRef.current) {
+        const cp = catRef.current.position
+        jumpRef.current = { phase: 'walk', startTime: t, startPos: [cp.x, cp.y, cp.z] }
+        outdoorInitRef.current = true
+      }
+
+      const j = jumpRef.current
+      // Phase 1: Walk toward the window base (x=-3.5, z=0)
+      if (j.phase === 'walk') {
+        const walkDuration = 1.2
+        const elapsed = t - j.startTime
+        const p = Math.min(elapsed / walkDuration, 1)
+
+        const sx = j.startPos[0], sz = j.startPos[2]
+        const windowX = -3.5, windowZ = 0
+        catRef.current.position.x = sx + (windowX - sx) * p
+        catRef.current.position.z = sz + (windowZ - sz) * p
+        catRef.current.position.y = 0
+        // Face the window
+        const dx = windowX - catRef.current.position.x
+        const dz = windowZ - catRef.current.position.z
+        if (Math.abs(dx) > 0.01 || Math.abs(dz) > 0.01) {
+          catRef.current.rotation.y = Math.atan2(dx, dz)
+        } else {
+          catRef.current.rotation.y = -Math.PI / 2
+        }
+
+        // Walk leg animation
+        const legSwing = Math.sin(t * 10) * 0.4
+        const { fl, fr, bl, br } = legsRef.current
+        if (fl) fl.rotation.x = legSwing
+        if (fr) fr.rotation.x = -legSwing
+        if (bl) bl.rotation.x = -legSwing
+        if (br) br.rotation.x = legSwing
+        catRef.current.children.forEach(c => {
+          if (c.userData?.isTail) c.rotation.y = Math.sin(t * 5) * 0.3
+        })
+
+        if (p >= 1) {
+          j.phase = 'jump'
+          j.startTime = t
+          j.startPos = [catRef.current.position.x, 0, catRef.current.position.z]
+        }
+        return
+      }
+
+      // Phase 2: Forward leap through window - natural arc
+      if (j.phase === 'jump') {
+        const jumpDuration = 0.9
+        const elapsed = t - j.startTime
+        const p = Math.min(elapsed / jumpDuration, 1)
+
+        const sx = j.startPos[0], sz = j.startPos[2]
+        const endX = -6.5, endZ = 0
+        // Ease-in-out for horizontal (slow start, fast middle, slow end)
+        const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2
+        catRef.current.position.x = sx + (endX - sx) * eased
+        catRef.current.position.z = sz + (endZ - sz) * eased
+        // Parabolic arc: -4h(p)(p-1) peaks at p=0.5
+        catRef.current.position.y = -4 * 1.6 * p * (p - 1)
+        catRef.current.rotation.y = -Math.PI / 2
+
+        // Legs: stretch back during rise, tuck during fall
+        const { fl, fr, bl, br } = legsRef.current
+        if (p < 0.5) {
+          // Rising: legs stretch back
+          if (fl) fl.rotation.x = -0.8 * (p * 2)
+          if (fr) fr.rotation.x = -0.8 * (p * 2)
+          if (bl) bl.rotation.x = 0.6 * (p * 2)
+          if (br) br.rotation.x = 0.6 * (p * 2)
+        } else {
+          // Falling: legs tuck forward for landing
+          const fp = (p - 0.5) * 2
+          if (fl) fl.rotation.x = -0.8 + 1.2 * fp
+          if (fr) fr.rotation.x = -0.8 + 1.2 * fp
+          if (bl) bl.rotation.x = 0.6 - 0.9 * fp
+          if (br) br.rotation.x = 0.6 - 0.9 * fp
+        }
+        catRef.current.children.forEach(c => {
+          if (c.userData?.isTail) c.rotation.y = Math.sin(t * 8) * 0.5
+        })
+
+        if (p >= 1) {
+          j.phase = 'done'
+          catRef.current.position.y = 0
+          catHeadingRef.current = -Math.PI / 2
+        }
+        return
+      }
+
+      // === GTA-style player controls ===
+      const keys = keysRef.current
+      const vel = catVelRef.current
+
+      // Get camera's forward/right vectors projected on XZ plane
+      const camForward = new THREE.Vector3()
+      camera.getWorldDirection(camForward)
+      camForward.y = 0
+      camForward.normalize()
+      const camRight = new THREE.Vector3().crossVectors(camForward, new THREE.Vector3(0, 1, 0)).normalize()
+
+      // Input direction relative to camera
+      let inputX = 0, inputZ = 0
+      if (keys.up) { inputX += camForward.x; inputZ += camForward.z }
+      if (keys.down) { inputX -= camForward.x; inputZ -= camForward.z }
+      if (keys.left) { inputX -= camRight.x; inputZ -= camRight.z }
+      if (keys.right) { inputX += camRight.x; inputZ += camRight.z }
+
+      const inputLen = Math.sqrt(inputX * inputX + inputZ * inputZ)
+      const hasInput = inputLen > 0.01
+      if (hasInput) { inputX /= inputLen; inputZ /= inputLen }
+
+      // Acceleration / deceleration
+      const maxSpeed = 0.12
+      const accel = 0.008
+      const decel = 0.006
+      if (hasInput) {
+        catSpeedRef.current = Math.min(catSpeedRef.current + accel, maxSpeed)
+      } else {
+        catSpeedRef.current = Math.max(catSpeedRef.current - decel, 0)
+      }
+      const spd = catSpeedRef.current
+      const moving = spd > 0.005
+
+      // Smooth heading: cat rotates toward movement direction
+      if (hasInput) {
+        const targetHeading = Math.atan2(inputX, inputZ)
+        let hDiff = targetHeading - catHeadingRef.current
+        while (hDiff > Math.PI) hDiff -= Math.PI * 2
+        while (hDiff < -Math.PI) hDiff += Math.PI * 2
+        catHeadingRef.current += hDiff * 0.18
+      }
+      catRef.current.rotation.y = catHeadingRef.current
+
+      // Move in facing direction at current speed (grounded only)
+      if (moving && vel.grounded) {
+        const prevX = catRef.current.position.x
+        const prevZ = catRef.current.position.z
+        const h = catHeadingRef.current
+        let nx = prevX + Math.sin(h) * spd
+        let nz = prevZ + Math.cos(h) * spd
+        // Collision check (grounded)
+        ;[nx, nz] = outdoorCollide(nx, nz, prevX, prevZ, false)
+        nx = Math.max(-24, Math.min(24, nx))
+        nz = Math.max(-24, Math.min(24, nz))
+        catRef.current.position.x = nx
+        catRef.current.position.z = nz
+      }
+
+      // Jump: directional if moving, vertical if standing still
+      if (keys.space && vel.grounded) {
+        vel.y = 0.15
+        vel.grounded = false
+        if (moving) {
+          const h = catHeadingRef.current
+          vel.fx = Math.sin(h) * spd * 1.5
+          vel.fz = Math.cos(h) * spd * 1.5
+        } else {
+          vel.fx = 0
+          vel.fz = 0
+        }
+      }
+      if (!vel.grounded) {
+        vel.y -= 0.008
+        catRef.current.position.y += vel.y
+        // Airborne movement with collision (walls always block, ground obstacles skippable)
+        const prevX = catRef.current.position.x
+        const prevZ = catRef.current.position.z
+        let nx = prevX + vel.fx
+        let nz = prevZ + vel.fz
+        const airborne = catRef.current.position.y > 0.6
+        ;[nx, nz] = outdoorCollide(nx, nz, prevX, prevZ, airborne)
+        nx = Math.max(-24, Math.min(24, nx))
+        nz = Math.max(-24, Math.min(24, nz))
+        catRef.current.position.x = nx
+        catRef.current.position.z = nz
+        if (catRef.current.position.y <= 0) {
+          catRef.current.position.y = 0
+          vel.y = 0
+          vel.fx = 0
+          vel.fz = 0
+          vel.grounded = true
+        }
+      }
+
+      // Leg animation
+      const isAir = !vel.grounded
+      const legSpeed = isAir ? 16 : (8 + spd * 80)
+      const legAmp = isAir ? 0.7 : (0.2 + spd * 3)
+      const legSwing = moving || isAir ? Math.sin(t * legSpeed) * legAmp : 0
+      const { fl, fr, bl, br } = legsRef.current
+      if (fl) fl.rotation.x = moving || isAir ? legSwing : fl.rotation.x * 0.85
+      if (fr) fr.rotation.x = moving || isAir ? -legSwing : fr.rotation.x * 0.85
+      if (bl) bl.rotation.x = moving || isAir ? -legSwing : bl.rotation.x * 0.85
+      if (br) br.rotation.x = moving || isAir ? legSwing : br.rotation.x * 0.85
+
+      catRef.current.children.forEach(c => {
+        if (c.userData?.isTail) c.rotation.y = Math.sin(t * (moving ? 6 : 3)) * (0.3 + spd * 2)
+      })
+      return
+    }
+
+    // Reset when leaving outdoor
+    if (outdoorInitRef.current && view !== 'outdoor') {
+      outdoorInitRef.current = false
+      jumpRef.current.phase = null
+      catVelRef.current = { y: 0, fx: 0, fz: 0, grounded: true }
+      catSpeedRef.current = 0
+      catRef.current.position.set(1.5, 0, 1)
+    }
+
+    // Indoor autonomous waypoint walking
+    const s = stateRef.current
 
     if (s.waiting > 0) {
       s.waiting -= 0.016
@@ -1455,55 +1801,42 @@ function PixelCloud({ position }) {
   )
 }
 
-function Sun() {
-  const sunRef = useRef()
-
-  useFrame((state) => {
-    if (sunRef.current) {
-      sunRef.current.rotation.z = state.clock.elapsedTime * 0.1
-    }
-  })
-
-  return (
-    <group ref={sunRef} position={[6, 8, -12]}>
-      {/* Sun body */}
-      <Vox position={[0, 0, 0]} args={[1.4, 1.4, 0.3]} color="#ffe040" />
-      <Vox position={[0, 0, 0]} args={[1.0, 1.8, 0.2]} color="#ffe040" />
-      <Vox position={[0, 0, 0]} args={[1.8, 1.0, 0.2]} color="#ffe040" />
-      {/* Rays - diagonal */}
-      <Vox position={[0.7, 0.7, 0]} args={[0.6, 0.2, 0.15]} color="#fff080" />
-      <Vox position={[-0.7, 0.7, 0]} args={[0.6, 0.2, 0.15]} color="#fff080" />
-      <Vox position={[0.7, -0.7, 0]} args={[0.6, 0.2, 0.15]} color="#fff080" />
-      <Vox position={[-0.7, -0.7, 0]} args={[0.6, 0.2, 0.15]} color="#fff080" />
-      {/* Glow */}
-      <pointLight intensity={2} color="#ffe060" distance={30} />
-    </group>
-  )
-}
 
 function Grass() {
   return (
     <group>
-      {/* Main ground plane - extends very far */}
-      <Vox position={[0, -0.3, -20]} args={[80, 0.4, 50]} color="#60b840" castShadow={false} receiveShadow />
-      {/* Extra ground to left side */}
-      <Vox position={[-20, -0.3, 0]} args={[50, 0.4, 80]} color="#58b038" castShadow={false} receiveShadow />
-      {/* Shade patches */}
-      <Vox position={[-5, -0.08, -7]} args={[4, 0.05, 3]} color="#50a830" castShadow={false} />
-      <Vox position={[4, -0.08, -9]} args={[3, 0.05, 4]} color="#68c048" castShadow={false} />
-      <Vox position={[-10, -0.08, -6]} args={[5, 0.05, 3]} color="#58b038" castShadow={false} />
-      <Vox position={[8, -0.08, -14]} args={[6, 0.05, 4]} color="#50a830" castShadow={false} />
-      <Vox position={[-14, -0.08, 2]} args={[5, 0.05, 4]} color="#68c048" castShadow={false} />
-      {/* Path */}
-      <Vox position={[0, -0.08, -8]} args={[1.2, 0.05, 8]} color="#d4b888" castShadow={false} />
-      {/* Distant hills */}
-      <Vox position={[0, 0.5, -30]} args={[60, 2, 6]} color="#48a038" castShadow={false} />
-      <Vox position={[-15, 1.2, -34]} args={[20, 3, 5]} color="#409030" castShadow={false} />
-      <Vox position={[12, 0.8, -32]} args={[18, 2.5, 5]} color="#48a838" castShadow={false} />
-      {/* Very distant mountains */}
-      <Vox position={[0, 2.5, -40]} args={[80, 6, 4]} color="#70a8d0" castShadow={false} />
-      <Vox position={[-20, 4, -42]} args={[25, 9, 4]} color="#6098c0" castShadow={false} />
-      <Vox position={[18, 3.5, -41]} args={[20, 8, 4]} color="#6898c8" castShadow={false} />
+      {/* Huge ground plane surrounding house */}
+      <Vox position={[0, -0.3, 0]} args={[120, 0.4, 120]} color="#60b840" castShadow={false} receiveShadow />
+      {/* Grass shade patches scattered around */}
+      {[[-8,-8],[-15,5],[12,-12],[18,8],[-20,-15],[8,15],[-12,18],[20,-8],[0,-18],[-18,12],[15,-18],[0,18]].map(([x,z],i) => (
+        <Vox key={`gp${i}`} position={[x, -0.07, z]} args={[3+i%3, 0.05, 2+i%4]} color={i%2===0?'#50a830':'#68c048'} castShadow={false} />
+      ))}
+      {/* Stone paths around house */}
+      <Vox position={[0, -0.06, -6]} args={[1.4, 0.06, 4]} color="#d4b888" castShadow={false} />
+      <Vox position={[0, -0.06, -10]} args={[1.4, 0.06, 6]} color="#ccb080" castShadow={false} />
+      <Vox position={[-6, -0.06, 0]} args={[4, 0.06, 1.4]} color="#d4b888" castShadow={false} />
+      <Vox position={[-10, -0.06, 0]} args={[6, 0.06, 1.4]} color="#ccb080" castShadow={false} />
+      <Vox position={[6, -0.06, 0]} args={[4, 0.06, 1.4]} color="#d4b888" castShadow={false} />
+      <Vox position={[0, -0.06, 6]} args={[1.4, 0.06, 4]} color="#d4b888" castShadow={false} />
+      {/* Circular path around house */}
+      <Vox position={[0, -0.06, -15]} args={[18, 0.06, 1.2]} color="#c8a878" castShadow={false} />
+      <Vox position={[0, -0.06, 15]} args={[18, 0.06, 1.2]} color="#c8a878" castShadow={false} />
+      <Vox position={[-15, -0.06, 0]} args={[1.2, 0.06, 30]} color="#c8a878" castShadow={false} />
+      <Vox position={[15, -0.06, 0]} args={[1.2, 0.06, 30]} color="#c8a878" castShadow={false} />
+      {/* Distant hills all around */}
+      <Vox position={[0, 0.5, -40]} args={[80, 2, 6]} color="#48a038" castShadow={false} />
+      <Vox position={[0, 0.5, 40]} args={[80, 2, 6]} color="#48a038" castShadow={false} />
+      <Vox position={[-40, 0.5, 0]} args={[6, 2, 80]} color="#48a038" castShadow={false} />
+      <Vox position={[40, 0.5, 0]} args={[6, 2, 80]} color="#48a038" castShadow={false} />
+      <Vox position={[-20, 1.2, -38]} args={[20, 3, 5]} color="#409030" castShadow={false} />
+      <Vox position={[18, 0.8, -36]} args={[18, 2.5, 5]} color="#48a838" castShadow={false} />
+      <Vox position={[-25, 1, 35]} args={[15, 2.5, 5]} color="#409030" castShadow={false} />
+      <Vox position={[22, 1.3, 38]} args={[18, 3, 5]} color="#48a838" castShadow={false} />
+      {/* Mountains */}
+      <Vox position={[0, 2.5, -48]} args={[100, 6, 4]} color="#70a8d0" castShadow={false} />
+      <Vox position={[-25, 4, -50]} args={[25, 9, 4]} color="#6098c0" castShadow={false} />
+      <Vox position={[22, 3.5, -49]} args={[20, 8, 4]} color="#6898c8" castShadow={false} />
+      <Vox position={[0, 3, 48]} args={[80, 5, 4]} color="#6898c0" castShadow={false} />
     </group>
   )
 }
@@ -1512,12 +1845,18 @@ function Flowers() {
   const flowerData = useMemo(() => {
     const flowers = []
     const colors = ['#ff6080', '#ff80a0', '#f0d040', '#ff9050', '#e060d0', '#60a0ff']
-    for (let i = 0; i < 20; i++) {
+    // Scatter 60 flowers around the garden (avoid house footprint -4 to 4)
+    const rng = (seed) => { let s = seed; return () => { s = (s * 16807) % 2147483647; return s / 2147483647 } }
+    const r = rng(42)
+    for (let i = 0; i < 60; i++) {
+      const x = -25 + r() * 50
+      const z = -25 + r() * 50
+      // Skip if inside house footprint
+      if (Math.abs(x) < 5 && Math.abs(z) < 5) continue
       flowers.push({
-        x: -12 + Math.random() * 24,
-        z: -5 - Math.random() * 10,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        h: 0.15 + Math.random() * 0.2
+        x, z,
+        color: colors[Math.floor(r() * colors.length)],
+        h: 0.15 + r() * 0.2
       })
     }
     return flowers
@@ -1539,15 +1878,30 @@ function Flowers() {
 }
 
 function Fence() {
+  const posts = (count, len) => Array.from({ length: count }).map((_, i) => ({
+    offset: -len / 2 + i * (len / (count - 1))
+  }))
+  const fenceLen = 50
+  const fenceHalf = fenceLen / 2
+  const p = posts(26, fenceLen)
   return (
-    <group position={[0, 0, -4.8]}>
-      {/* Horizontal rail */}
-      <Vox position={[0, 0.35, 0]} args={[14, 0.08, 0.08]} color="#c0a060" />
-      <Vox position={[0, 0.65, 0]} args={[14, 0.08, 0.08]} color="#c0a060" />
-      {/* Vertical posts */}
-      {Array.from({ length: 15 }).map((_, i) => (
-        <Vox key={i} position={[-7 + i * 1, 0.4, 0]} args={[0.1, 0.8, 0.1]} color="#b09050" />
-      ))}
+    <group>
+      {/* Back fence (z = -25) */}
+      <Vox position={[0, 0.35, -fenceHalf]} args={[fenceLen, 0.08, 0.08]} color="#c0a060" />
+      <Vox position={[0, 0.65, -fenceHalf]} args={[fenceLen, 0.08, 0.08]} color="#c0a060" />
+      {p.map((v, i) => <Vox key={`fb${i}`} position={[v.offset, 0.4, -fenceHalf]} args={[0.1, 0.8, 0.1]} color="#b09050" />)}
+      {/* Front fence (z = 25) */}
+      <Vox position={[0, 0.35, fenceHalf]} args={[fenceLen, 0.08, 0.08]} color="#c0a060" />
+      <Vox position={[0, 0.65, fenceHalf]} args={[fenceLen, 0.08, 0.08]} color="#c0a060" />
+      {p.map((v, i) => <Vox key={`ff${i}`} position={[v.offset, 0.4, fenceHalf]} args={[0.1, 0.8, 0.1]} color="#b09050" />)}
+      {/* Left fence (x = -25) */}
+      <Vox position={[-fenceHalf, 0.35, 0]} args={[0.08, 0.08, fenceLen]} color="#c0a060" />
+      <Vox position={[-fenceHalf, 0.65, 0]} args={[0.08, 0.08, fenceLen]} color="#c0a060" />
+      {p.map((v, i) => <Vox key={`fl${i}`} position={[-fenceHalf, 0.4, v.offset]} args={[0.1, 0.8, 0.1]} color="#b09050" />)}
+      {/* Right fence (x = 25) */}
+      <Vox position={[fenceHalf, 0.35, 0]} args={[0.08, 0.08, fenceLen]} color="#c0a060" />
+      <Vox position={[fenceHalf, 0.65, 0]} args={[0.08, 0.08, fenceLen]} color="#c0a060" />
+      {p.map((v, i) => <Vox key={`fr${i}`} position={[fenceHalf, 0.4, v.offset]} args={[0.1, 0.8, 0.1]} color="#b09050" />)}
     </group>
   )
 }
@@ -1576,64 +1930,162 @@ function Butterfly({ startPos }) {
   )
 }
 
-function LeftValley() {
+function Roof() {
+  // Room is 8x8 (±4), ceiling at y=4.02. Roof sits on top flush.
+  const roofBase = 4.02
+  const ridgeH = 2.6
+  const overhang = 0.6
+  const halfW = 4 + overhang
+  const halfD = 4 + overhang
+  const depth = halfD * 2 + 0.2
+  const steps = 14
+
   return (
-    <group position={[-8, -0.1, 0]}>
-      {/* Rolling green valley ground */}
-      <Vox position={[0, -0.1, 0]} args={[30, 0.3, 40]} color="#5cb840" castShadow={false} />
-      {/* Gentle hills */}
-      <Vox position={[-3, 0.3, -4]} args={[8, 0.8, 6]} color="#58b038" castShadow={false} />
-      <Vox position={[-5, 0.5, 4]} args={[6, 1.2, 8]} color="#50a830" castShadow={false} />
-      <Vox position={[0, 0.2, 8]} args={[10, 0.6, 6]} color="#5aad38" castShadow={false} />
-      <Vox position={[-8, 0.6, -2]} args={[6, 1.4, 10]} color="#4a9e30" castShadow={false} />
-      <Vox position={[-6, 0.4, -10]} args={[8, 1.0, 5]} color="#52a835" castShadow={false} />
-
-      {/* Distant tree line (far, small, blueish-green) */}
-      {[[-12, -8], [-10, -6], [-8, -5], [-6, -7], [-4, -9], [-11, 3], [-9, 5], [-7, 7], [-5, 6], [-3, 8], [-13, 0], [-11, -2]].map(([x, z], i) => (
-        <group key={`ft${i}`} position={[x, 1.2 + Math.sin(i) * 0.3, z]}>
-          <Vox position={[0, -0.3, 0]} args={[0.12, 0.6, 0.12]} color="#4a3520" castShadow={false} />
-          <Vox position={[0, 0.1, 0]} args={[0.6, 0.5, 0.6]} color="#3a8838" castShadow={false} />
-          <Vox position={[0, 0.45, 0]} args={[0.4, 0.35, 0.4]} color="#3a8838" castShadow={false} />
-          <Vox position={[0, 0.7, 0]} args={[0.2, 0.25, 0.2]} color="#408838" castShadow={false} />
-        </group>
-      ))}
-
-      {/* Mid trees (medium distance, richer green) */}
-      {[[-5, -3], [-3, 1], [-6, 5], [-4, -6], [-2, 3], [-7, 0], [-1, -1]].map(([x, z], i) => (
-        <group key={`mt${i}`} position={[x, 0.8 + Math.sin(i * 2) * 0.3, z]}>
-          <Vox position={[0, 0, 0]} args={[0.2, 0.7, 0.2]} color="#604020" castShadow={false} />
-          <Vox position={[0, 0.55, 0]} args={[0.9, 0.45, 0.9]} color="#40a040" castShadow={false} />
-          <Vox position={[0, 0.9, 0]} args={[0.65, 0.35, 0.65]} color="#48a848" castShadow={false} />
-          <Vox position={[0, 1.15, 0]} args={[0.35, 0.25, 0.35]} color="#50b050" castShadow={false} />
-        </group>
-      ))}
-
-      {/* Near trees (close, detailed, bright green) */}
-      {[[-1, -2], [0, 2], [-2, 6], [-1, -5]].map(([x, z], i) => (
-        <group key={`nt${i}`} position={[x, 0.5 + Math.sin(i * 3) * 0.2, z]}>
-          <Vox position={[0, 0, 0]} args={[0.25, 0.9, 0.25]} color="#705028" castShadow={false} />
-          <Vox position={[0, 0.7, 0]} args={[1.1, 0.5, 1.1]} color="#48b048" castShadow={false} />
-          <Vox position={[0, 1.1, 0]} args={[0.8, 0.4, 0.8]} color="#50b850" castShadow={false} />
-          <Vox position={[0, 1.4, 0]} args={[0.5, 0.3, 0.5]} color="#58c058" castShadow={false} />
-          <Vox position={[0, 1.65, 0]} args={[0.25, 0.2, 0.25]} color="#60c860" castShadow={false} />
-        </group>
-      ))}
-
-      {/* Flowers scattered in valley */}
-      {[[0, -1], [-2, 2], [-4, 0], [-1, 4], [-3, -3], [0, 6], [-5, -5]].map(([x, z], i) => {
-        const c = ['#ff7088', '#f0d040', '#e070d0', '#80a0ff', '#ff9050'][i % 5]
-        return (
-          <group key={`vf${i}`} position={[x + Math.sin(i) * 0.5, 0.15, z]}>
-            <Vox position={[0, 0, 0]} args={[0.04, 0.12, 0.04]} color="#308020" castShadow={false} />
-            <Vox position={[0, 0.1, 0]} args={[0.1, 0.06, 0.1]} color={c} castShadow={false} />
-          </group>
-        )
+    <group position={[0, roofBase, 0]}>
+      {/* Solid interior fill — stacked rows filling the triangle under each slope */}
+      {Array.from({ length: 10 }).map((_, i) => {
+        const frac = i / 9
+        const y = frac * ridgeH
+        const w = halfW * 2 * (1 - frac)
+        if (w < 0.3) return null
+        return <Vox key={`fill${i}`} position={[0, y, 0]} args={[w, ridgeH / 9, depth - 0.4]}
+          color={i % 2 === 0 ? '#d8c8b0' : '#d0c0a8'} castShadow={false} />
       })}
 
-      {/* Distant soft horizon hills */}
-      <Vox position={[-14, 1, 0]} args={[8, 2.5, 30]} color="#90b898" castShadow={false} />
-      <Vox position={[-16, 1.5, -6]} args={[6, 3.5, 12]} color="#88b090" castShadow={false} />
-      <Vox position={[-15, 1.2, 8]} args={[7, 3, 10]} color="#8cb898" castShadow={false} />
+      {/* Ridge beam */}
+      <Vox position={[0, ridgeH + 0.1, 0]} args={[0.25, 0.25, depth]} color="#7a5020" />
+
+      {/* Left slope planks — overlapping, thick */}
+      {Array.from({ length: steps }).map((_, i) => {
+        const frac = i / (steps - 1)
+        const x = -(frac * halfW)
+        const y = ridgeH - frac * ridgeH
+        const pw = halfW / steps + 0.12
+        return <Vox key={`rl${i}`} position={[x, y + 0.08, 0]} args={[pw, 0.2, depth]}
+          color={i % 3 === 0 ? '#a07040' : i % 3 === 1 ? '#8c6030' : '#956838'} />
+      })}
+      {/* Right slope planks */}
+      {Array.from({ length: steps }).map((_, i) => {
+        const frac = i / (steps - 1)
+        const x = frac * halfW
+        const y = ridgeH - frac * ridgeH
+        const pw = halfW / steps + 0.12
+        return <Vox key={`rr${i}`} position={[x, y + 0.08, 0]} args={[pw, 0.2, depth]}
+          color={i % 3 === 0 ? '#a07040' : i % 3 === 1 ? '#8c6030' : '#956838'} />
+      })}
+
+      {/* Front gable — solid triangle fill */}
+      {Array.from({ length: 10 }).map((_, i) => {
+        const frac = i / 9
+        const w = halfW * 2 * (1 - frac) + 0.1
+        const y = frac * ridgeH
+        return <Vox key={`gf${i}`} position={[0, y, halfD]} args={[Math.max(w, 0.3), ridgeH / 9 + 0.02, 0.15]}
+          color={i % 2 === 0 ? '#c8b090' : '#d0b898'} />
+      })}
+      {/* Back gable — solid triangle fill */}
+      {Array.from({ length: 10 }).map((_, i) => {
+        const frac = i / 9
+        const w = halfW * 2 * (1 - frac) + 0.1
+        const y = frac * ridgeH
+        return <Vox key={`gb${i}`} position={[0, y, -halfD]} args={[Math.max(w, 0.3), ridgeH / 9 + 0.02, 0.15]}
+          color={i % 2 === 0 ? '#c8b090' : '#d0b898'} />
+      })}
+
+      {/* Eaves fascia boards */}
+      <Vox position={[-halfW, -0.05, 0]} args={[0.2, 0.25, depth]} color="#705020" />
+      <Vox position={[halfW, -0.05, 0]} args={[0.2, 0.25, depth]} color="#705020" />
+      <Vox position={[0, -0.05, halfD]} args={[halfW * 2 + 0.4, 0.25, 0.2]} color="#705020" />
+      <Vox position={[0, -0.05, -halfD]} args={[halfW * 2 + 0.4, 0.25, 0.2]} color="#705020" />
+
+      {/* Support brackets under eaves */}
+      {[-3, -1, 1, 3].map((z, i) => (
+        <group key={`sb${i}`}>
+          <Vox position={[-halfW + 0.12, -0.2, z]} args={[0.1, 0.3, 0.1]} color="#806028" />
+          <Vox position={[halfW - 0.12, -0.2, z]} args={[0.1, 0.3, 0.1]} color="#806028" />
+        </group>
+      ))}
+    </group>
+  )
+}
+
+function GardenBench({ position, rotation }) {
+  return (
+    <group position={position} rotation={rotation || [0, 0, 0]}>
+      <Vox position={[0, 0.3, 0]} args={[0.8, 0.06, 0.35]} color="#a07840" />
+      <Vox position={[0, 0.5, -0.14]} args={[0.8, 0.3, 0.06]} color="#906830" />
+      {[[-0.35, 0.15, -0.12], [0.35, 0.15, -0.12], [-0.35, 0.15, 0.12], [0.35, 0.15, 0.12]].map((p, i) => (
+        <Vox key={i} position={p} args={[0.06, 0.3, 0.06]} color="#705020" />
+      ))}
+    </group>
+  )
+}
+
+function Pond({ position }) {
+  return (
+    <group position={position}>
+      <Vox position={[0, -0.04, 0]} args={[3, 0.08, 2]} color="#70b8e0" />
+      <Vox position={[0.2, -0.03, 0.1]} args={[2.4, 0.08, 1.6]} color="#80c8f0" />
+      {/* Rocks around pond */}
+      <Vox position={[-1.3, 0.05, -0.6]} args={[0.3, 0.15, 0.25]} color="#909090" />
+      <Vox position={[1.4, 0.05, 0.5]} args={[0.25, 0.12, 0.3]} color="#a0a0a0" />
+      <Vox position={[-0.8, 0.04, 0.9]} args={[0.35, 0.1, 0.2]} color="#888888" />
+      <Vox position={[0.9, 0.04, -0.8]} args={[0.2, 0.13, 0.25]} color="#959595" />
+    </group>
+  )
+}
+
+function ExteriorDoor() {
+  return (
+    <group position={[0, 0, 4.08]}>
+      {/* Door panel */}
+      <Vox position={[0, 1.35, 0]} args={[0.9, 2.5, 0.08]} color="#8b6030" />
+      {/* Door frame */}
+      <Vox position={[-0.5, 1.35, 0]} args={[0.12, 2.7, 0.1]} color="#705020" />
+      <Vox position={[0.5, 1.35, 0]} args={[0.12, 2.7, 0.1]} color="#705020" />
+      <Vox position={[0, 2.75, 0]} args={[1.1, 0.12, 0.1]} color="#705020" />
+      {/* Door panels (decorative rectangles) */}
+      <Vox position={[0, 2.0, 0.05]} args={[0.6, 0.7, 0.03]} color="#7a5428" />
+      <Vox position={[0, 0.9, 0.05]} args={[0.6, 0.7, 0.03]} color="#7a5428" />
+      {/* Handle */}
+      <Vox position={[-0.3, 1.3, 0.08]} args={[0.08, 0.08, 0.06]} color="#f0c040" />
+      {/* Step */}
+      <Vox position={[0, 0.04, 0.15]} args={[1.2, 0.08, 0.3]} color="#c0b090" />
+    </group>
+  )
+}
+
+function ExteriorWalls() {
+  // Windows: 3.6w x 2.6h centered at y=2. So gap: y 0.7–3.3
+  // Back wall window at x=0, left wall window at z=0
+  return (
+    <group>
+      {/* === Back wall exterior (z=-4.12) - split around window === */}
+      {/* Left section */}
+      <Vox position={[-2.9, 2, -4.12]} args={[2.2, 4, 0.06]} color="#e8dcc8" castShadow={false} />
+      {/* Right section */}
+      <Vox position={[2.9, 2, -4.12]} args={[2.2, 4, 0.06]} color="#e8dcc8" castShadow={false} />
+      {/* Top strip above window */}
+      <Vox position={[0, 3.65, -4.12]} args={[3.6, 0.7, 0.06]} color="#e8dcc8" castShadow={false} />
+      {/* Bottom strip below window */}
+      <Vox position={[0, 0.35, -4.12]} args={[3.6, 0.7, 0.06]} color="#e8dcc8" castShadow={false} />
+
+      {/* === Left wall exterior (x=-4.12) - split around window === */}
+      {/* Back section */}
+      <Vox position={[-4.12, 2, -2.9]} args={[0.06, 4, 2.2]} color="#e5d9c5" castShadow={false} />
+      {/* Front section */}
+      <Vox position={[-4.12, 2, 2.9]} args={[0.06, 4, 2.2]} color="#e5d9c5" castShadow={false} />
+      {/* Top strip above window */}
+      <Vox position={[-4.12, 3.65, 0]} args={[0.06, 0.7, 3.6]} color="#e5d9c5" castShadow={false} />
+      {/* Bottom strip below window */}
+      <Vox position={[-4.12, 0.35, 0]} args={[0.06, 0.7, 3.6]} color="#e5d9c5" castShadow={false} />
+
+      {/* === Right wall exterior - solid === */}
+      <Vox position={[4.12, 2, 0]} args={[0.06, 4, 8.2]} color="#e5d9c5" castShadow={false} />
+
+      {/* === Front wall exterior - split around door === */}
+      <Vox position={[-2.2, 2, 4.12]} args={[3.6, 4, 0.06]} color="#e8dcc8" castShadow={false} />
+      <Vox position={[2.2, 2, 4.12]} args={[3.6, 4, 0.06]} color="#e8dcc8" castShadow={false} />
+      <Vox position={[0, 3.4, 4.12]} args={[0.8, 1.2, 0.06]} color="#e8dcc8" castShadow={false} />
     </group>
   )
 }
@@ -1641,13 +2093,22 @@ function LeftValley() {
 function Outdoor() {
   return (
     <group>
-      <Sun />
       <Grass />
       <Fence />
       <Flowers />
-      <LeftValley />
+      <Roof />
+      <ExteriorDoor />
+      <ExteriorWalls />
 
-      {/* Clouds - spread across sky */}
+      {/* Garden furniture */}
+      <GardenBench position={[-8, 0, 6]} rotation={[0, Math.PI / 4, 0]} />
+      <GardenBench position={[10, 0, -8]} rotation={[0, -Math.PI / 3, 0]} />
+      <GardenBench position={[8, 0, 12]} rotation={[0, Math.PI, 0]} />
+
+      {/* Pond */}
+      <Pond position={[12, 0, 6]} />
+
+      {/* Clouds spread across big sky */}
       <PixelCloud position={[-4, 7, -14]} />
       <PixelCloud position={[5, 8, -16]} />
       <PixelCloud position={[0, 6.5, -12]} />
@@ -1655,50 +2116,70 @@ function Outdoor() {
       <PixelCloud position={[12, 7, -22]} />
       <PixelCloud position={[-15, 8, -25]} />
       <PixelCloud position={[-10, 6, -10]} />
+      <PixelCloud position={[18, 7, 10]} />
+      <PixelCloud position={[-12, 8, 15]} />
+      <PixelCloud position={[8, 6.5, 20]} />
 
-      {/* Trees behind back wall - near */}
-      <PixelTree position={[-6, -0.1, -8]} />
-      <PixelTree position={[-3, -0.1, -10]} trunkColor="#704828" leafColor="#38a038" />
-      <PixelTree position={[2, -0.1, -9]} leafColor="#48b048" />
-      <PixelTree position={[5, -0.1, -7]} trunkColor="#685020" leafColor="#30a030" />
-      <PixelTree position={[8, -0.1, -11]} leafColor="#50b850" />
+      {/* Trees all around the garden perimeter */}
+      {/* Back side */}
+      <PixelTree position={[-6, -0.1, -10]} />
+      <PixelTree position={[-3, -0.1, -12]} trunkColor="#704828" leafColor="#38a038" />
+      <PixelTree position={[2, -0.1, -11]} leafColor="#48b048" />
+      <PixelTree position={[6, -0.1, -9]} trunkColor="#685020" leafColor="#30a030" />
+      <PixelTree position={[10, -0.1, -13]} leafColor="#50b850" />
+      <PixelTree position={[-10, -0.1, -14]} leafColor="#38a038" />
+      <PixelTree position={[14, -0.1, -11]} trunkColor="#685020" leafColor="#48b048" />
+      <PixelTree position={[-14, -0.1, -10]} leafColor="#40a840" />
 
-      {/* Trees beside left wall */}
-      <PixelTree position={[-7, -0.1, -2]} leafColor="#48b848" />
-      <PixelTree position={[-8, -0.1, 1]} trunkColor="#704828" leafColor="#38a038" />
-      <PixelTree position={[-9, -0.1, 3]} leafColor="#50b050" />
+      {/* Left side */}
+      <PixelTree position={[-10, -0.1, -4]} leafColor="#48b848" />
+      <PixelTree position={[-12, -0.1, 2]} trunkColor="#704828" leafColor="#38a038" />
+      <PixelTree position={[-9, -0.1, 7]} leafColor="#50b050" />
+      <PixelTree position={[-13, -0.1, 10]} leafColor="#48b048" />
+      <PixelTree position={[-11, -0.1, -8]} trunkColor="#685020" leafColor="#50b050" />
 
-      {/* Mid-distance trees */}
-      <PixelTree position={[-10, -0.1, -12]} leafColor="#38a038" />
-      <PixelTree position={[10, -0.1, -13]} leafColor="#48b048" />
-      <PixelTree position={[0, -0.1, -15]} trunkColor="#685020" leafColor="#50b850" />
-      <PixelTree position={[-5, -0.1, -16]} leafColor="#40a840" />
-      <PixelTree position={[7, -0.1, -17]} trunkColor="#704828" leafColor="#38a838" />
-      <PixelTree position={[-12, -0.1, -8]} leafColor="#48b048" />
-      <PixelTree position={[12, -0.1, -9]} trunkColor="#685020" leafColor="#50b050" />
+      {/* Right side */}
+      <PixelTree position={[10, -0.1, -5]} leafColor="#48b048" />
+      <PixelTree position={[12, -0.1, 2]} trunkColor="#704828" leafColor="#38a838" />
+      <PixelTree position={[14, -0.1, 8]} leafColor="#50b050" />
+      <PixelTree position={[11, -0.1, 14]} trunkColor="#685020" leafColor="#40a040" />
+      <PixelTree position={[9, -0.1, -12]} leafColor="#48b848" />
 
-      {/* Far trees */}
-      <PixelTree position={[-8, -0.1, -20]} leafColor="#389030" />
-      <PixelTree position={[4, -0.1, -22]} leafColor="#409838" />
-      <PixelTree position={[-14, -0.1, -18]} trunkColor="#604020" leafColor="#389030" />
-      <PixelTree position={[14, -0.1, -20]} leafColor="#409038" />
-      <PixelTree position={[0, -0.1, -24]} trunkColor="#604020" leafColor="#388830" />
-      <PixelTree position={[-18, -0.1, -14]} leafColor="#409838" />
+      {/* Front side */}
+      <PixelTree position={[-8, -0.1, 10]} leafColor="#50b850" />
+      <PixelTree position={[-4, -0.1, 12]} trunkColor="#704828" leafColor="#38a038" />
+      <PixelTree position={[3, -0.1, 11]} leafColor="#48b048" />
+      <PixelTree position={[7, -0.1, 13]} leafColor="#40a840" />
+      <PixelTree position={[-12, -0.1, 14]} trunkColor="#685020" leafColor="#30a030" />
 
-      {/* Butterflies */}
-      <Butterfly startPos={[-5, 1.5, -6]} />
-      <Butterfly startPos={[3, 2, -7]} />
-      <Butterfly startPos={[-2, 1.8, -8]} />
-      <Butterfly startPos={[-8, 1.2, -5]} />
+      {/* Far trees outside fence */}
+      <PixelTree position={[-20, -0.1, -20]} leafColor="#389030" />
+      <PixelTree position={[20, -0.1, -18]} leafColor="#409838" />
+      <PixelTree position={[-18, -0.1, 18]} trunkColor="#604020" leafColor="#389030" />
+      <PixelTree position={[18, -0.1, 20]} leafColor="#409038" />
+      <PixelTree position={[0, -0.1, -22]} trunkColor="#604020" leafColor="#388830" />
+      <PixelTree position={[-22, -0.1, 0]} leafColor="#409838" />
+      <PixelTree position={[22, -0.1, 0]} leafColor="#389030" />
+      <PixelTree position={[0, -0.1, 22]} trunkColor="#604020" leafColor="#409838" />
+
+      {/* Butterflies spread around garden */}
+      <Butterfly startPos={[-8, 1.5, -8]} />
+      <Butterfly startPos={[6, 2, -10]} />
+      <Butterfly startPos={[-12, 1.8, 5]} />
+      <Butterfly startPos={[10, 1.2, 8]} />
+      <Butterfly startPos={[-5, 1.5, 12]} />
+      <Butterfly startPos={[15, 1.8, -5]} />
+      <Butterfly startPos={[-15, 1.3, -12]} />
+      <Butterfly startPos={[3, 2, 15]} />
     </group>
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick }) {
   return (
     <group>
       <Floor />
-      <Walls />
+      <Walls onWindowClick={onWindowClick} windowOpen={view === 'outdoor'} />
       <Desk />
       <Monitor onClick={onControllerClick} view={view} onGameChange={onGameChange} />
       <DeskItems />
@@ -1727,7 +2208,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <CoffeeMug />
       <WallArt onGithubClick={onGithubFrameClick} onLinkedinClick={onLinkedinFrameClick} onBack={onBack} view={view} />
       <Lamp />
-      <Cat onClick={onCatClick} catRef={catRef} />
+      <Cat onClick={onCatClick} catRef={catRef} view={view} />
       <Outdoor />
     </group>
   )

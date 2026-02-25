@@ -19,17 +19,21 @@ const CAT_CAM_OFFSET = { x: 0, y: 1.2, z: 1.5 }
 const CONTROLLER_CAM = { position: [0, 1.24, -0.55], target: [0, 1.22, -1.95] }
 const DANCE_CAM = { position: [1.5, 1.8, 1.5], target: [0, 0.8, 0] }
 
-const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM }
+const OUTDOOR_CAM = { position: [-3, 2, 0], target: [-6, 0.5, 0] }
+
+const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM }
 
 function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef }) {
   const animating = useRef(false)
   const targetPos = useRef(new THREE.Vector3())
   const targetLook = useRef(new THREE.Vector3())
   const prevView = useRef(view)
+  const smoothHeading = useRef(null)
 
   useFrame(({ camera }) => {
     if (prevView.current !== view) {
       prevView.current = view
+      smoothHeading.current = null
 
       const cam = CAM_MAP[view] || DEFAULT_CAM
       if (view === 'default') {
@@ -44,6 +48,44 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef }) {
       }
 
       animating.current = true
+    }
+
+    // GTA chase cam: close behind cat, follows heading and jumps
+    if (view === 'outdoor' && catRef?.current) {
+      const cp = catRef.current.position
+      const ry = catRef.current.rotation.y
+      const behindDist = 2.2
+      const camHeight = 1.2
+
+      // Smooth the heading for camera orbit
+      if (smoothHeading.current === null) smoothHeading.current = ry
+      let diff = ry - smoothHeading.current
+      while (diff > Math.PI) diff -= Math.PI * 2
+      while (diff < -Math.PI) diff += Math.PI * 2
+      smoothHeading.current += diff * 0.06
+
+      const sh = smoothHeading.current
+      // Camera behind cat
+      const idealX = cp.x - Math.sin(sh) * behindDist
+      const idealY = cp.y + camHeight
+      const idealZ = cp.z - Math.cos(sh) * behindDist
+
+      camera.position.x += (idealX - camera.position.x) * 0.08
+      camera.position.y += (idealY - camera.position.y) * 0.12
+      camera.position.z += (idealZ - camera.position.z) * 0.08
+
+      // Look at cat (slightly ahead)
+      const lookX = cp.x + Math.sin(sh) * 0.5
+      const lookY = cp.y + 0.3
+      const lookZ = cp.z + Math.cos(sh) * 0.5
+
+      if (controlsRef.current) {
+        controlsRef.current.target.x += (lookX - controlsRef.current.target.x) * 0.12
+        controlsRef.current.target.y += (lookY - controlsRef.current.target.y) * 0.15
+        controlsRef.current.target.z += (lookZ - controlsRef.current.target.z) * 0.12
+        controlsRef.current.update()
+      }
+      return
     }
 
     // Follow cat: camera behind cat looking in its heading direction
@@ -181,6 +223,10 @@ export default function App() {
     setView('dance')
   }, [])
 
+  const handleWindowClick = useCallback(() => {
+    setView('outdoor')
+  }, [])
+
   const handleBookClick = useCallback((bookData) => {
     setSelectedBook(bookData)
   }, [])
@@ -266,7 +312,7 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} />
             <Character position={[0, 0, -0.6]} seated view={view} />
           </Suspense>
 
@@ -278,24 +324,24 @@ export default function App() {
           <OrbitControls
             ref={controlsRef}
             makeDefault
-            minPolarAngle={Math.PI / 3.5}
-            maxPolarAngle={Math.PI / 2.2}
-            minDistance={2}
-            maxDistance={4.5}
-            minAzimuthAngle={-Math.PI / 2.5}
-            maxAzimuthAngle={Math.PI / 2.5}
+            minPolarAngle={view === 'outdoor' ? 0.2 : Math.PI / 3.5}
+            maxPolarAngle={view === 'outdoor' ? Math.PI / 2.1 : Math.PI / 2.2}
+            minDistance={view === 'outdoor' ? 2 : 2}
+            maxDistance={view === 'outdoor' ? 12 : 4.5}
+            minAzimuthAngle={view === 'outdoor' ? -Infinity : -Math.PI / 2.5}
+            maxAzimuthAngle={view === 'outdoor' ? Infinity : Math.PI / 2.5}
             enablePan={false}
             autoRotate={false}
             target={[0, 1.2, -0.5]}
             enableRotate={view === 'default'}
-            enableZoom={view === 'default'}
+            enableZoom={view === 'default' || view === 'outdoor'}
           />
         </Canvas>
       </div>
 
       <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
       <FloatingScrollsOverlay show={!!selectedBook} onClose={handleCloseBook} />
-      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin' || view === 'cat' || view === 'controller' || view === 'dance'} onClose={handleBack} />
+      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin' || view === 'cat' || view === 'controller' || view === 'dance' || view === 'outdoor'} onClose={handleBack} />
       {(view === 'github' || view === 'linkedin') && (
         <div
           onClick={() => {
@@ -315,7 +361,7 @@ export default function App() {
           {view === 'github' ? '[ Click ] Visit GitHub' : '[ Click ] Visit LinkedIn'}
         </div>
       )}
-      {isMobile && gameActive && <DPad />}
+      {isMobile && (gameActive || view === 'outdoor') && <DPad />}
       <ChatOverlay visible={view === 'default'} />
       <SplashScreen />
 
