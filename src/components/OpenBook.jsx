@@ -19,8 +19,8 @@ function useIsMobile() {
 
 export default function OpenBook({ book, onClose }) {
   const isMobile = useIsMobile()
-  const scale = isMobile ? 0.65 : 1
-  const camDist = isMobile ? 0.75 : 0.65
+  const scale = isMobile ? 0.45 : 1
+  const camDist = isMobile ? 0.6 : 0.65
   const groupRef = useRef()
   const leftHalf = useRef()
   const rightHalf = useRef()
