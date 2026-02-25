@@ -20,8 +20,22 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd }) {
 
   useFrame(({ camera }) => {
     if (prevView.current !== view) {
-      animating.current = true
       prevView.current = view
+
+      const cam = CAM_MAP[view] || DEFAULT_CAM
+      // When returning to default, snap immediately so OrbitControls can take over
+      if (view === 'default') {
+        camera.position.set(...cam.position)
+        if (controlsRef.current) {
+          controlsRef.current.target.set(...cam.target)
+          controlsRef.current.update()
+        }
+        animating.current = false
+        onTransitionEnd?.()
+        return
+      }
+
+      animating.current = true
     }
 
     if (!animating.current) return
@@ -30,7 +44,7 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd }) {
     targetPos.current.set(...cam.position)
     targetLook.current.set(...cam.target)
 
-    const speed = view === 'default' ? 0.08 : 0.05
+    const speed = 0.05
     camera.position.lerp(targetPos.current, speed)
     if (controlsRef.current) {
       controlsRef.current.target.lerp(targetLook.current, speed)
