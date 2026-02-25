@@ -6,10 +6,11 @@ import Room from './components/Room.jsx'
 import Character from './components/Character.jsx'
 import ChatOverlay from './components/ChatOverlay.jsx'
 import OpenBook from './components/OpenBook.jsx'
+import FloatingScrolls, { FloatingScrollsOverlay } from './components/FloatingScrolls.jsx'
 
 const DEFAULT_CAM = { position: [0, 2.5, 2.8], target: [0, 1.2, -0.5] }
 const BOOKSHELF_CAM = { position: [2.8, 1.8, -1.5], target: [3.8, 1.4, -1.5] }
-const CHEST_CAM = { position: [-1.8, 1.2, -1.8], target: [-3.2, 0.35, -3.2] }
+const CHEST_CAM = { position: [-1.8, 1.8, -1.8], target: [-3.2, 0.8, -3.2] }
 
 const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM }
 
@@ -72,6 +73,7 @@ export default function App() {
 
   const [chestOpen, setChestOpen] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
+  const [cardSelected, setCardSelected] = useState(false)
 
   const handleBookshelfClick = useCallback(() => {
     setView('bookshelf')
@@ -174,6 +176,7 @@ export default function App() {
           <CameraAnimator view={view} controlsRef={controlsRef} />
 
           <OpenBook book={selectedBook} onClose={handleCloseBook} />
+          <FloatingScrolls open={chestOpen} view={view} onCardSelect={setCardSelected} />
 
           <OrbitControls
             ref={controlsRef}
@@ -193,6 +196,7 @@ export default function App() {
         </Canvas>
       </div>
 
+      <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
       <ChatOverlay visible={view === 'default'} />
 
     </>
