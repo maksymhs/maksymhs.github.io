@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import Room from './components/Room.jsx'
 import Character from './components/Character.jsx'
 import ChatOverlay from './components/ChatOverlay.jsx'
+import OpenBook from './components/OpenBook.jsx'
 
 const DEFAULT_CAM = { position: [0, 2.5, 2.8], target: [0, 1.2, -0.5] }
 const BOOKSHELF_CAM = { position: [2.8, 1.8, -1.5], target: [3.8, 1.4, -1.5] }
@@ -70,6 +71,7 @@ export default function App() {
   const controlsRef = useRef()
 
   const [chestOpen, setChestOpen] = useState(false)
+  const [selectedBook, setSelectedBook] = useState(null)
 
   const handleBookshelfClick = useCallback(() => {
     setView('bookshelf')
@@ -80,18 +82,30 @@ export default function App() {
     setChestOpen(true)
   }, [])
 
+  const handleBookClick = useCallback((bookData) => {
+    setSelectedBook(bookData)
+  }, [])
+
+  const handleCloseBook = useCallback(() => {
+    setSelectedBook(null)
+  }, [])
+
   const handleBack = useCallback(() => {
+    setSelectedBook(null)
     setChestOpen(false)
     setView('default')
   }, [])
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') handleBack()
+      if (e.key === 'Escape') {
+        if (selectedBook) { setSelectedBook(null); return }
+        handleBack()
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [handleBack])
+  }, [handleBack, selectedBook])
 
   return (
     <>
@@ -153,11 +167,13 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} />
             <Character position={[0, 0, -0.6]} seated />
           </Suspense>
 
           <CameraAnimator view={view} controlsRef={controlsRef} />
+
+          <OpenBook book={selectedBook} onClose={handleCloseBook} />
 
           <OrbitControls
             ref={controlsRef}
@@ -178,6 +194,7 @@ export default function App() {
       </div>
 
       <ChatOverlay visible={view === 'default'} />
+
     </>
   )
 }

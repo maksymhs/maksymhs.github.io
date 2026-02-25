@@ -37,15 +37,7 @@ function sendToTelegram(question, answer, mode) {
   } catch (e) { return Promise.reject(e) }
 }
 
-// Detect browser language → es, en, or ru
-function detectLang() {
-  const nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase()
-  if (nav.startsWith('es')) return 'es'
-  if (nav.startsWith('ru')) return 'ru'
-  return 'en'
-}
-
-const lang = detectLang()
+import { lang } from '../i18n'
 
 const i18n = {
   en: {
