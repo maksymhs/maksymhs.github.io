@@ -551,8 +551,26 @@ function Chest({ onClick, open }) {
       onPointerOver={() => (document.body.style.cursor = 'pointer')}
       onPointerOut={() => (document.body.style.cursor = 'auto')}
     >
-      {/* Base box */}
-      <Vox position={[0, 0.25, 0]} args={[0.85, 0.5, 0.55]} color="#8b6914" />
+      {/* Bottom */}
+      <Vox position={[0, 0.03, 0]} args={[0.85, 0.06, 0.55]} color="#8b6914" />
+      {/* Front wall */}
+      <Vox position={[0, 0.28, 0.245]} args={[0.85, 0.44, 0.06]} color="#8b6914" />
+      {/* Back wall */}
+      <Vox position={[0, 0.28, -0.245]} args={[0.85, 0.44, 0.06]} color="#8b6914" />
+      {/* Left wall */}
+      <Vox position={[-0.395, 0.28, 0]} args={[0.06, 0.44, 0.55]} color="#8b6914" />
+      {/* Right wall */}
+      <Vox position={[0.395, 0.28, 0]} args={[0.06, 0.44, 0.55]} color="#8b6914" />
+      {/* Dark interior floor */}
+      <Vox position={[0, 0.07, 0]} args={[0.73, 0.02, 0.43]} color="#3a2808" />
+      {/* Dark interior back wall */}
+      <Vox position={[0, 0.28, -0.21]} args={[0.73, 0.40, 0.01]} color="#4a3410" />
+      {/* Dark interior left wall */}
+      <Vox position={[-0.36, 0.28, 0]} args={[0.01, 0.40, 0.43]} color="#4a3410" />
+      {/* Dark interior right wall */}
+      <Vox position={[0.36, 0.28, 0]} args={[0.01, 0.40, 0.43]} color="#4a3410" />
+      {/* Dark interior front wall */}
+      <Vox position={[0, 0.28, 0.21]} args={[0.73, 0.40, 0.01]} color="#4a3410" />
       {/* Front face detail */}
       <Vox position={[0, 0.25, 0.28]} args={[0.72, 0.38, 0.01]} color="#a07818" />
       {/* Metal bands */}
