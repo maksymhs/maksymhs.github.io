@@ -1,24 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Html } from '@react-three/drei'
+import { Text } from '@react-three/drei'
 import * as THREE from 'three'
 
 const BH = 0.52
 const BW = 0.34
 const BT = 0.018
-
-function getPageStyle(isMobile) {
-  return {
-    width: isMobile ? '190px' : '220px',
-    height: isMobile ? '260px' : '300px',
-    padding: isMobile ? '14px 12px' : '18px 16px',
-    fontFamily: "'Press Start 2P', monospace",
-    overflow: 'hidden',
-    pointerEvents: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-  }
-}
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(() => window.innerWidth < 768)
@@ -34,12 +21,6 @@ export default function OpenBook({ book, onClose }) {
   const isMobile = useIsMobile()
   const scale = isMobile ? 0.6 : 1
   const camDist = isMobile ? 0.8 : 0.7
-  const distFactor = isMobile ? 0.48 : 0.58
-  const pageStyle = getPageStyle(isMobile)
-  const titleSize = isMobile ? '11px' : '13px'
-  const subtitleSize = isMobile ? '7px' : '8px'
-  const detailSize = isMobile ? '6px' : '7px'
-
   const groupRef = useRef()
   const leftCover = useRef()
   const rightCover = useRef()
@@ -145,60 +126,77 @@ export default function OpenBook({ book, onClose }) {
         <meshBasicMaterial color="#f5f0e2" />
       </mesh>
 
-      {/* HTML content on left page */}
+      {/* Left page content — 3D Text (no Html, no mobile displacement) */}
       {showContent && (
-        <Html
-          position={[-BW / 2, 0, BT / 2 + 0.003]}
-          transform
-          occlude={false}
-          style={{ ...pageStyle, alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}
-          distanceFactor={distFactor}
-        >
-          <div>
-            <h2 style={{ fontSize: titleSize, color, lineHeight: '2', margin: '0 0 8px' }}>
-              {book.title}
-            </h2>
-            <p style={{ fontSize: subtitleSize, color: '#706858', lineHeight: '1.8', margin: '0 0 12px' }}>
-              {book.subtitle}
-            </p>
-            <div style={{ width: '50px', height: '2px', background: color, opacity: 0.35, margin: '0 auto' }} />
-          </div>
-        </Html>
+        <group position={[-BW / 2, 0, BT / 2 + 0.003]}>
+          {/* Title */}
+          <Text
+            position={[0, 0.06, 0]}
+            fontSize={0.022}
+            color={color}
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={BW * 0.8}
+            textAlign="center"
+            lineHeight={1.8}
+            font="/fonts/PressStart2P-Regular.ttf"
+          >
+            {book.title}
+          </Text>
+          {/* Subtitle */}
+          <Text
+            position={[0, -0.04, 0]}
+            fontSize={0.012}
+            color="#706858"
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={BW * 0.8}
+            textAlign="center"
+            lineHeight={1.6}
+            font="/fonts/PressStart2P-Regular.ttf"
+          >
+            {book.subtitle}
+          </Text>
+          {/* Divider */}
+          <mesh position={[0, -0.09, 0]}>
+            <planeGeometry args={[BW * 0.35, 0.002]} />
+            <meshBasicMaterial color={color} opacity={0.35} transparent />
+          </mesh>
+        </group>
       )}
 
-      {/* HTML content on right page */}
+      {/* Right page content — 3D Text */}
       {showContent && (
-        <Html
-          position={[BW / 2, 0, BT / 2 + 0.003]}
-          transform
-          occlude={false}
-          style={{ ...pageStyle, justifyContent: 'flex-start' }}
-          distanceFactor={distFactor}
-        >
-          <p style={{ fontSize: detailSize, color: '#3a3828', lineHeight: '2.4', margin: 0 }}>
-            {book.details.split('\n').map((line, i) => (
-              <span key={i}>{line}<br /></span>
-            ))}
-          </p>
-        </Html>
+        <group position={[BW / 2, 0, BT / 2 + 0.003]}>
+          <Text
+            position={[0, 0, 0]}
+            fontSize={0.010}
+            color="#3a3828"
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={BW * 0.8}
+            textAlign="center"
+            lineHeight={2.0}
+            font="/fonts/PressStart2P-Regular.ttf"
+          >
+            {book.details.replace(/\n\n/g, '\n')}
+          </Text>
+        </group>
       )}
 
-      {/* Close hint */}
+      {/* Close hint — 3D Text */}
       {showContent && (
-        <Html
+        <Text
           position={[0, -(BH / 2 + 0.03), BT / 2 + 0.003]}
-          transform
-          occlude={false}
-          distanceFactor={distFactor}
+          fontSize={0.010}
+          color="#ffffff"
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/PressStart2P-Regular.ttf"
+          fillOpacity={0.5}
         >
-          <p style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: isMobile ? '5px' : '7px', color: '#fff', opacity: 0.5,
-            textAlign: 'center', pointerEvents: 'none', margin: 0, whiteSpace: 'nowrap'
-          }}>
-            [ ESC ] Close
-          </p>
-        </Html>
+          {isMobile ? 'Tap to close' : '[ ESC ] Close'}
+        </Text>
       )}
     </group>
   )

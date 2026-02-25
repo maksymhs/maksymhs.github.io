@@ -135,7 +135,7 @@ function MagicCard({ data, color, targetPos, delay, open, onSelect, selected, an
     // Compute camera center in parent local space
     const camDir = new THREE.Vector3()
     camera.getWorldDirection(camDir)
-    const camCenter = camera.position.clone().add(camDir.multiplyScalar(isMobile ? 0.85 : 1.2))
+    const camCenter = camera.position.clone().add(camDir.multiplyScalar(isMobile ? 0.5 : 0.6))
     if (parentRef?.current) {
       parentRef.current.worldToLocal(camCenter)
     }
@@ -193,9 +193,11 @@ function MagicCard({ data, color, targetPos, delay, open, onSelect, selected, an
     innerRef.current.rotation.y = anim.current.flip
 
     // Scale: rise + zoom (bigger when selected)
-    const s = rE * cardScale * (1 + zm * 1.8)
+    const s = rE * cardScale * (1 + zm * 0.8)
     groupRef.current.scale.set(s, s, s)
     groupRef.current.visible = rE > 0.01
+
+    
 
     // Glow pulse
     if (glowRef.current) {
@@ -266,37 +268,65 @@ function MagicCard({ data, color, targetPos, delay, open, onSelect, selected, an
           </Text>
         )}
 
-        {/* Back: full details — only shown after flip past 90° */}
+        {/* Back: full details — 3D Text (no Html, no mobile displacement) */}
         {showBack && (
-          <Html
-            position={[0, 0, -CT / 2 - 0.003]}
-            rotation={[0, Math.PI, 0]}
-            transform
-            occlude={false}
-            distanceFactor={isMobile ? 0.35 : 0.5}
-            style={{ pointerEvents: 'none', width: isMobile ? '140px' : '180px', imageRendering: 'pixelated' }}
-          >
-            <div style={{
-              fontFamily: "'Press Start 2P', monospace",
-              background: 'linear-gradient(180deg, #fdf8e8, #f0e8d0)',
-              border: '2px solid ' + color,
-              padding: isMobile ? '8px 6px' : '12px 10px',
-              boxShadow: '0 0 12px rgba(200,160,30,0.3), 3px 3px 0 #000',
-              WebkitFontSmoothing: 'none',
-              MozOsxFontSmoothing: 'unset',
-            }}>
-              <p style={{ fontSize: isMobile ? '6px' : '8px', color, margin: '0 0 4px', fontWeight: 'bold' }}>{data.role}</p>
-              <p style={{ fontSize: isMobile ? '5px' : '6px', color: '#5a4820', margin: '0 0 8px', fontWeight: 'bold' }}>
-                {data.company} · {data.period}
-              </p>
-              <div style={{ width: '40px', height: '2px', background: color, opacity: 0.35, margin: '0 0 8px' }} />
-              <p style={{ fontSize: isMobile ? '5px' : '6px', color: '#1a1010', lineHeight: '2.2', margin: 0, fontWeight: 'bold' }}>
-                {data.details.split('\n').map((line, i) => (
-                  <span key={i}>{line}<br /></span>
-                ))}
-              </p>
-            </div>
-          </Html>
+          <group position={[0, 0, -CT / 2 - 0.002]} rotation={[0, Math.PI, 0]}>
+            {/* Parchment background */}
+            <mesh position={[0, 0, -0.001]}>
+              <planeGeometry args={[CW * 1.15, CH * 1.15]} />
+              <meshBasicMaterial color="#f5f0e2" />
+            </mesh>
+            {/* Border */}
+            <mesh position={[0, 0, -0.002]}>
+              <planeGeometry args={[CW * 1.2, CH * 1.2]} />
+              <meshBasicMaterial color={color} />
+            </mesh>
+            {/* Role */}
+            <Text
+              position={[0, CH * 0.36, 0.001]}
+              fontSize={0.009}
+              color={color}
+              anchorX="center"
+              anchorY="middle"
+              maxWidth={CW * 0.85}
+              textAlign="center"
+              font="/fonts/PressStart2P-Regular.ttf"
+            >
+              {data.role}
+            </Text>
+            {/* Company + period */}
+            <Text
+              position={[0, CH * 0.24, 0.001]}
+              fontSize={0.006}
+              color="#5a4820"
+              anchorX="center"
+              anchorY="middle"
+              maxWidth={CW * 0.85}
+              textAlign="center"
+              font="/fonts/PressStart2P-Regular.ttf"
+            >
+              {data.company + ' · ' + data.period}
+            </Text>
+            {/* Divider line */}
+            <mesh position={[0, CH * 0.17, 0.001]}>
+              <planeGeometry args={[CW * 0.4, 0.002]} />
+              <meshBasicMaterial color={color} opacity={0.35} transparent />
+            </mesh>
+            {/* Details */}
+            <Text
+              position={[0, -CH * 0.08, 0.001]}
+              fontSize={0.005}
+              color="#1a1010"
+              anchorX="center"
+              anchorY="middle"
+              maxWidth={CW * 0.82}
+              textAlign="center"
+              lineHeight={1.8}
+              font="/fonts/PressStart2P-Regular.ttf"
+            >
+              {data.details.replace(/\n\n/g, '\n')}
+            </Text>
+          </group>
         )}
       </group>
 
