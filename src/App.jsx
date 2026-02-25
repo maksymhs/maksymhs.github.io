@@ -100,6 +100,46 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef }) {
   return null
 }
 
+function fireKey(key, type = 'keydown') {
+  window.dispatchEvent(new KeyboardEvent(type, { key, bubbles: true }))
+}
+
+const dpadBtn = {
+  width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  background: 'rgba(255,255,255,0.15)', border: '2px solid rgba(255,255,255,0.3)',
+  borderRadius: '8px', color: '#fff', fontSize: '18px', fontFamily: 'monospace',
+  touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', cursor: 'pointer',
+}
+
+function DPad() {
+  return (
+    <div style={{
+      position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
+      zIndex: 200, pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+    }}>
+      {/* Up */}
+      <button style={dpadBtn} onTouchStart={(e) => { e.preventDefault(); fireKey('ArrowUp') }} onTouchEnd={() => fireKey('ArrowUp', 'keyup')}>▲</button>
+      <div style={{ display: 'flex', gap: '4px' }}>
+        {/* Left */}
+        <button style={dpadBtn} onTouchStart={(e) => { e.preventDefault(); fireKey('ArrowLeft') }} onTouchEnd={() => fireKey('ArrowLeft', 'keyup')}>◀</button>
+        {/* Space / Drop */}
+        <button style={{ ...dpadBtn, fontSize: '10px', fontFamily: "'Press Start 2P', monospace" }} onTouchStart={(e) => { e.preventDefault(); fireKey(' ') }}>DROP</button>
+        {/* Right */}
+        <button style={dpadBtn} onTouchStart={(e) => { e.preventDefault(); fireKey('ArrowRight') }} onTouchEnd={() => fireKey('ArrowRight', 'keyup')}>▶</button>
+      </div>
+      {/* Down */}
+      <button style={dpadBtn} onTouchStart={(e) => { e.preventDefault(); fireKey('ArrowDown') }} onTouchEnd={() => fireKey('ArrowDown', 'keyup')}>▼</button>
+      {/* ESC button */}
+      <button
+        style={{ ...dpadBtn, width: 'auto', padding: '8px 16px', fontSize: '10px', fontFamily: "'Press Start 2P', monospace", marginTop: '8px' }}
+        onTouchStart={(e) => { e.preventDefault(); fireKey('Escape') }}
+      >
+        ← EXIT
+      </button>
+    </div>
+  )
+}
+
 export default function App() {
   const [view, setView] = useState('default')
   const controlsRef = useRef()
@@ -107,7 +147,9 @@ export default function App() {
   const [chestOpen, setChestOpen] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
   const [cardSelected, setCardSelected] = useState(false)
+  const [gameActive, setGameActive] = useState(false)
   const catRef = useRef()
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
 
   const handleBookshelfClick = useCallback(() => {
     setView('bookshelf')
@@ -219,7 +261,7 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} />
             <Character position={[0, 0, -0.6]} seated view={view} />
           </Suspense>
 
@@ -268,6 +310,7 @@ export default function App() {
           {view === 'github' ? '[ Click ] Visit GitHub' : '[ Click ] Visit LinkedIn'}
         </div>
       )}
+      {isMobile && gameActive && <DPad />}
       <ChatOverlay visible={view === 'default'} />
       <SplashScreen />
 

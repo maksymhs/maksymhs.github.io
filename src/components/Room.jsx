@@ -2,6 +2,7 @@ import React, { useRef, useMemo, useState } from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
 import * as THREE from 'three'
+import { SnakeGame, PongGame, TetrisGame } from './MiniGames.jsx'
 import { lang } from '../i18n'
 
 // Helper: pixel-art style flat material
@@ -207,15 +208,27 @@ const GAMES = [
   { name: 'Tetris', color: '#e04040' },
 ]
 
-function Monitor({ onClick, view }) {
+function Monitor({ onClick, view, onGameChange }) {
   const screenRef = useRef()
   const linesRef = useRef()
   const scrollRef = useRef(0)
+  const [activeGame, setActiveGame] = useState(null)
   const LINE_H = 0.04
   const VISIBLE = 8
   const SCREEN_TOP = 0.57
   const SCREEN_BOT = 0.23
-  const showMenu = view === 'controller'
+  const showMenu = view === 'controller' && !activeGame
+  const showGame = view === 'controller' && activeGame
+
+  // Reset game when leaving controller view
+  React.useEffect(() => {
+    if (view !== 'controller') setActiveGame(null)
+  }, [view])
+
+  // Notify parent when game changes
+  React.useEffect(() => {
+    onGameChange?.(!!activeGame)
+  }, [activeGame, onGameChange])
 
   useFrame((state, delta) => {
     if (screenRef.current) {
@@ -223,7 +236,7 @@ function Monitor({ onClick, view }) {
       screenRef.current.material.emissive.set('#2040a0')
       screenRef.current.material.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.08
     }
-    if (showMenu) return
+    if (showMenu || showGame) return
     scrollRef.current += delta * 0.3
     if (linesRef.current) {
       const step = Math.floor(scrollRef.current / LINE_H)
@@ -257,8 +270,8 @@ function Monitor({ onClick, view }) {
         <boxGeometry args={[0.95, 0.6, 0.02]} />
         <meshLambertMaterial color="#1a1a30" emissive="#2040a0" emissiveIntensity={0.3} flatShading />
       </mesh>
-      {/* Scrolling log lines (hidden when menu active) */}
-      <group ref={linesRef} visible={!showMenu}>
+      {/* Scrolling log lines (hidden when menu/game active) */}
+      <group ref={linesRef} visible={!showMenu && !showGame}>
         {Array.from({ length: VISIBLE + 2 }).map((_, i) => (
           <mesh key={i} position={[0, SCREEN_TOP - i * LINE_H, 0.175]}>
             <boxGeometry args={[0.9, 0.02, 0.005]} />
@@ -287,7 +300,13 @@ function Monitor({ onClick, view }) {
           </mesh>
           {/* Game options */}
           {GAMES.map((game, i) => (
-            <group key={i} position={[0, 0.08 - i * 0.12, 0]}>
+            <group
+              key={i}
+              position={[0, 0.08 - i * 0.12, 0]}
+              onClick={(e) => { e.stopPropagation(); setActiveGame(game.name.toLowerCase()) }}
+              onPointerOver={() => (document.body.style.cursor = 'pointer')}
+              onPointerOut={() => (document.body.style.cursor = 'auto')}
+            >
               {/* Option background */}
               <mesh position={[0, 0, -0.001]}>
                 <planeGeometry args={[0.7, 0.09]} />
@@ -305,7 +324,7 @@ function Monitor({ onClick, view }) {
               </mesh>
               {/* Game name */}
               <Text
-                position={[0.02, 0, 0]}
+                position={[0, 0, 0]}
                 fontSize={0.03}
                 color={game.color}
                 anchorX="center"
@@ -313,17 +332,6 @@ function Monitor({ onClick, view }) {
                 font="/fonts/PressStart2P-Regular.ttf"
               >
                 {game.name}
-              </Text>
-              {/* Coming soon label */}
-              <Text
-                position={[0.28, 0, 0]}
-                fontSize={0.014}
-                color="#606080"
-                anchorX="center"
-                anchorY="middle"
-                font="/fonts/PressStart2P-Regular.ttf"
-              >
-                SOON
               </Text>
             </group>
           ))}
@@ -334,6 +342,14 @@ function Monitor({ onClick, view }) {
               <meshBasicMaterial color="#000000" opacity={0.15} transparent />
             </mesh>
           ))}
+        </group>
+      )}
+      {/* Active game on screen */}
+      {showGame && (
+        <group position={[0, 0.4, 0.18]}>
+          {activeGame === 'snake' && <SnakeGame onExit={() => setActiveGame(null)} />}
+          {activeGame === 'pong' && <PongGame onExit={() => setActiveGame(null)} />}
+          {activeGame === 'tetris' && <TetrisGame onExit={() => setActiveGame(null)} />}
         </group>
       )}
       {/* Stand */}
@@ -1613,13 +1629,13 @@ function Outdoor() {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange }) {
   return (
     <group>
       <Floor />
       <Walls />
       <Desk />
-      <Monitor onClick={onControllerClick} view={view} />
+      <Monitor onClick={onControllerClick} view={view} onGameChange={onGameChange} />
       <DeskItems />
       <Keyboard />
       <Mouse />
