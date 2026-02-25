@@ -147,8 +147,9 @@ function Legs({ position }) {
   )
 }
 
-export default function Character({ position = [0, 0, 0], seated = false }) {
+export default function Character({ position = [0, 0, 0], seated = false, view }) {
   const groupRef = useRef()
+  const turnProgress = useRef(0)
 
   useFrame((state) => {
     if (groupRef.current) {
@@ -156,6 +157,17 @@ export default function Character({ position = [0, 0, 0], seated = false }) {
       // Pixel-style bobbing (stepped, not smooth)
       const step = Math.floor(t * 3) % 2
       groupRef.current.position.y = position[1] + step * 0.02
+
+      // Rotate toward monitor when controller view
+      if (view === 'controller') {
+        turnProgress.current = Math.min(turnProgress.current + 0.035, 1)
+      } else {
+        turnProgress.current = Math.max(turnProgress.current - 0.06, 0)
+      }
+      const ease = 1 - Math.pow(1 - turnProgress.current, 3)
+      groupRef.current.rotation.y = ease * Math.PI
+      // Hide character only after fully rotated (first-person)
+      groupRef.current.visible = turnProgress.current < 0.95
     }
   })
 

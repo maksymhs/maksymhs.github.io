@@ -201,7 +201,13 @@ const LOG_LINES = [
   { width: 0.68, color: '#80b0ff', x: -0.11 },
 ]
 
-function Monitor() {
+const GAMES = [
+  { name: 'Snake', color: '#40c040' },
+  { name: 'Pong', color: '#4080e0' },
+  { name: 'Tetris', color: '#e04040' },
+]
+
+function Monitor({ onClick, view }) {
   const screenRef = useRef()
   const linesRef = useRef()
   const scrollRef = useRef(0)
@@ -209,13 +215,20 @@ function Monitor() {
   const VISIBLE = 8
   const SCREEN_TOP = 0.57
   const SCREEN_BOT = 0.23
+  const showMenu = view === 'controller'
 
   useFrame((state, delta) => {
     if (screenRef.current) {
       const t = state.clock.elapsedTime
-      screenRef.current.material.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.08
+      if (showMenu) {
+        screenRef.current.material.emissive.set('#101030')
+        screenRef.current.material.emissiveIntensity = 0.15
+      } else {
+        screenRef.current.material.emissive.set('#2040a0')
+        screenRef.current.material.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.08
+      }
     }
-    // Scroll lines upward in stepped pixel fashion
+    if (showMenu) return
     scrollRef.current += delta * 0.3
     if (linesRef.current) {
       const step = Math.floor(scrollRef.current / LINE_H)
@@ -236,7 +249,12 @@ function Monitor() {
   })
 
   return (
-    <group position={[0, 0.82, -1.95]}>
+    <group
+      position={[0, 0.82, -1.95]}
+      onClick={(e) => { e.stopPropagation(); onClick?.() }}
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'auto')}
+    >
       {/* Screen frame - chunky CRT style */}
       <Vox position={[0, 0.38, 0]} args={[1.2, 0.8, 0.3]} color="#303040" castShadow />
       {/* Screen background */}
@@ -244,8 +262,8 @@ function Monitor() {
         <boxGeometry args={[0.95, 0.6, 0.02]} />
         <meshLambertMaterial color="#1a1a30" emissive="#2040a0" emissiveIntensity={0.3} flatShading />
       </mesh>
-      {/* Scrolling log lines */}
-      <group ref={linesRef}>
+      {/* Scrolling log lines (hidden when menu active) */}
+      <group ref={linesRef} visible={!showMenu}>
         {Array.from({ length: VISIBLE + 2 }).map((_, i) => (
           <mesh key={i} position={[0, SCREEN_TOP - i * LINE_H, 0.175]}>
             <boxGeometry args={[0.9, 0.02, 0.005]} />
@@ -253,6 +271,76 @@ function Monitor() {
           </mesh>
         ))}
       </group>
+      {/* Game selection menu on screen */}
+      {showMenu && (
+        <group position={[0, 0.4, 0.18]}>
+          {/* Title */}
+          <Text
+            position={[0, 0.22, 0]}
+            fontSize={0.045}
+            color="#60d0a0"
+            anchorX="center"
+            anchorY="middle"
+            font="/fonts/PressStart2P-Regular.ttf"
+          >
+            SELECT GAME
+          </Text>
+          {/* Decorative line under title */}
+          <mesh position={[0, 0.17, 0]}>
+            <planeGeometry args={[0.7, 0.004]} />
+            <meshBasicMaterial color="#60d0a0" opacity={0.5} transparent />
+          </mesh>
+          {/* Game options */}
+          {GAMES.map((game, i) => (
+            <group key={i} position={[0, 0.08 - i * 0.12, 0]}>
+              {/* Option background */}
+              <mesh position={[0, 0, -0.001]}>
+                <planeGeometry args={[0.7, 0.09]} />
+                <meshBasicMaterial color={game.color} opacity={0.15} transparent />
+              </mesh>
+              {/* Option border */}
+              <mesh position={[0, 0, -0.0005]}>
+                <planeGeometry args={[0.72, 0.092]} />
+                <meshBasicMaterial color={game.color} opacity={0.3} transparent />
+              </mesh>
+              {/* Color indicator */}
+              <mesh position={[-0.3, 0, 0]}>
+                <planeGeometry args={[0.03, 0.06]} />
+                <meshBasicMaterial color={game.color} />
+              </mesh>
+              {/* Game name */}
+              <Text
+                position={[0.02, 0, 0]}
+                fontSize={0.03}
+                color={game.color}
+                anchorX="center"
+                anchorY="middle"
+                font="/fonts/PressStart2P-Regular.ttf"
+              >
+                {game.name}
+              </Text>
+              {/* Coming soon label */}
+              <Text
+                position={[0.28, 0, 0]}
+                fontSize={0.014}
+                color="#606080"
+                anchorX="center"
+                anchorY="middle"
+                font="/fonts/PressStart2P-Regular.ttf"
+              >
+                SOON
+              </Text>
+            </group>
+          ))}
+          {/* Scanline effect */}
+          {Array.from({ length: 12 }).map((_, i) => (
+            <mesh key={`sl${i}`} position={[0, 0.27 - i * 0.045, 0.001]}>
+              <planeGeometry args={[0.9, 0.002]} />
+              <meshBasicMaterial color="#000000" opacity={0.15} transparent />
+            </mesh>
+          ))}
+        </group>
+      )}
       {/* Stand */}
       <Vox position={[0, 0.08, 0.05]} args={[0.2, 0.16, 0.2]} color="#404050" />
       {/* Base */}
@@ -267,7 +355,7 @@ function DeskItems() {
   return (
     <group>
       {/* Pencil holder */}
-      <group position={[-0.45, 0.86, -1.45]}>
+      <group position={[-1.0, 0.86, -1.45]}>
         <Vox position={[0, 0, 0]} args={[0.1, 0.12, 0.1]} color="#4060c0" />
         <Vox position={[-0.02, 0.1, 0]} args={[0.02, 0.1, 0.02]} color="#f0d040" />
         <Vox position={[0.02, 0.12, 0.02]} args={[0.02, 0.12, 0.02]} color="#e05050" />
@@ -276,17 +364,6 @@ function DeskItems() {
       {/* Sticky notes */}
       <Vox position={[-0.85, 0.83, -1.6]} args={[0.16, 0.01, 0.16]} color="#f0e060" />
       <Vox position={[-0.82, 0.84, -1.57]} args={[0.14, 0.01, 0.14]} color="#ff9070" />
-      {/* Headphones */}
-      <group position={[0.9, 0.86, -1.8]}>
-        <Vox position={[0, 0.08, 0]} args={[0.22, 0.04, 0.04]} color="#303030" />
-        <Vox position={[-0.1, 0, 0]} args={[0.06, 0.12, 0.08]} color="#404040" />
-        <Vox position={[0.1, 0, 0]} args={[0.06, 0.12, 0.08]} color="#404040" />
-        <Vox position={[-0.1, -0.02, 0.02]} args={[0.04, 0.08, 0.04]} color="#e05050" />
-        <Vox position={[0.1, -0.02, 0.02]} args={[0.04, 0.08, 0.04]} color="#e05050" />
-      </group>
-      {/* Small notebook */}
-      <Vox position={[-0.55, 0.82, -1.8]} args={[0.2, 0.03, 0.14]} color="#e0d0c0" />
-      <Vox position={[-0.55, 0.84, -1.8]} args={[0.18, 0.01, 0.12]} color="#f0e8d8" />
     </group>
   )
 }
@@ -319,9 +396,24 @@ function Mouse() {
   )
 }
 
-function Chair() {
+function Chair({ view }) {
+  const chairRef = useRef()
+  const turnProgress = useRef(0)
+
+  useFrame(() => {
+    if (!chairRef.current) return
+    if (view === 'controller') {
+      turnProgress.current = Math.min(turnProgress.current + 0.035, 1)
+    } else {
+      turnProgress.current = Math.max(turnProgress.current - 0.06, 0)
+    }
+    const ease = 1 - Math.pow(1 - turnProgress.current, 3)
+    chairRef.current.rotation.y = ease * Math.PI
+    chairRef.current.visible = turnProgress.current < 0.95
+  })
+
   return (
-    <group position={[0, 0, -0.6]}>
+    <group ref={chairRef} position={[0, 0, -0.6]}>
       {/* Seat */}
       <Vox position={[0, 0.5, 0]} args={[0.6, 0.1, 0.6]} color="#e05050" castShadow />
       {/* Back */}
@@ -967,6 +1059,7 @@ function Sofa() {
   )
 }
 
+
 function SideTable({ position }) {
   return (
     <group position={position}>
@@ -1525,17 +1618,17 @@ function Outdoor() {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick }) {
   return (
     <group>
       <Floor />
       <Walls />
       <Desk />
-      <Monitor />
+      <Monitor onClick={onControllerClick} view={view} />
       <DeskItems />
       <Keyboard />
       <Mouse />
-      <Chair />
+      <Chair view={view} />
       <Bookshelf onClick={onBookshelfClick} onBookClick={onBookClick} interactive={view === 'bookshelf'} />
       <Chest onClick={onChestClick} open={chestOpen} />
       <Bed />
