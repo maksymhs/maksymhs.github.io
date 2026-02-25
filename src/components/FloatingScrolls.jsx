@@ -12,7 +12,7 @@ const EXP = {
     },
     es: {
       company: 'Openbank', role: 'Software Engineer', period: 'Jun 2025 – Presente',
-      details: 'Banco digital del Grupo Santander.\n\nMicroservicios backend con Java y Spring Boot.\n\nAPIs financieras escalables y arquitectura cloud.\n\nPipelines CI/CD y testing automatizado.\n\nMetodologia agil en entorno fintech.'
+      details: 'Banco digital del Grupo Santander.\n\nMicroservicios backend con Java y Spring Boot.\n\nAPIs financieras escalables y arquitectura cloud.\n\nPipelines CI/CD y testing automatizado.\n\nMetodología ágil en entorno fintech.'
     },
     ru: {
       company: 'Openbank', role: 'Software Engineer', period: 'Июн 2025 – Наст. время',
@@ -26,7 +26,7 @@ const EXP = {
     },
     es: {
       company: 'Paradigma Digital', role: 'Software Engineer', period: 'Oct 2021 – May 2025',
-      details: '3 anos y 8 meses.\n\nDesarrollo integral, analisis y resolucion de incidencias.\n\nJava, Spring Boot, PostgreSQL, Redis.\n\nAPIs REST y arquitectura de microservicios.\n\nTesting JUnit y calidad con Sonar.\n\nGoogle Cloud, Jenkins CI/CD, monitorizacion Kibana.'
+      details: '3 años y 8 meses.\n\nDesarrollo integral, análisis y resolución de incidencias.\n\nJava, Spring Boot, PostgreSQL, Redis.\n\nAPIs REST y arquitectura de microservicios.\n\nTesting JUnit y calidad con Sonar.\n\nGoogle Cloud, Jenkins CI/CD, monitorización Kibana.'
     },
     ru: {
       company: 'Paradigma Digital', role: 'Software Engineer', period: 'Окт 2021 – Май 2025',
@@ -40,7 +40,7 @@ const EXP = {
     },
     es: {
       company: 'Experis', role: 'Backend Developer', period: 'Nov 2019 – Oct 2021',
-      details: '2 anos.\n\nServicios backend para clientes empresariales.\n\nJava, Spring Boot, bases de datos DB2 y Oracle.\n\nIntegracion de servicios SOAP y REST.\n\nTesting unitario con JUnit, analisis de codigo.\n\nJenkins, Sonar, despliegue en OpenShift.'
+      details: '2 años.\n\nServicios backend para clientes empresariales.\n\nJava, Spring Boot, bases de datos DB2 y Oracle.\n\nIntegración de servicios SOAP y REST.\n\nTesting unitario con JUnit, análisis de código.\n\nJenkins, Sonar, despliegue en OpenShift.'
     },
     ru: {
       company: 'Experis', role: 'Backend Developer', period: 'Ноя 2019 – Окт 2021',
@@ -54,7 +54,7 @@ const EXP = {
     },
     es: {
       company: 'everis (NTT Data)', role: 'Backend Developer', period: 'Jun 2016 – Sep 2019',
-      details: '3 anos y 4 meses. Murcia, Espana.\n\nPrimer puesto profesional tras la universidad.\n\nJava, Spring Boot, DB2 y Oracle.\n\nDesarrollo de servicios SOAP y REST.\n\nTesting JUnit, pipelines Jenkins y Sonar.\n\nOrquestacion de contenedores OpenShift.'
+      details: '3 años y 4 meses. Murcia, España.\n\nPrimer puesto profesional tras la universidad.\n\nJava, Spring Boot, DB2 y Oracle.\n\nDesarrollo de servicios SOAP y REST.\n\nTesting JUnit, pipelines Jenkins y Sonar.\n\nOrquestación de contenedores OpenShift.'
     },
     ru: {
       company: 'everis (NTT Data)', role: 'Backend Developer', period: 'Июн 2016 – Сен 2019',
