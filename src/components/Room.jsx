@@ -220,13 +220,8 @@ function Monitor({ onClick, view }) {
   useFrame((state, delta) => {
     if (screenRef.current) {
       const t = state.clock.elapsedTime
-      if (showMenu) {
-        screenRef.current.material.emissive.set('#101030')
-        screenRef.current.material.emissiveIntensity = 0.15
-      } else {
-        screenRef.current.material.emissive.set('#2040a0')
-        screenRef.current.material.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.08
-      }
+      screenRef.current.material.emissive.set('#2040a0')
+      screenRef.current.material.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.08
     }
     if (showMenu) return
     scrollRef.current += delta * 0.3
