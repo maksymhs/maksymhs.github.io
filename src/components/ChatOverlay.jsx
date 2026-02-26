@@ -41,7 +41,7 @@ import { lang } from '../i18n'
 
 const i18n = {
   en: {
-    welcome: "Hi! I'm Maksym, a Software Engineer specializing in backend development.\nPress SPACE to talk or ENTER to type!",
+    welcome: "Hi! I'm Maksym, a Software Engineer.\nPress SPACE to talk or ENTER to type!",
     idle: "Press SPACE to talk or ENTER to type!",
     listening: "I'm listening...",
     noSpeech: "I didn't hear you. Press SPACEBAR again!",
@@ -59,7 +59,7 @@ const i18n = {
     speechLang: "en-US",
   },
   es: {
-    welcome: "¡Hola! Soy Maksym, Ingeniero de Software especializado en desarrollo backend.\n¡Pulsa ESPACIO para hablar o INTRO para escribir!",
+    welcome: "¡Hola! Soy Maksym, Ingeniero de Software.\n¡Pulsa ESPACIO para hablar o INTRO para escribir!",
     idle: "¡Pulsa ESPACIO para hablar o INTRO para escribir!",
     listening: "Te escucho...",
     noSpeech: "No te he oído. ¡Pulsa ESPACIO otra vez!",
@@ -77,7 +77,7 @@ const i18n = {
     speechLang: "es-ES",
   },
   ru: {
-    welcome: "Привет! Я Максим, инженер-программист, специализируюсь на бэкенд-разработке.\nНажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
+    welcome: "Привет! Я Максим, инженер-программист.\nНажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
     idle: "Нажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
     listening: "Слушаю...",
     noSpeech: "Я тебя не услышал. Нажми ПРОБЕЛ ещё раз!",

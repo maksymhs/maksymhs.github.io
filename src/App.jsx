@@ -17,7 +17,7 @@ const LINKEDIN_CAM = { position: [-2.5, 2.2, -2.5], target: [-3, 2.2, -3.95] }
 
 const CAT_CAM_OFFSET = { x: 0, y: 1.2, z: 1.5 }
 const CONTROLLER_CAM = { position: [0, 1.24, -0.55], target: [0, 1.22, -1.95] }
-const DANCE_CAM = { position: [1.5, 1.8, 1.5], target: [0, 0.8, 0] }
+const DANCE_CAM = { position: [2.5, 2.2, 2.5], target: [0, 0.8, 0] }
 const SLEEP_CAM = { position: [0, 2.5, 0.5], target: [2.8, 0.4, 2.6] }
 const SOFA_CAM = { position: [0, 2.5, 0.5], target: [-2.8, 0.6, 2.5] }
 
