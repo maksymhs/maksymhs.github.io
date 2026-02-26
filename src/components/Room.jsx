@@ -1788,6 +1788,8 @@ function Nightstand() {
   const [lampOn, setLampOn] = useState(true)
   const [topOpen, setTopOpen] = useState(false)
   const [botOpen, setBotOpen] = useState(false)
+  const [ringing, setRinging] = useState(false)
+  const alarmRef = useRef(null)
   const topRef = useRef()
   const botRef = useRef()
   const topSlide = useRef(0)
@@ -1844,9 +1846,37 @@ function Nightstand() {
       {[[-0.2, 0.06, -0.18], [0.2, 0.06, -0.18], [-0.2, 0.06, 0.18], [0.2, 0.06, 0.18]].map((pos, i) => (
         <Vox key={i} position={pos} args={[0.06, 0.12, 0.06]} color="#886030" />
       ))}
-      {/* Alarm clock on top */}
-      <Vox position={[0.1, 0.6, 0.05]} args={[0.12, 0.1, 0.06]} color="#e05050" />
-      <Vox position={[0.1, 0.6, 0.08]} args={[0.08, 0.06, 0.01]} color="#f0f0e0" />
+      {/* Alarm clock on top — clickable */}
+      <group
+        onClick={(e) => {
+          e.stopPropagation()
+          if (alarmRef.current) return
+          setRinging(true)
+          const ctx = new (window.AudioContext || window.webkitAudioContext)()
+          const now = ctx.currentTime
+          for (let i = 0; i < 6; i++) {
+            const osc = ctx.createOscillator()
+            const gain = ctx.createGain()
+            osc.type = 'square'
+            osc.frequency.value = i % 2 === 0 ? 880 : 660
+            gain.gain.value = 0.08
+            osc.connect(gain)
+            gain.connect(ctx.destination)
+            osc.start(now + i * 0.5)
+            osc.stop(now + i * 0.5 + 0.35)
+          }
+          alarmRef.current = setTimeout(() => {
+            setRinging(false)
+            alarmRef.current = null
+            ctx.close()
+          }, 3000)
+        }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        <Vox position={[0.1, 0.6, 0.05]} args={[0.12, 0.1, 0.06]} color={ringing ? '#ff3030' : '#e05050'} />
+        <Vox position={[0.1, 0.6, 0.08]} args={[0.08, 0.06, 0.01]} color={ringing ? '#ffff80' : '#f0f0e0'} />
+      </group>
       {/* Small lamp on nightstand - clickable */}
       <group
         onClick={(e) => { e.stopPropagation(); setLampOn(!lampOn) }}
