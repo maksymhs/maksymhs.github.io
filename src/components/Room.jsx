@@ -2629,6 +2629,101 @@ function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear, 
   )
 }
 
+function ExteriorVegetation() {
+  const data = useMemo(() => {
+    const rng = (seed) => { let s = seed; return () => { s = (s * 16807) % 2147483647; return s / 2147483647 } }
+    const r = rng(777)
+    const bushColors = ['#2d8c2d', '#2a882a', '#2e8e2e', '#268026', '#348c34']
+    const bushTops = ['#35a035', '#32a032', '#38a838', '#30a030', '#3cb03c']
+    const flowerColors = ['#ff6080', '#ff80a0', '#f0d040', '#ff9050', '#e060d0', '#60a0ff', '#ff4060', '#ffa040']
+    const rockColors = ['#909090', '#808080', '#a0a0a0', '#989898', '#b0a898']
+
+    const isOutside = (x, z) => Math.abs(x) > 26 || Math.abs(z) > 26
+    const inRange = (v) => v > -35 && v < 35
+
+    const bushes = []
+    for (let i = 0; i < 25; i++) {
+      const x = -35 + r() * 70
+      const z = -35 + r() * 70
+      if (!isOutside(x, z) || !inRange(x) || !inRange(z)) continue
+      const s = 0.6 + r() * 0.8
+      bushes.push({ x, z, s, c1: bushColors[Math.floor(r() * bushColors.length)], c2: bushTops[Math.floor(r() * bushTops.length)] })
+    }
+
+    const flowers = []
+    for (let i = 0; i < 50; i++) {
+      const x = -34 + r() * 68
+      const z = -34 + r() * 68
+      if (!isOutside(x, z)) continue
+      const h = 0.15 + r() * 0.2
+      flowers.push({ x, z, h, c: flowerColors[Math.floor(r() * flowerColors.length)] })
+    }
+
+    const rocks = []
+    for (let i = 0; i < 15; i++) {
+      const x = -34 + r() * 68
+      const z = -34 + r() * 68
+      if (!isOutside(x, z)) continue
+      const s = 0.15 + r() * 0.35
+      rocks.push({ x, z, s, c: rockColors[Math.floor(r() * rockColors.length)], ry: r() * Math.PI })
+    }
+
+    const tallGrass = []
+    for (let i = 0; i < 40; i++) {
+      const x = -34 + r() * 68
+      const z = -34 + r() * 68
+      if (!isOutside(x, z)) continue
+      tallGrass.push({ x, z, h: 0.2 + r() * 0.3, c: ['#408830', '#388020', '#48a038', '#509040'][Math.floor(r() * 4)] })
+    }
+
+    const leafColors = ['#389030', '#409838', '#48b048', '#38a038', '#30a030', '#50b850', '#40a840', '#358c35']
+    const trunkColors = ['#604828', '#704828', '#685020', '#604020', '#5a4020']
+    const trees = []
+    for (let i = 0; i < 18; i++) {
+      const x = -34 + r() * 68
+      const z = -34 + r() * 68
+      if (!isOutside(x, z)) continue
+      trees.push({ x, z, lc: leafColors[Math.floor(r() * leafColors.length)], tc: trunkColors[Math.floor(r() * trunkColors.length)] })
+    }
+
+    return { bushes, flowers, rocks, tallGrass, trees }
+  }, [])
+
+  return (
+    <group>
+      {data.bushes.map((b, i) => (
+        <group key={`b${i}`} position={[b.x, 0, b.z]}>
+          <Vox position={[0, b.s * 0.4, 0]} args={[b.s * 1.2, b.s * 0.8, b.s * 1.2]} color={b.c1} />
+          <Vox position={[0, b.s * 0.7, 0]} args={[b.s * 0.85, b.s * 0.5, b.s * 0.85]} color={b.c2} />
+        </group>
+      ))}
+      {data.flowers.map((f, i) => (
+        <group key={`f${i}`} position={[f.x, 0, f.z]}>
+          <Vox position={[0, f.h / 2, 0]} args={[0.04, f.h, 0.04]} color="#308020" />
+          <Vox position={[0, f.h + 0.06, 0]} args={[0.15, 0.1, 0.15]} color={f.c} />
+          <Vox position={[0, f.h + 0.06, 0]} args={[0.08, 0.12, 0.08]} color="#fff080" />
+        </group>
+      ))}
+      {data.rocks.map((rk, i) => (
+        <group key={`r${i}`} position={[rk.x, 0, rk.z]} rotation={[0, rk.ry, 0]}>
+          <Vox position={[0, rk.s * 0.4, 0]} args={[rk.s * 1.3, rk.s * 0.8, rk.s]} color={rk.c} />
+          <Vox position={[rk.s * 0.2, rk.s * 0.3, rk.s * 0.1]} args={[rk.s * 0.6, rk.s * 0.5, rk.s * 0.7]} color={rk.c} />
+        </group>
+      ))}
+      {data.tallGrass.map((g, i) => (
+        <group key={`g${i}`} position={[g.x, 0, g.z]}>
+          <Vox position={[-0.04, g.h / 2, 0]} args={[0.04, g.h, 0.04]} color={g.c} />
+          <Vox position={[0.04, g.h * 0.45, 0.03]} args={[0.04, g.h * 0.9, 0.04]} color={g.c} />
+          <Vox position={[0, g.h * 0.4, -0.04]} args={[0.04, g.h * 0.8, 0.04]} color={g.c} />
+        </group>
+      ))}
+      {data.trees.map((tr, i) => (
+        <PixelTree key={`t${i}`} position={[tr.x, -0.1, tr.z]} leafColor={tr.lc} trunkColor={tr.tc} />
+      ))}
+    </group>
+  )
+}
+
 function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
   return (
     <group>
@@ -2701,6 +2796,9 @@ function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
       <PixelTree position={[-22, -0.1, 0]} leafColor="#409838" />
       <PixelTree position={[22, -0.1, 0]} leafColor="#389030" />
       <PixelTree position={[0, -0.1, 22]} trunkColor="#604020" leafColor="#409838" />
+
+      {/* Exterior vegetation — scattered naturally using seeded random */}
+      <ExteriorVegetation />
 
       {/* Cows grazing outside the fence */}
       <PixelCow position={[-28, 0, 8]} facing={0.5} />
