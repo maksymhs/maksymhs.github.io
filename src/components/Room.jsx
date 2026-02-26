@@ -2221,7 +2221,7 @@ const NPC_DIALOGUES = {
   ],
 }
 
-function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear }) {
+function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear, npcInteractRef }) {
   const headRef = useRef()
   const bodyRef = useRef()
   const bubbleRef = useRef()
@@ -2316,8 +2316,9 @@ function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear }
     setBubbleText(dialogues[nextIdx])
   }
 
-  // Keep advanceDialogue ref up to date for E key
+  // Keep advanceDialogue ref up to date for E key and mobile tap
   advanceDialogue.current = cycleDialogue
+  if (npcInteractRef) npcInteractRef.current = cycleDialogue
 
   // E key to interact
   useEffect(() => {
@@ -2457,7 +2458,7 @@ function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear }
   )
 }
 
-function Outdoor({ view, playerRef, catRef, onNpcNear }) {
+function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
   return (
     <group>
       <Grass />
@@ -2469,7 +2470,7 @@ function Outdoor({ view, playerRef, catRef, onNpcNear }) {
 
       {/* Garden furniture */}
       <GardenBench position={[-8, 0, 6]} rotation={[0, Math.PI / 4, 0]} />
-      <NPCCharacter position={[-8, 0.12, 6]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} onNpcNear={onNpcNear} />
+      <NPCCharacter position={[-8, 0.12, 6]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} onNpcNear={onNpcNear} npcInteractRef={npcInteractRef} />
       <GardenBench position={[10, 0, -8]} rotation={[0, -Math.PI / 3, 0]} />
       <GardenBench position={[8, 0, 12]} rotation={[0, Math.PI, 0]} />
 
@@ -2543,7 +2544,7 @@ function Outdoor({ view, playerRef, catRef, onNpcNear }) {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef, onNpcNear }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef, onNpcNear, npcInteractRef }) {
   return (
     <group>
       <Floor />
@@ -2577,7 +2578,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <WallArt onGithubClick={onGithubFrameClick} onLinkedinClick={onLinkedinFrameClick} onBack={onBack} view={view} />
       <Lamp />
       <Cat onClick={onCatClick} catRef={catRef} view={view} />
-      <Outdoor view={view} playerRef={playerRef} catRef={catRef} onNpcNear={onNpcNear} />
+      <Outdoor view={view} playerRef={playerRef} catRef={catRef} onNpcNear={onNpcNear} npcInteractRef={npcInteractRef} />
     </group>
   )
 }

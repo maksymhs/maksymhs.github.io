@@ -27,7 +27,7 @@ const WALK_CAM = { position: [0, 2.5, 7], target: [0, 1, 4.5] }
 
 const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM, sleep: SLEEP_CAM, sofa: SOFA_CAM, walk: WALK_CAM }
 
-function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef }) {
+function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef, isMobile }) {
   const animating = useRef(false)
   const targetPos = useRef(new THREE.Vector3())
   const targetLook = useRef(new THREE.Vector3())
@@ -58,8 +58,8 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef 
     if (view === 'walk' && playerRef?.current) {
       const cp = playerRef.current.position
       const ry = playerRef.current.rotation.y
-      const behindDist = 2.5
-      const camHeight = 1.8
+      const behindDist = isMobile ? 4 : 2.5
+      const camHeight = isMobile ? 2.5 : 1.8
 
       if (smoothHeading.current === null) smoothHeading.current = ry
       let diff = ry - smoothHeading.current
@@ -94,8 +94,8 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef 
     if (view === 'outdoor' && catRef?.current) {
       const cp = catRef.current.position
       const ry = catRef.current.rotation.y
-      const behindDist = 2.2
-      const camHeight = 1.2
+      const behindDist = isMobile ? 3.5 : 2.2
+      const camHeight = isMobile ? 2.0 : 1.2
 
       // Smooth the heading for camera orbit
       if (smoothHeading.current === null) smoothHeading.current = ry
@@ -218,15 +218,6 @@ function GameDPad() {
         </div>
       </div>
 
-      {/* Exit button — top-left */}
-      <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 200, pointerEvents: 'auto' }}>
-        <button
-          style={{ ...catBtn, width: 'auto', height: 'auto', padding: '10px 18px', borderRadius: '12px', fontSize: '11px', fontFamily: "'Press Start 2P', monospace" }}
-          {...tapKey('Escape')}
-        >
-          ← EXIT
-        </button>
-      </div>
     </>
   )
 }
@@ -267,15 +258,6 @@ function CatDPad() {
         </div>
       </div>
 
-      {/* Exit button — top-left */}
-      <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 200, pointerEvents: 'auto' }}>
-        <button
-          style={{ ...catBtn, width: 'auto', height: 'auto', padding: '10px 18px', borderRadius: '12px', fontSize: '11px', fontFamily: "'Press Start 2P', monospace" }}
-          {...tapKey('Escape')}
-        >
-          ← EXIT
-        </button>
-      </div>
     </>
   )
 }
@@ -292,6 +274,7 @@ export default function App() {
   const playerRef = useRef()
   const isMobile = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
   const [npcNear, setNpcNear] = useState(false)
+  const npcInteractCb = useRef(null)
 
   const handleBookshelfClick = useCallback(() => {
     setView('bookshelf')
@@ -366,30 +349,6 @@ export default function App() {
   return (
     <>
       <div className="canvas-container">
-        {view !== 'default' && (
-          <button
-            onClick={handleBack}
-            style={{
-              position: 'absolute',
-              top: '20px',
-              left: '20px',
-              zIndex: 10,
-              padding: '10px 20px',
-              background: 'rgba(0,0,0,0.6)',
-              color: 'white',
-              border: '2px solid rgba(255,255,255,0.3)',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontFamily: 'monospace',
-              backdropFilter: 'blur(4px)',
-            }}
-            onMouseEnter={(e) => (e.target.style.background = 'rgba(0,0,0,0.8)')}
-            onMouseLeave={(e) => (e.target.style.background = 'rgba(0,0,0,0.6)')}
-          >
-            ← Volver
-          </button>
-        )}
         <Canvas
           shadows
           camera={{ position: [0, 2.5, 2.8], fov: 55 }}
@@ -423,11 +382,11 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} onNpcNear={setNpcNear} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} onNpcNear={setNpcNear} npcInteractRef={npcInteractCb} />
             <Character position={[0, 0, -0.6]} seated view={view} playerRef={playerRef} catRef={catRef} />
           </Suspense>
 
-          <CameraAnimator view={view} controlsRef={controlsRef} catRef={catRef} playerRef={playerRef} />
+          <CameraAnimator view={view} controlsRef={controlsRef} catRef={catRef} playerRef={playerRef} isMobile={isMobile} />
 
           <OpenBook book={selectedBook} onClose={handleCloseBook} />
           <FloatingScrolls open={chestOpen} view={view} onCardSelect={setCardSelected} />
@@ -450,9 +409,39 @@ export default function App() {
         </Canvas>
       </div>
 
+      {view !== 'default' && (
+        <button
+          onClick={handleBack}
+          style={{
+            position: 'fixed',
+            top: '16px',
+            left: '16px',
+            zIndex: 10,
+            padding: '8px 16px',
+            background: 'rgba(30,40,50,0.75)',
+            color: '#fff',
+            border: '2px solid rgba(100,140,180,0.5)',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '11px',
+            fontFamily: "'Press Start 2P', monospace",
+            backdropFilter: 'blur(4px)',
+            letterSpacing: '1px',
+            textTransform: 'uppercase',
+            WebkitAppearance: 'none',
+            appearance: 'none',
+            outline: 'none',
+            boxShadow: 'none',
+            WebkitTapHighlightColor: 'transparent',
+          }}
+          onMouseEnter={(e) => (e.target.style.background = 'rgba(30,40,50,0.9)')}
+          onMouseLeave={(e) => (e.target.style.background = 'rgba(30,40,50,0.75)')}
+        >
+          ← {lang === 'es' ? 'Salir' : lang === 'ru' ? 'Выход' : 'Exit'}
+        </button>
+      )}
       <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
       <FloatingScrollsOverlay show={!!selectedBook} onClose={handleCloseBook} />
-      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin' || view === 'cat' || view === 'controller' || view === 'dance' || view === 'outdoor' || view === 'sleep' || view === 'sofa' || view === 'walk'} onClose={handleBack} />
       {(view === 'github' || view === 'linkedin') && (
         <div
           onClick={() => {
@@ -474,26 +463,36 @@ export default function App() {
       )}
       {npcNear && (view === 'outdoor' || view === 'walk') && (
         <button
-          disabled
+          onClick={isMobile ? () => npcInteractCb.current?.() : undefined}
           style={{
-            position: 'absolute',
-            top: '20px',
+            position: 'fixed',
+            top: '16px',
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 10,
-            padding: '10px 20px',
-            background: 'rgba(0,0,0,0.6)',
-            color: 'white',
-            border: '2px solid rgba(255,255,255,0.3)',
-            borderRadius: '8px',
-            cursor: 'default',
-            fontSize: '14px',
-            fontFamily: 'monospace',
+            padding: '8px 16px',
+            background: 'rgba(30,40,50,0.75)',
+            color: '#fff',
+            border: '2px solid rgba(100,140,180,0.5)',
+            borderRadius: '6px',
+            cursor: isMobile ? 'pointer' : 'default',
+            fontSize: '11px',
+            fontFamily: "'Press Start 2P', monospace",
             backdropFilter: 'blur(4px)',
-            opacity: 1,
+            letterSpacing: '1px',
+            textTransform: 'uppercase',
+            pointerEvents: isMobile ? 'auto' : 'none',
+            WebkitAppearance: 'none',
+            appearance: 'none',
+            outline: 'none',
+            boxShadow: 'none',
+            WebkitTapHighlightColor: 'transparent',
           }}
         >
-          E → {lang === 'es' ? 'Interactuar' : lang === 'ru' ? 'Взаимодействие' : 'Interact'}
+          {isMobile
+            ? (lang === 'es' ? '💬 Hablar' : lang === 'ru' ? '💬 Говорить' : '💬 Talk')
+            : `E → ${lang === 'es' ? 'Hablar' : lang === 'ru' ? 'Говорить' : 'Talk'}`
+          }
         </button>
       )}
       {isMobile && gameActive && <GameDPad />}
