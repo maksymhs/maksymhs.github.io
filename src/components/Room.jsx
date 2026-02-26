@@ -2155,11 +2155,11 @@ function PixelCow({ position, color = '#f0f0f0', spotColor = '#303030', facing =
         {/* Nostrils */}
         <Vox position={[-0.1, -0.08, 0.6]} args={[0.06, 0.06, 0.04]} color="#604030" />
         <Vox position={[0.1, -0.08, 0.6]} args={[0.06, 0.06, 0.04]} color="#604030" />
-        {/* Eyes - white sclera + black pupil */}
-        <Vox position={[-0.24, 0.2, 0.44]} args={[0.16, 0.16, 0.02]} color="#ffffff" />
-        <Vox position={[0.24, 0.2, 0.44]} args={[0.16, 0.16, 0.02]} color="#ffffff" />
-        <Vox position={[-0.24, 0.19, 0.46]} args={[0.09, 0.09, 0.02]} color="#101010" />
-        <Vox position={[0.24, 0.19, 0.46]} args={[0.09, 0.09, 0.02]} color="#101010" />
+        {/* Eyes - white sclera + black pupil (protruding from face) */}
+        <Vox position={[-0.22, 0.18, 0.52]} args={[0.18, 0.18, 0.08]} color="#ffffff" />
+        <Vox position={[0.22, 0.18, 0.52]} args={[0.18, 0.18, 0.08]} color="#ffffff" />
+        <Vox position={[-0.22, 0.17, 0.57]} args={[0.10, 0.10, 0.04]} color="#101010" />
+        <Vox position={[0.22, 0.17, 0.57]} args={[0.10, 0.10, 0.04]} color="#101010" />
         {/* Ears */}
         <Vox position={[-0.4, 0.3, 0.16]} args={[0.2, 0.12, 0.16]} color={color} />
         <Vox position={[0.4, 0.3, 0.16]} args={[0.2, 0.12, 0.16]} color={color} />
