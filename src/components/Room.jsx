@@ -1089,7 +1089,7 @@ function Cat({ onClick, catRef: externalRef, view }) {
       if (e.key === 'ArrowDown' || e.key === 's') keysRef.current.down = true
       if (e.key === 'ArrowLeft' || e.key === 'a') keysRef.current.left = true
       if (e.key === 'ArrowRight' || e.key === 'd') keysRef.current.right = true
-      if (e.key === ' ') { e.preventDefault(); keysRef.current.space = true }
+      if (e.key === ' ' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); keysRef.current.space = true }
     }
     const onKeyUp = (e) => {
       if (e.key === 'ArrowUp' || e.key === 'w') keysRef.current.up = false

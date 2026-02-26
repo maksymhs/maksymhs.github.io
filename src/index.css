@@ -34,8 +34,9 @@ html, body, #root {
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  max-width: 520px;
-  min-width: 240px;
+  max-width: 620px;
+  min-width: 300px;
+  width: 90%;
   pointer-events: none;
   animation: bubbleIn 0.2s steps(3);
 }
