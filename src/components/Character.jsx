@@ -1027,7 +1027,12 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
         jumpVel.current = 0
         onGround.current = true
       }
-      groupRef.current.position.y = -0.27 + jumpY.current
+      // Water sink — pond at center [15, -15], size 7x5.5
+      const px = groupRef.current.position.x
+      const pz = groupRef.current.position.z
+      const inWater = px > 11.5 && px < 18.5 && pz > -17.75 && pz < -12.25
+      const waterSink = (inWater && jumpY.current === 0) ? 0.18 : 0
+      groupRef.current.position.y = -0.27 + jumpY.current - waterSink
 
       const ws = 8
       const legAmp = moving ? 0.25 + spd * 2 : 0
@@ -1091,6 +1096,12 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
             catMoving = catSpd > 0.005
           }
         }
+
+        // Water sink for cat — pond center [15, -15], size ~7x5.5
+        const catX = catRef.current.position.x
+        const catZ = catRef.current.position.z
+        const catInWater = catX > 11.5 && catX < 18.5 && catZ > -17.75 && catZ < -12.25
+        catRef.current.position.y += ((catInWater ? -0.12 : 0) - catRef.current.position.y) * 0.15
 
         // Animate cat legs
         const legSpeed = catMoving ? (8 + catSpd * 80) : 3

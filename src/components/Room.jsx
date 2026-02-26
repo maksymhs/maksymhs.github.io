@@ -1019,8 +1019,6 @@ const groundColliders = [
   [-8.6, -7.4, 5.4, 6.6],
   [9.4, 10.6, -8.6, -7.4],
   [7.4, 8.6, 11.4, 12.6],
-  // Pond
-  [10.2, 13.8, 4.7, 7.3],
   // Vegetable garden fence (center -15, -15)
   [-17.8, -12.2, -17.25, -17.05],  // back fence
   [-17.8, -15.5, -12.95, -12.75],  // front fence left
@@ -1302,6 +1300,14 @@ function Cat({ onClick, catRef: externalRef, view }) {
           vel.fz = 0
           vel.grounded = true
         }
+      }
+
+      // Water sink — pond center [15, -15], size ~7x5.5
+      if (vel.grounded) {
+        const cwx = catRef.current.position.x
+        const cwz = catRef.current.position.z
+        const catInPond = cwx > 11.5 && cwx < 18.5 && cwz > -17.75 && cwz < -12.25
+        catRef.current.position.y += ((catInPond ? -0.12 : 0) - catRef.current.position.y) * 0.15
       }
 
       // Leg animation
@@ -2760,6 +2766,50 @@ function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear, 
   )
 }
 
+function FencedPond({ position = [0, 0, 0] }) {
+  return (
+    <group position={position}>
+      {/* Pond basin */}
+      <Vox position={[0, -0.06, 0]} args={[7.0, 0.04, 5.5]} color="#6b5a40" />
+      {/* Water */}
+      <Vox position={[0, -0.03, 0]} args={[6.5, 0.04, 5.0]} color="#60b0d8" />
+      <Vox position={[0.3, -0.02, 0.15]} args={[5.2, 0.04, 3.8]} color="#70c0e8" />
+      <Vox position={[-0.4, -0.01, -0.3]} args={[3.5, 0.04, 2.6]} color="#80d0f0" />
+
+      {/* Rocks around */}
+      <Vox position={[-3.0, 0.06, -1.8]} args={[0.5, 0.18, 0.4]} color="#909090" />
+      <Vox position={[3.0, 0.05, 1.2]} args={[0.4, 0.14, 0.45]} color="#a0a0a0" />
+      <Vox position={[-1.8, 0.04, 2.2]} args={[0.45, 0.12, 0.3]} color="#888888" />
+      <Vox position={[2.3, 0.06, -2.0]} args={[0.35, 0.16, 0.4]} color="#959595" />
+      <Vox position={[0.8, 0.05, 2.4]} args={[0.4, 0.14, 0.3]} color="#8a8a8a" />
+      <Vox position={[-2.8, 0.04, 0.5]} args={[0.3, 0.12, 0.45]} color="#9a9a9a" />
+      <Vox position={[3.2, 0.05, -0.5]} args={[0.35, 0.13, 0.3]} color="#929292" />
+      <Vox position={[-1.0, 0.06, -2.4]} args={[0.4, 0.15, 0.35]} color="#989898" />
+
+      {/* Lily pads */}
+      <Vox position={[-0.8, 0.01, -0.5]} args={[0.3, 0.02, 0.3]} color="#48a838" />
+      <Vox position={[1.0, 0.01, 0.8]} args={[0.25, 0.02, 0.25]} color="#40a030" />
+      <Vox position={[-1.2, 0.01, 1.0]} args={[0.28, 0.02, 0.28]} color="#50b040" />
+      <Vox position={[0.3, 0.01, -1.0]} args={[0.22, 0.02, 0.22]} color="#48b040" />
+      <Vox position={[1.8, 0.01, -0.3]} args={[0.26, 0.02, 0.26]} color="#40a830" />
+      {/* Lily flowers */}
+      <Vox position={[-0.8, 0.06, -0.5]} args={[0.12, 0.08, 0.12]} color="#f0b0d0" />
+      <Vox position={[-0.8, 0.08, -0.5]} args={[0.06, 0.06, 0.06]} color="#f0d060" />
+      <Vox position={[1.0, 0.06, 0.8]} args={[0.1, 0.08, 0.1]} color="#f0c0e0" />
+      <Vox position={[1.0, 0.08, 0.8]} args={[0.05, 0.05, 0.05]} color="#f0d060" />
+
+      {/* Reeds */}
+      {[[2.8, -1.2], [2.9, -1.0], [2.7, -1.3], [-2.4, 1.6], [-2.3, 1.7], [-2.5, 1.5], [3.0, 0.5], [-2.6, -1.0]].map(([rx, rz], i) => (
+        <group key={`reed${i}`} position={[rx, 0, rz]}>
+          <Vox position={[0, 0.2, 0]} args={[0.03, 0.4, 0.03]} color="#507030" />
+          <Vox position={[0, 0.42, 0]} args={[0.05, 0.08, 0.05]} color="#806040" />
+        </group>
+      ))}
+
+    </group>
+  )
+}
+
 function VegetableGarden({ position = [0, 0, 0] }) {
   return (
     <group position={position}>
@@ -2964,8 +3014,8 @@ function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
       {/* Vegetable garden in front of house */}
       <VegetableGarden position={[-15, 0, -15]} />
 
-      {/* Pond */}
-      <Pond position={[12, 0, 6]} />
+      {/* Fenced pond on opposite side */}
+      <FencedPond position={[15, 0, -15]} />
 
       {/* Clouds spread across big sky */}
       <PixelCloud position={[-4, 7, -14]} />
