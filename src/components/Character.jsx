@@ -831,9 +831,12 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
   const { camera } = useThree()
 
   // WASD/Arrow key input
-  const keysRef = useRef({ up: false, down: false, left: false, right: false })
+  const keysRef = useRef({ up: false, down: false, left: false, right: false, space: false })
   const headingRef = useRef(0)
   const speedRef = useRef(0)
+  const jumpVel = useRef(0)
+  const jumpY = useRef(0)
+  const onGround = useRef(true)
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -841,12 +844,14 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
       if (e.key === 'ArrowDown' || e.key === 's') keysRef.current.down = true
       if (e.key === 'ArrowLeft' || e.key === 'a') keysRef.current.left = true
       if (e.key === 'ArrowRight' || e.key === 'd') keysRef.current.right = true
+      if (e.key === ' ' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); keysRef.current.space = true }
     }
     const onKeyUp = (e) => {
       if (e.key === 'ArrowUp' || e.key === 'w') keysRef.current.up = false
       if (e.key === 'ArrowDown' || e.key === 's') keysRef.current.down = false
       if (e.key === 'ArrowLeft' || e.key === 'a') keysRef.current.left = false
       if (e.key === 'ArrowRight' || e.key === 'd') keysRef.current.right = false
+      if (e.key === ' ') keysRef.current.space = false
     }
     window.addEventListener('keydown', onKeyDown)
     window.addEventListener('keyup', onKeyUp)
@@ -1010,7 +1015,19 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
         groupRef.current.position.x = nx
         groupRef.current.position.z = nz
       }
-      groupRef.current.position.y = -0.27
+      // Jump
+      if (keys.space && onGround.current) {
+        jumpVel.current = 0.12
+        onGround.current = false
+      }
+      jumpVel.current -= 0.006 // gravity
+      jumpY.current += jumpVel.current
+      if (jumpY.current <= 0) {
+        jumpY.current = 0
+        jumpVel.current = 0
+        onGround.current = true
+      }
+      groupRef.current.position.y = -0.27 + jumpY.current
 
       const ws = 8
       const legAmp = moving ? 0.25 + spd * 2 : 0
