@@ -663,12 +663,6 @@ export default function GameCatRunner() {
   const gameState = useRef('idle')
   const livesRef = useRef(MAX_LIVES)
 
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') window.location.href = '/' }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
-
   const handleStart = useCallback(() => {
     setScore(0)
     setLives(MAX_LIVES)
@@ -677,6 +671,15 @@ export default function GameCatRunner() {
     setStarted(true)
     gameState.current = 'playing'
   }, [])
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') { window.location.href = '/'; return }
+      if (!started && splashDone && gameState.current === 'idle') handleStart()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [started, splashDone, handleStart])
 
   const handleHit = useCallback(() => {
     livesRef.current -= 1
@@ -712,7 +715,7 @@ export default function GameCatRunner() {
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#87ceeb', position: 'relative' }}>
-      <Canvas shadows camera={{ position: [0, 4, 8], fov: 55 }} gl={{ antialias: false }}>
+      <Canvas shadows camera={{ position: isMobile ? [0, 6, 12] : [0, 4, 8], fov: isMobile ? 60 : 55 }} gl={{ antialias: false }}>
         <color attach="background" args={['#87ceeb']} />
         {started ? (
           <GameScene
