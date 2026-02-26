@@ -1021,6 +1021,12 @@ const groundColliders = [
   [7.4, 8.6, 11.4, 12.6],
   // Pond
   [10.2, 13.8, 4.7, 7.3],
+  // Vegetable garden fence (center -15, -15)
+  [-17.8, -12.2, -17.25, -17.05],  // back fence
+  [-17.8, -15.5, -12.95, -12.75],  // front fence left
+  [-14.5, -12.2, -12.95, -12.75],  // front fence right
+  [-17.8, -17.6, -17.25, -12.75],  // left fence
+  [-12.4, -12.2, -17.25, -12.75],  // right fence
 ]
 
 function collideList(x, z, prevX, prevZ, list) {
@@ -2754,6 +2760,94 @@ function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear, 
   )
 }
 
+function VegetableGarden({ position = [0, 0, 0] }) {
+  return (
+    <group position={position}>
+      {/* Soil bed frame */}
+      <Vox position={[0, -0.02, 0]} args={[5.2, 0.08, 4.2]} color="#8b6240" />
+      {/* Soil */}
+      <Vox position={[0, 0.03, 0]} args={[5.0, 0.02, 4.0]} color="#7a5530" />
+
+      {/* Row markers — wooden edges */}
+      {[-1.5, -0.5, 0.5, 1.5].map((rz, i) => (
+        <Vox key={`row${i}`} position={[0, 0.0, rz]} args={[4.8, 0.04, 0.06]} color="#5a3a1a" />
+      ))}
+
+      {/* Row 1: Tomato plants with stakes (z = -1.5) */}
+      {[-2, -1, 0, 1, 2].map((rx, i) => (
+        <group key={`tom${i}`} position={[rx, 0.18, -1.5]}>
+          {/* Stake */}
+          <Vox position={[0, 0.35, 0]} args={[0.04, 0.7, 0.04]} color="#a08050" />
+          {/* Leaves */}
+          <Vox position={[0.06, 0.3, 0.06]} args={[0.2, 0.15, 0.2]} color="#308828" />
+          <Vox position={[-0.05, 0.4, -0.04]} args={[0.18, 0.12, 0.18]} color="#38a030" />
+          {/* Tomatoes */}
+          <Vox position={[0.08, 0.22, 0.08]} args={[0.1, 0.1, 0.1]} color="#e03030" />
+          <Vox position={[-0.06, 0.35, -0.06]} args={[0.08, 0.08, 0.08]} color="#d04020" />
+          {i % 2 === 0 && <Vox position={[0.02, 0.45, 0.04]} args={[0.07, 0.07, 0.07]} color="#f05040" />}
+        </group>
+      ))}
+
+      {/* Row 2: Carrots (z = -0.5) */}
+      {[-2.2, -1.5, -0.8, -0.1, 0.6, 1.3, 2.0].map((rx, i) => (
+        <group key={`car${i}`} position={[rx, 0.18, -0.5]}>
+          {/* Green tops */}
+          <Vox position={[0, 0.12, 0]} args={[0.08, 0.2, 0.08]} color="#40a030" />
+          <Vox position={[0.03, 0.14, 0.02]} args={[0.06, 0.16, 0.06]} color="#38a828" />
+          {/* Orange carrot peeking out */}
+          <Vox position={[0, 0.02, 0]} args={[0.08, 0.06, 0.08]} color="#f08020" />
+        </group>
+      ))}
+
+      {/* Row 3: Cabbages/lettuce (z = 0.5) */}
+      {[-1.8, -0.6, 0.6, 1.8].map((rx, i) => (
+        <group key={`cab${i}`} position={[rx, 0.18, 0.5]}>
+          <Vox position={[0, 0.1, 0]} args={[0.3, 0.2, 0.3]} color="#48b838" />
+          <Vox position={[0, 0.16, 0]} args={[0.22, 0.12, 0.22]} color="#60c848" />
+          <Vox position={[0, 0.2, 0]} args={[0.14, 0.08, 0.14]} color="#70d858" />
+        </group>
+      ))}
+
+      {/* Row 4: Pumpkins (z = 1.5) */}
+      {[-1.5, 0, 1.5].map((rx, i) => (
+        <group key={`pmp${i}`} position={[rx, 0.18, 1.5]}>
+          <Vox position={[0, 0.12, 0]} args={[0.3, 0.22, 0.3]} color="#e08820" />
+          <Vox position={[0, 0.18, 0]} args={[0.25, 0.16, 0.25]} color="#d07818" />
+          {/* Stem */}
+          <Vox position={[0, 0.26, 0]} args={[0.06, 0.08, 0.06]} color="#507020" />
+          {/* Vine */}
+          <Vox position={[0.15, 0.18, 0.1]} args={[0.15, 0.03, 0.03]} color="#408028" />
+        </group>
+      ))}
+
+      {/* Small fence around garden */}
+      {/* Front & Back */}
+      <Vox position={[0, 0.3, -2.15]} args={[5.4, 0.06, 0.06]} color="#c0a060" />
+      <Vox position={[0, 0.45, -2.15]} args={[5.4, 0.06, 0.06]} color="#c0a060" />
+      <Vox position={[-1.6, 0.3, 2.15]} args={[2.2, 0.06, 0.06]} color="#c0a060" />
+      <Vox position={[-1.6, 0.45, 2.15]} args={[2.2, 0.06, 0.06]} color="#c0a060" />
+      <Vox position={[1.6, 0.3, 2.15]} args={[2.2, 0.06, 0.06]} color="#c0a060" />
+      <Vox position={[1.6, 0.45, 2.15]} args={[2.2, 0.06, 0.06]} color="#c0a060" />
+      {/* Left & Right */}
+      <Vox position={[-2.7, 0.3, 0]} args={[0.06, 0.06, 4.36]} color="#c0a060" />
+      <Vox position={[-2.7, 0.45, 0]} args={[0.06, 0.06, 4.36]} color="#c0a060" />
+      <Vox position={[2.7, 0.3, 0]} args={[0.06, 0.06, 4.36]} color="#c0a060" />
+      <Vox position={[2.7, 0.45, 0]} args={[0.06, 0.06, 4.36]} color="#c0a060" />
+      {/* Posts */}
+      {[[-2.7, -2.15], [2.7, -2.15], [-2.7, 2.15], [2.7, 2.15], [0, -2.15], [-0.5, 2.15], [0.5, 2.15], [-2.7, 0], [2.7, 0]].map(([px, pz], i) => (
+        <Vox key={`fp${i}`} position={[px, 0.28, pz]} args={[0.08, 0.56, 0.08]} color="#b09050" />
+      ))}
+
+      {/* Watering can */}
+      <group position={[2.9, 0.18, -1.8]}>
+        <Vox position={[0, 0.1, 0]} args={[0.2, 0.2, 0.14]} color="#6090c0" />
+        <Vox position={[0.12, 0.18, 0]} args={[0.06, 0.06, 0.04]} color="#5080b0" />
+        <Vox position={[0.16, 0.15, 0]} args={[0.1, 0.03, 0.03]} color="#5080b0" />
+      </group>
+    </group>
+  )
+}
+
 function ExteriorVegetation() {
   const data = useMemo(() => {
     const rng = (seed) => { let s = seed; return () => { s = (s * 16807) % 2147483647; return s / 2147483647 } }
@@ -2866,6 +2960,9 @@ function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
       <NPCCharacter position={[-8, 0.12, 6]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} onNpcNear={onNpcNear} npcInteractRef={npcInteractRef} />
       <GardenBench position={[10, 0, -8]} rotation={[0, -Math.PI / 3, 0]} />
       <GardenBench position={[8, 0, 12]} rotation={[0, Math.PI, 0]} />
+
+      {/* Vegetable garden in front of house */}
+      <VegetableGarden position={[-15, 0, -15]} />
 
       {/* Pond */}
       <Pond position={[12, 0, 6]} />

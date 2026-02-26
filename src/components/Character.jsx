@@ -1009,7 +1009,7 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
         let nx = prevX + Math.sin(h) * spd
         let nz = prevZ + Math.cos(h) * spd
         // Use same collision system as the cat
-        ;[nx, nz] = outdoorCollide(nx, nz, prevX, prevZ, false)
+        ;[nx, nz] = outdoorCollide(nx, nz, prevX, prevZ, jumpY.current > 0.15)
         nx = Math.max(-24, Math.min(24, nx))
         nz = Math.max(-24, Math.min(24, nz))
         groupRef.current.position.x = nx
