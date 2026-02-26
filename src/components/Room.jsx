@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react'
 import { useFrame, useLoader, useThree } from '@react-three/fiber'
-import { Text } from '@react-three/drei'
+import { Text, Billboard } from '@react-three/drei'
 import * as THREE from 'three'
 import { SnakeGame, PongGame, TetrisGame } from './MiniGames.jsx'
 import { lang } from '../i18n'
@@ -2176,7 +2176,252 @@ function ExteriorWalls() {
   )
 }
 
-function Outdoor({ view }) {
+const NPC_DIALOGUES = {
+  en: [
+    "Hey! You must be Maksym's visitor. He's a great developer!",
+    "Did you know he has 8+ years of experience with Java?",
+    "Check out his bookshelf inside — each book is a real project!",
+    "Try the game console on his desk. Snake is my favorite!",
+    "His cat Michi is quite the character... always causing trouble!",
+    "Maksym built this whole 3D room himself. Impressive, right?",
+    "If you want to hire him, leave him a message inside!",
+    "He speaks 4 languages! Russian, Ukrainian, Spanish and English.",
+  ],
+  es: [
+    "¡Ey! Debes ser la visita de Maksym. ¡Es un gran desarrollador!",
+    "¿Sabías que tiene más de 8 años de experiencia con Java?",
+    "Mira su estantería dentro — ¡cada libro es un proyecto real!",
+    "Prueba la consola de juegos en su escritorio. ¡Snake es mi favorito!",
+    "Su gato Michi es todo un personaje... ¡siempre liando alguna!",
+    "Maksym construyó toda esta habitación 3D él solo. Impresionante, ¿no?",
+    "Si quieres contratarle, ¡déjale un mensaje dentro!",
+    "¡Habla 4 idiomas! Ruso, ucraniano, español e inglés.",
+  ],
+  ru: [
+    "Привет! Ты, наверное, гость Максима. Он отличный разработчик!",
+    "Знаешь, у него 8+ лет опыта с Java?",
+    "Загляни на книжную полку внутри — каждая книга это реальный проект!",
+    "Попробуй игровую приставку на столе. Snake — моя любимая!",
+    "Его кот Мичи тот ещё персонаж... вечно что-то вытворяет!",
+    "Максим построил всю эту 3D-комнату сам. Впечатляет, правда?",
+    "Хочешь его нанять? Оставь сообщение внутри!",
+    "Он говорит на 4 языках! Русский, украинский, испанский и английский.",
+  ],
+}
+
+function NPCCharacter({ position, rotation, playerRef, catRef, view }) {
+  const headRef = useRef()
+  const bodyRef = useRef()
+  const bubbleRef = useRef()
+  const wasNear = useRef(false)
+  const topicIdx = useRef(0)
+  const lineIdx = useRef(0)
+  const viewRef = useRef(view)
+  const [bubbleText, setBubbleText] = useState(null)
+  const dialogues = NPC_DIALOGUES[lang] || NPC_DIALOGUES.en
+  const _targetWorldPos = useMemo(() => new THREE.Vector3(), [])
+  const _npcWorldPos = useMemo(() => new THREE.Vector3(), [])
+  const _localTarget = useMemo(() => new THREE.Vector3(), [])
+
+  // Keep viewRef always in sync
+  useEffect(() => { viewRef.current = view }, [view])
+
+  useFrame(() => {
+    if (!bodyRef.current) return
+    const v = viewRef.current
+    const canTalk = v === 'outdoor' || v === 'walk'
+    const isOutdoor = canTalk || v === 'cat'
+
+    // Hide bubble immediately if not in walk/outdoor
+    if (bubbleRef.current) {
+      bubbleRef.current.visible = canTalk && wasNear.current && !!bubbleText
+    }
+
+    if (!isOutdoor) {
+      wasNear.current = false
+      if (headRef.current) {
+        headRef.current.rotation.y *= 0.9
+        headRef.current.rotation.x *= 0.9
+      }
+      return
+    }
+
+    // Find closest target for head tracking, but only player for dialogue
+    bodyRef.current.getWorldPosition(_npcWorldPos)
+    let closestDist = Infinity
+    let targetPos = null
+    let playerDist = Infinity
+
+    if (playerRef?.current) {
+      const px = playerRef.current.position.x
+      const pz = playerRef.current.position.z
+      playerDist = Math.sqrt((px - _npcWorldPos.x) ** 2 + (pz - _npcWorldPos.z) ** 2)
+      if (playerDist < closestDist) { closestDist = playerDist; targetPos = playerRef.current.position }
+    }
+    if (catRef?.current) {
+      const cx = catRef.current.position.x
+      const cz = catRef.current.position.z
+      const d = Math.sqrt((cx - _npcWorldPos.x) ** 2 + (cz - _npcWorldPos.z) ** 2)
+      if (d < closestDist) { closestDist = d; targetPos = catRef.current.position }
+    }
+
+    // Dialogue only triggered by player proximity
+    const isNear = playerDist < 3
+
+    // Head tracks closest target (player or cat) using worldToLocal
+    if (headRef.current && targetPos && closestDist < 8) {
+      _targetWorldPos.set(targetPos.x, (targetPos.y || 0) + 0.8, targetPos.z)
+      _localTarget.copy(_targetWorldPos)
+      bodyRef.current.worldToLocal(_localTarget)
+      const targetY = THREE.MathUtils.clamp(Math.atan2(_localTarget.x, _localTarget.z), -1.4, 1.4)
+      const targetX = THREE.MathUtils.clamp(-Math.atan2(_localTarget.y - 1.18, Math.sqrt(_localTarget.x ** 2 + _localTarget.z ** 2)), -0.5, 0.5)
+      headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, targetY, 0.12)
+      headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, targetX, 0.1)
+    } else if (headRef.current) {
+      headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, 0, 0.06)
+      headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, 0, 0.06)
+    }
+
+    // Dialogue only in walk/outdoor (not cat)
+    if (canTalk && isNear && !wasNear.current) {
+      topicIdx.current = Math.floor(Math.random() * dialogues.length)
+      lineIdx.current = 0
+      setBubbleText(dialogues[topicIdx.current])
+    }
+    wasNear.current = isNear
+  })
+
+  const handleClick = (e) => {
+    e.stopPropagation()
+    if (viewRef.current !== 'outdoor' && viewRef.current !== 'walk') return
+    lineIdx.current = (lineIdx.current + 1) % dialogues.length
+    const nextIdx = (topicIdx.current + lineIdx.current) % dialogues.length
+    setBubbleText(dialogues[nextIdx])
+  }
+
+  return (
+    <group position={position} rotation={rotation || [0, 0, 0]} ref={bodyRef}>
+      <group
+        onClick={handleClick}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        {/* === SEATED NPC — proportional to player character === */}
+        {/* Upper legs (thighs, horizontal on bench) */}
+        <Vox position={[-0.11, 0.32, 0.1]} args={[0.18, 0.16, 0.32]} color="#3060a0" />
+        <Vox position={[0.11, 0.32, 0.1]} args={[0.18, 0.16, 0.32]} color="#3060a0" />
+        {/* Lower legs (hanging down from bench) */}
+        <Vox position={[-0.11, 0.1, 0.26]} args={[0.18, 0.32, 0.18]} color="#3060a0" />
+        <Vox position={[0.11, 0.1, 0.26]} args={[0.18, 0.32, 0.18]} color="#3060a0" />
+        {/* Shoes */}
+        <Vox position={[-0.11, -0.05, 0.3]} args={[0.2, 0.1, 0.26]} color="#505050" />
+        <Vox position={[0.11, -0.05, 0.3]} args={[0.2, 0.1, 0.26]} color="#505050" />
+
+        {/* Torso — green sweater */}
+        <Vox position={[0, 0.64, 0]} args={[0.5, 0.48, 0.32]} color="#408040" />
+        {/* Collar */}
+        <Vox position={[0, 0.86, 0.06]} args={[0.3, 0.06, 0.2]} color="#357035" />
+        {/* Neck */}
+        <Vox position={[0, 0.9, 0]} args={[0.16, 0.06, 0.14]} color="#e8c8a0" />
+
+        {/* Arms resting on legs */}
+        <Vox position={[-0.34, 0.56, 0.06]} args={[0.16, 0.36, 0.16]} color="#408040" />
+        <Vox position={[0.34, 0.56, 0.06]} args={[0.16, 0.36, 0.16]} color="#408040" />
+        {/* Hands */}
+        <Vox position={[-0.34, 0.4, 0.12]} args={[0.12, 0.12, 0.12]} color="#e8c8a0" />
+        <Vox position={[0.34, 0.4, 0.12]} args={[0.12, 0.12, 0.12]} color="#e8c8a0" />
+
+        {/* Head */}
+        <group ref={headRef} position={[0, 1.18, 0]}>
+          <Vox position={[0, 0, 0]} args={[0.5, 0.5, 0.5]} color="#e8c8a0" />
+          {/* Grey hair */}
+          <Vox position={[0, 0.28, 0]} args={[0.54, 0.1, 0.54]} color="#b0b0b0" />
+          <Vox position={[0, 0.08, -0.24]} args={[0.54, 0.4, 0.08]} color="#b0b0b0" />
+          <Vox position={[-0.26, 0.1, 0]} args={[0.06, 0.3, 0.5]} color="#b0b0b0" />
+          <Vox position={[0.26, 0.1, 0]} args={[0.06, 0.3, 0.5]} color="#b0b0b0" />
+          {/* Hat */}
+          <Vox position={[0, 0.36, 0]} args={[0.58, 0.08, 0.58]} color="#704828" />
+          <Vox position={[0, 0.42, 0]} args={[0.42, 0.06, 0.42]} color="#704828" />
+          {/* Eyes */}
+          {[-0.12, 0.12].map((x, i) => (
+            <group key={i} position={[x, 0.02, 0.26]}>
+              <Vox position={[0, 0, 0]} args={[0.12, 0.12, 0.02]} color="#ffffff" />
+              <Vox position={[0.01, -0.01, 0.015]} args={[0.07, 0.07, 0.02]} color="#303030" />
+              <Vox position={[0.03, 0.03, 0.02]} args={[0.03, 0.03, 0.01]} color="#ffffff" />
+            </group>
+          ))}
+          {/* Glasses bridge */}
+          <Vox position={[0, 0.02, 0.27]} args={[0.08, 0.02, 0.02]} color="#808080" />
+          {/* Eyebrows */}
+          <Vox position={[-0.12, 0.1, 0.26]} args={[0.12, 0.03, 0.02]} color="#909090" />
+          <Vox position={[0.12, 0.1, 0.26]} args={[0.12, 0.03, 0.02]} color="#909090" />
+          {/* Nose */}
+          <Vox position={[0, -0.04, 0.27]} args={[0.04, 0.05, 0.02]} color="#d8b890" />
+          {/* Mustache */}
+          <Vox position={[0, -0.1, 0.26]} args={[0.18, 0.04, 0.02]} color="#a0a0a0" />
+          {/* Smile */}
+          <Vox position={[0, -0.15, 0.26]} args={[0.1, 0.03, 0.02]} color="#c08070" />
+        </group>
+      </group>
+
+      {/* 3D Speech bubble above head — visibility controlled by useFrame via bubbleRef */}
+      {bubbleText && (
+        <Billboard position={[0, 2.3, 0]} ref={bubbleRef} visible={false}>
+          <group>
+            {/* Border/shadow */}
+            <mesh position={[0.04, -0.04, -0.01]}>
+              <planeGeometry args={[2.6, 0.8]} />
+              <meshBasicMaterial color="#000000" transparent opacity={0.7} />
+            </mesh>
+            {/* Main bubble bg */}
+            <mesh position={[0, 0, 0]}>
+              <planeGeometry args={[2.6, 0.8]} />
+              <meshBasicMaterial color="#fffff8" />
+            </mesh>
+            {/* Border top */}
+            <mesh position={[0, 0.4, 0.001]}>
+              <planeGeometry args={[2.6, 0.04]} />
+              <meshBasicMaterial color="#408040" />
+            </mesh>
+            {/* Border bottom */}
+            <mesh position={[0, -0.4, 0.001]}>
+              <planeGeometry args={[2.6, 0.04]} />
+              <meshBasicMaterial color="#408040" />
+            </mesh>
+            {/* Border left */}
+            <mesh position={[-1.3, 0, 0.001]}>
+              <planeGeometry args={[0.04, 0.8]} />
+              <meshBasicMaterial color="#408040" />
+            </mesh>
+            {/* Border right */}
+            <mesh position={[1.3, 0, 0.001]}>
+              <planeGeometry args={[0.04, 0.8]} />
+              <meshBasicMaterial color="#408040" />
+            </mesh>
+            {/* Pointer */}
+            <mesh position={[0, -0.46, 0]} rotation={[0, 0, Math.PI]}>
+              <coneGeometry args={[0.08, 0.12, 4]} />
+              <meshBasicMaterial color="#408040" />
+            </mesh>
+            <Text
+              position={[0, 0, 0.01]}
+              fontSize={0.09}
+              maxWidth={2.3}
+              textAlign="center"
+              color="#1a1a2e"
+              anchorX="center"
+              anchorY="middle"
+            >
+              {bubbleText}
+            </Text>
+          </group>
+        </Billboard>
+      )}
+    </group>
+  )
+}
+
+function Outdoor({ view, playerRef, catRef }) {
   return (
     <group>
       <Grass />
@@ -2188,6 +2433,7 @@ function Outdoor({ view }) {
 
       {/* Garden furniture */}
       <GardenBench position={[-8, 0, 6]} rotation={[0, Math.PI / 4, 0]} />
+      <NPCCharacter position={[-8, 0.12, 6]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} />
       <GardenBench position={[10, 0, -8]} rotation={[0, -Math.PI / 3, 0]} />
       <GardenBench position={[8, 0, 12]} rotation={[0, Math.PI, 0]} />
 
@@ -2295,7 +2541,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <WallArt onGithubClick={onGithubFrameClick} onLinkedinClick={onLinkedinFrameClick} onBack={onBack} view={view} />
       <Lamp />
       <Cat onClick={onCatClick} catRef={catRef} view={view} />
-      <Outdoor view={view} />
+      <Outdoor view={view} playerRef={playerRef} catRef={catRef} />
     </group>
   )
 }
