@@ -895,6 +895,17 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
       }
       if (doorRef.current) doorRef.current.rotation.y = doorAngleRef.current
 
+      // Cat follows behind character toward door
+      if (catRef?.current && groupRef.current) {
+        const behindX = groupRef.current.position.x
+        const behindZ = groupRef.current.position.z - 1.2
+        catRef.current.position.x += (behindX - catRef.current.position.x) * 0.04
+        catRef.current.position.z += (behindZ - catRef.current.position.z) * 0.04
+        const cdx = groupRef.current.position.x - catRef.current.position.x
+        const cdz = groupRef.current.position.z - catRef.current.position.z
+        catRef.current.rotation.y = Math.atan2(cdx, cdz)
+      }
+
       if (progress >= 1) {
         phaseRef.current = 'exiting'
         timerRef.current = 0
@@ -922,6 +933,18 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
         doorAngleRef.current = Math.PI / 2 * (1 - closeP)
       }
       if (doorRef.current) doorRef.current.rotation.y = doorAngleRef.current
+
+      // Cat follows behind character through door
+      if (catRef?.current && groupRef.current) {
+        const behindX = groupRef.current.position.x
+        const behindZ = groupRef.current.position.z - 1.5
+        catRef.current.position.x += (behindX - catRef.current.position.x) * 0.05
+        catRef.current.position.z += (behindZ - catRef.current.position.z) * 0.05
+        catRef.current.position.y = 0
+        const cdx = groupRef.current.position.x - catRef.current.position.x
+        const cdz = groupRef.current.position.z - catRef.current.position.z
+        catRef.current.rotation.y = Math.atan2(cdx, cdz)
+      }
 
       if (progress >= 1) {
         doorAngleRef.current = 0
@@ -997,7 +1020,7 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
       if (leftArmRef.current) leftArmRef.current.rotation.x = moving ? Math.sin(state.clock.elapsedTime * ws + Math.PI) * armAmp : leftArmRef.current.rotation.x * 0.85
       if (rightArmRef.current) rightArmRef.current.rotation.x = moving ? Math.sin(state.clock.elapsedTime * ws) * armAmp : rightArmRef.current.rotation.x * 0.85
 
-      // Cat follows player
+      // Cat follows player + wanders naturally
       if (catRef?.current) {
         const cx = catRef.current.position.x
         const cz = catRef.current.position.z
@@ -1006,12 +1029,67 @@ function OutdoorCharacter({ startPos, playerRef, catRef }) {
         const ddx = px - cx
         const ddz = pz - cz
         const dist = Math.sqrt(ddx * ddx + ddz * ddz)
-        if (dist > 1.5) {
-          const followSpeed = 0.04
-          catRef.current.position.x += (ddx / dist) * followSpeed
-          catRef.current.position.z += (ddz / dist) * followSpeed
+        const t = state.clock.elapsedTime
+
+        let catMoving = false
+        let catSpd = 0
+
+        if (dist > 4) {
+          // Too far — run to catch up
+          catSpd = 0.07
+          const nx0 = cx + (ddx / dist) * catSpd
+          const nz0 = cz + (ddz / dist) * catSpd
+          const [nx, nz] = outdoorCollide(nx0, nz0, cx, cz, false)
+          catRef.current.position.x = nx
+          catRef.current.position.z = nz
           catRef.current.rotation.y = Math.atan2(ddx, ddz)
+          catMoving = true
+        } else if (dist > 2) {
+          // Follow at walk pace
+          catSpd = 0.035
+          const nx0 = cx + (ddx / dist) * catSpd
+          const nz0 = cz + (ddz / dist) * catSpd
+          const [nx, nz] = outdoorCollide(nx0, nz0, cx, cz, false)
+          catRef.current.position.x = nx
+          catRef.current.position.z = nz
+          catRef.current.rotation.y = Math.atan2(ddx, ddz)
+          catMoving = true
+        } else {
+          // Wander around player naturally
+          const wanderRadius = 1.2
+          const wanderSpeed = 0.4
+          const wx = px + Math.sin(t * wanderSpeed) * wanderRadius
+          const wz = pz + Math.cos(t * wanderSpeed * 0.7 + 1.5) * wanderRadius
+          const wdx = wx - cx
+          const wdz = wz - cz
+          const wdist = Math.sqrt(wdx * wdx + wdz * wdz)
+          if (wdist > 0.1) {
+            catSpd = Math.min(wdist * 0.06, 0.025)
+            const nx0 = cx + (wdx / wdist) * catSpd
+            const nz0 = cz + (wdz / wdist) * catSpd
+            const [nx, nz] = outdoorCollide(nx0, nz0, cx, cz, false)
+            catRef.current.position.x = nx
+            catRef.current.position.z = nz
+            catRef.current.rotation.y += (Math.atan2(wdx, wdz) - catRef.current.rotation.y) * 0.08
+            catMoving = catSpd > 0.005
+          }
         }
+
+        // Animate cat legs
+        const legSpeed = catMoving ? (8 + catSpd * 80) : 3
+        const legAmp = catMoving ? (0.2 + catSpd * 3) : 0
+        const legSwing = catMoving ? Math.sin(t * legSpeed) * legAmp : 0
+        const legs = catRef.current.children.filter(c => c.userData?.isLeg)
+        if (legs.length >= 4) {
+          legs[0].rotation.x = catMoving ? legSwing : legs[0].rotation.x * 0.85
+          legs[1].rotation.x = catMoving ? -legSwing : legs[1].rotation.x * 0.85
+          legs[2].rotation.x = catMoving ? -legSwing : legs[2].rotation.x * 0.85
+          legs[3].rotation.x = catMoving ? legSwing : legs[3].rotation.x * 0.85
+        }
+        // Tail wag
+        catRef.current.children.forEach(c => {
+          if (c.userData?.isTail) c.rotation.y = Math.sin(t * (catMoving ? 6 : 3)) * (0.3 + catSpd * 2)
+        })
       }
     }
   })
