@@ -22,10 +22,11 @@ const SLEEP_CAM = { position: [0, 2.5, 0.5], target: [2.8, 0.4, 2.6] }
 const SOFA_CAM = { position: [0, 2.5, 0.5], target: [-2.8, 0.6, 2.5] }
 
 const OUTDOOR_CAM = { position: [-3, 2, 0], target: [-6, 0.5, 0] }
+const WALK_CAM = { position: [0, 2.5, 7], target: [0, 1, 4.5] }
 
-const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM, sleep: SLEEP_CAM, sofa: SOFA_CAM }
+const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM, sleep: SLEEP_CAM, sofa: SOFA_CAM, walk: WALK_CAM }
 
-function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef }) {
+function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef }) {
   const animating = useRef(false)
   const targetPos = useRef(new THREE.Vector3())
   const targetLook = useRef(new THREE.Vector3())
@@ -50,6 +51,42 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef }) {
       }
 
       animating.current = true
+    }
+
+    // GTA chase cam for walk mode: follow player character
+    if (view === 'walk' && playerRef?.current) {
+      const cp = playerRef.current.position
+      const ry = playerRef.current.rotation.y
+      const behindDist = 2.5
+      const camHeight = 1.8
+
+      if (smoothHeading.current === null) smoothHeading.current = ry
+      let diff = ry - smoothHeading.current
+      while (diff > Math.PI) diff -= Math.PI * 2
+      while (diff < -Math.PI) diff += Math.PI * 2
+      smoothHeading.current += diff * 0.08
+
+      const sh = smoothHeading.current
+      const idealX = cp.x - Math.sin(sh) * behindDist
+      const idealY = cp.y + camHeight
+      const idealZ = cp.z - Math.cos(sh) * behindDist
+
+      camera.position.x += (idealX - camera.position.x) * 0.1
+      camera.position.y += (idealY - camera.position.y) * 0.14
+      camera.position.z += (idealZ - camera.position.z) * 0.1
+
+      // Look at character's head (head is at ~1.4 above ground)
+      const lookX = cp.x + Math.sin(sh) * 0.3
+      const lookY = cp.y + 1.4
+      const lookZ = cp.z + Math.cos(sh) * 0.3
+
+      if (controlsRef.current) {
+        controlsRef.current.target.x += (lookX - controlsRef.current.target.x) * 0.14
+        controlsRef.current.target.y += (lookY - controlsRef.current.target.y) * 0.18
+        controlsRef.current.target.z += (lookZ - controlsRef.current.target.z) * 0.14
+        controlsRef.current.update()
+      }
+      return
     }
 
     // GTA chase cam: close behind cat, follows heading and jumps
@@ -251,6 +288,7 @@ export default function App() {
   const [cardSelected, setCardSelected] = useState(false)
   const [gameActive, setGameActive] = useState(false)
   const catRef = useRef()
+  const playerRef = useRef()
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
 
   const handleBookshelfClick = useCallback(() => {
@@ -292,6 +330,10 @@ export default function App() {
 
   const handleSofaClick = useCallback(() => {
     setView('sofa')
+  }, [])
+
+  const handleDoorClick = useCallback(() => {
+    setView('walk')
   }, [])
 
   const handleBookClick = useCallback((bookData) => {
@@ -379,11 +421,11 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} />
-            <Character position={[0, 0, -0.6]} seated view={view} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} />
+            <Character position={[0, 0, -0.6]} seated view={view} playerRef={playerRef} catRef={catRef} />
           </Suspense>
 
-          <CameraAnimator view={view} controlsRef={controlsRef} catRef={catRef} />
+          <CameraAnimator view={view} controlsRef={controlsRef} catRef={catRef} playerRef={playerRef} />
 
           <OpenBook book={selectedBook} onClose={handleCloseBook} />
           <FloatingScrolls open={chestOpen} view={view} onCardSelect={setCardSelected} />
@@ -391,24 +433,24 @@ export default function App() {
           <OrbitControls
             ref={controlsRef}
             makeDefault
-            minPolarAngle={view === 'outdoor' ? 0.2 : Math.PI / 3.5}
-            maxPolarAngle={view === 'outdoor' ? Math.PI / 2.1 : Math.PI / 2.2}
-            minDistance={view === 'outdoor' ? 2 : 2}
-            maxDistance={view === 'outdoor' ? 12 : 4.5}
-            minAzimuthAngle={view === 'outdoor' ? -Infinity : -Math.PI / 1.2}
-            maxAzimuthAngle={view === 'outdoor' ? Infinity : Math.PI / 1.2}
+            minPolarAngle={(view === 'outdoor' || view === 'walk') ? 0.2 : Math.PI / 3.5}
+            maxPolarAngle={(view === 'outdoor' || view === 'walk') ? Math.PI / 2.1 : Math.PI / 2.2}
+            minDistance={(view === 'outdoor' || view === 'walk') ? 2 : 2}
+            maxDistance={(view === 'outdoor' || view === 'walk') ? 12 : 4.5}
+            minAzimuthAngle={(view === 'outdoor' || view === 'walk') ? -Infinity : -Math.PI / 1.2}
+            maxAzimuthAngle={(view === 'outdoor' || view === 'walk') ? Infinity : Math.PI / 1.2}
             enablePan={false}
             autoRotate={false}
             target={[0, 1.2, -0.5]}
             enableRotate={view === 'default'}
-            enableZoom={view === 'default' || view === 'outdoor'}
+            enableZoom={view === 'default' || view === 'outdoor' || view === 'walk'}
           />
         </Canvas>
       </div>
 
       <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
       <FloatingScrollsOverlay show={!!selectedBook} onClose={handleCloseBook} />
-      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin' || view === 'cat' || view === 'controller' || view === 'dance' || view === 'outdoor' || view === 'sleep' || view === 'sofa'} onClose={handleBack} />
+      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin' || view === 'cat' || view === 'controller' || view === 'dance' || view === 'outdoor' || view === 'sleep' || view === 'sofa' || view === 'walk'} onClose={handleBack} />
       {(view === 'github' || view === 'linkedin') && (
         <div
           onClick={() => {
@@ -429,7 +471,7 @@ export default function App() {
         </div>
       )}
       {isMobile && gameActive && <GameDPad />}
-      {isMobile && view === 'outdoor' && <CatDPad />}
+      {isMobile && (view === 'outdoor' || view === 'walk') && <CatDPad />}
       <ChatOverlay visible={view === 'default'} />
       <SplashScreen />
 

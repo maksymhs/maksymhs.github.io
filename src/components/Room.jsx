@@ -114,7 +114,7 @@ function WindowFrame({ position, rotation, width = 2.8, height = 2.4, onClick, o
   )
 }
 
-function Walls({ onWindowClick, windowOpen }) {
+function Walls({ onWindowClick, windowOpen, onDoorClick, view }) {
   return (
     <group>
       {/* === BACK WALL - split around window (3.6w x 2.6h at y=2, x=0) === */}
@@ -157,18 +157,44 @@ function Walls({ onWindowClick, windowOpen }) {
         <Vox key={`rwp${i}`} position={[3.98, 0.65, z]} args={[0.02, 0.8, 0.9]} color="#cbbfa8" />
       ))}
 
-      {/* === FRONT WALL - solid with two-tone === */}
-      <Vox position={[0, 2.6, 4.05]} args={[8, 2.8, 0.1]} color="#d4ddd0" castShadow={false} receiveShadow />
-      <Vox position={[0, 0.6, 4.04]} args={[8, 1.2, 0.08]} color="#d8cbb8" castShadow={false} receiveShadow />
-      {/* Wainscoting panels - front wall */}
+      {/* === FRONT WALL - split around door (1.6w x 2.8h at x=0) === */}
+      {/* Left section: x -4 to -0.8 */}
+      <Vox position={[-2.4, 2.6, 4.05]} args={[3.2, 2.8, 0.1]} color="#d4ddd0" castShadow={false} receiveShadow />
+      {/* Right section: x +0.8 to +4 */}
+      <Vox position={[2.4, 2.6, 4.05]} args={[3.2, 2.8, 0.1]} color="#d4ddd0" castShadow={false} receiveShadow />
+      {/* Top strip above door */}
+      <Vox position={[0, 3.65, 4.05]} args={[1.6, 0.7, 0.1]} color="#d4ddd0" castShadow={false} receiveShadow />
+      {/* Lower wainscoting left of door */}
+      <Vox position={[-2.4, 0.6, 4.04]} args={[3.2, 1.2, 0.08]} color="#d8cbb8" castShadow={false} receiveShadow />
+      {/* Lower wainscoting right of door */}
+      <Vox position={[2.4, 0.6, 4.04]} args={[3.2, 1.2, 0.08]} color="#d8cbb8" castShadow={false} receiveShadow />
+      {/* Wainscoting panels - front wall (avoid door area) */}
       {[-3, -1.5, 1.5, 3].map((x, i) => (
         <Vox key={`fwp${i}`} position={[x, 0.65, 3.98]} args={[0.9, 0.8, 0.02]} color="#cfc0a8" />
       ))}
-      {/* Door frame decoration */}
-      <Vox position={[0, 1.4, 3.96]} args={[1.0, 2.6, 0.04]} color="#a07040" />
-      <Vox position={[0, 2.78, 3.96]} args={[1.2, 0.1, 0.04]} color="#906030" />
-      {/* Door handle */}
-      <Vox position={[0.35, 1.3, 3.93]} args={[0.08, 0.08, 0.06]} color="#f0c040" />
+      {/* Door frame decoration — clickable */}
+      <group
+        onClick={(e) => { e.stopPropagation(); onDoorClick?.() }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        {/* Static door panel — hidden when animated door is active */}
+        {view !== 'walk' && <Vox position={[0, 1.4, 3.96]} args={[1.4, 2.6, 0.04]} color="#a07040" />}
+        {view !== 'walk' && <Vox position={[-0.5, 1.3, 3.93]} args={[0.08, 0.08, 0.06]} color="#f0c040" />}
+        {view !== 'walk' && <Vox position={[-0.5, 1.3, 3.99]} args={[0.08, 0.08, 0.06]} color="#f0c040" />}
+        {/* Door frame top — always visible */}
+        <Vox position={[0, 2.78, 3.96]} args={[1.6, 0.1, 0.04]} color="#906030" />
+      </group>
+
+      {/* Door opening wall thickness — seals gap between interior and exterior walls */}
+      {/* Left jamb — floor to ceiling */}
+      <Vox position={[-0.8, 2, 4.075]} args={[0.25, 4, 0.3]} color="#d4ddd0" castShadow={false} />
+      {/* Right jamb */}
+      <Vox position={[0.8, 2, 4.075]} args={[0.25, 4, 0.3]} color="#d4ddd0" castShadow={false} />
+      {/* Top lintel — fills entire gap above door */}
+      <Vox position={[0, 3.3, 4.075]} args={[1.85, 1.5, 0.3]} color="#d4ddd0" castShadow={false} />
+      {/* Floor threshold */}
+      <Vox position={[0, 0.01, 4.075]} args={[1.6, 0.06, 0.3]} color="#c0b090" castShadow={false} />
 
       {/* === DADO RAIL - all walls === */}
       {/* Back wall dado rail - split around window (gap x -1.8 to 1.8) */}
@@ -178,13 +204,17 @@ function Walls({ onWindowClick, windowOpen }) {
       <Vox position={[-3.97, 1.22, -2.9]} args={[0.04, 0.08, 2.2]} color="#f0e8d8" />
       <Vox position={[-3.97, 1.22, 2.9]} args={[0.04, 0.08, 2.2]} color="#f0e8d8" />
       <Vox position={[3.97, 1.22, 0]} args={[0.04, 0.08, 8]} color="#f0e8d8" />
-      <Vox position={[0, 1.22, 3.97]} args={[8, 0.08, 0.04]} color="#f0e8d8" />
+      {/* Front wall dado rail - split around door (gap x -0.8 to 0.8) */}
+      <Vox position={[-2.4, 1.22, 3.97]} args={[3.2, 0.08, 0.04]} color="#f0e8d8" />
+      <Vox position={[2.4, 1.22, 3.97]} args={[3.2, 0.08, 0.04]} color="#f0e8d8" />
 
       {/* === CROWN MOLDING - all walls top === */}
       <Vox position={[0, 3.95, -3.97]} args={[8, 0.1, 0.06]} color="#f0ece0" />
       <Vox position={[-3.97, 3.95, 0]} args={[0.06, 0.1, 8]} color="#f0ece0" />
       <Vox position={[3.97, 3.95, 0]} args={[0.06, 0.1, 8]} color="#f0ece0" />
-      <Vox position={[0, 3.95, 3.97]} args={[8, 0.1, 0.06]} color="#f0ece0" />
+      {/* Front wall crown molding - split around door */}
+      <Vox position={[-2.4, 3.95, 3.97]} args={[3.2, 0.1, 0.06]} color="#f0ece0" />
+      <Vox position={[2.4, 3.95, 3.97]} args={[3.2, 0.1, 0.06]} color="#f0ece0" />
 
       {/* Ceiling */}
       <Vox position={[0, 4.02, 0]} args={[8, 0.08, 8]} color="#f8f4ed" castShadow={false} receiveShadow />
@@ -197,7 +227,9 @@ function Walls({ onWindowClick, windowOpen }) {
       <Vox position={[-3.97, 0.06, -2.9]} args={[0.05, 0.12, 2.2]} color="#c0b49c" />
       <Vox position={[-3.97, 0.06, 2.9]} args={[0.05, 0.12, 2.2]} color="#c0b49c" />
       <Vox position={[3.97, 0.06, 0]} args={[0.05, 0.12, 8]} color="#c0b49c" />
-      <Vox position={[0, 0.06, 3.97]} args={[8, 0.12, 0.05]} color="#c0b49c" />
+      {/* Front wall baseboard - split around door */}
+      <Vox position={[-2.4, 0.06, 3.97]} args={[3.2, 0.12, 0.05]} color="#c0b49c" />
+      <Vox position={[2.4, 0.06, 3.97]} args={[3.2, 0.12, 0.05]} color="#c0b49c" />
 
       {/* Big window - back wall */}
       <WindowFrame position={[0, 2, -3.99]} width={3.6} height={2.6} />
@@ -1007,7 +1039,7 @@ function collideList(x, z, prevX, prevZ, list) {
   return [x, z]
 }
 
-function outdoorCollide(x, z, prevX, prevZ, airborne) {
+export function outdoorCollide(x, z, prevX, prevZ, airborne) {
   // Walls always block
   ;[x, z] = collideList(x, z, prevX, prevZ, wallColliders)
   // Ground obstacles only block near ground
@@ -1023,6 +1055,7 @@ function Cat({ onClick, catRef: externalRef, view }) {
   const legsRef = useRef({ fl: null, fr: null, bl: null, br: null })
   const keysRef = useRef({ up: false, down: false, left: false, right: false, space: false })
   const outdoorInitRef = useRef(false)
+  const walkInitRef = useRef(false)
   const jumpRef = useRef({ phase: null, startTime: 0, startPos: [0, 0, 0] })
   const catVelRef = useRef({ y: 0, fx: 0, fz: 0, grounded: true })
   const catHeadingRef = useRef(-Math.PI / 2)
@@ -1289,6 +1322,19 @@ function Cat({ onClick, catRef: externalRef, view }) {
       catVelRef.current = { y: 0, fx: 0, fz: 0, grounded: true }
       catSpeedRef.current = 0
       catRef.current.position.set(1.5, 0, 1)
+    }
+
+    // Reset cat when leaving walk mode
+    if (walkInitRef.current && view !== 'walk') {
+      walkInitRef.current = false
+      catRef.current.position.set(1.5, 0, 1)
+      catRef.current.rotation.y = 0
+    }
+
+    // In walk mode, mark as active and skip indoor logic
+    if (view === 'walk') {
+      walkInitRef.current = true
+      return
     }
 
     // Indoor autonomous waypoint walking
@@ -2042,22 +2088,11 @@ function Pond({ position }) {
   )
 }
 
-function ExteriorDoor() {
+function ExteriorDoor({ view }) {
   return (
     <group position={[0, 0, 4.08]}>
-      {/* Door panel */}
-      <Vox position={[0, 1.35, 0]} args={[0.9, 2.5, 0.08]} color="#8b6030" />
-      {/* Door frame */}
-      <Vox position={[-0.5, 1.35, 0]} args={[0.12, 2.7, 0.1]} color="#705020" />
-      <Vox position={[0.5, 1.35, 0]} args={[0.12, 2.7, 0.1]} color="#705020" />
-      <Vox position={[0, 2.75, 0]} args={[1.1, 0.12, 0.1]} color="#705020" />
-      {/* Door panels (decorative rectangles) */}
-      <Vox position={[0, 2.0, 0.05]} args={[0.6, 0.7, 0.03]} color="#7a5428" />
-      <Vox position={[0, 0.9, 0.05]} args={[0.6, 0.7, 0.03]} color="#7a5428" />
-      {/* Handle */}
-      <Vox position={[-0.3, 1.3, 0.08]} args={[0.08, 0.08, 0.06]} color="#f0c040" />
       {/* Step */}
-      <Vox position={[0, 0.04, 0.15]} args={[1.2, 0.08, 0.3]} color="#c0b090" />
+      <Vox position={[0, 0.04, 0.15]} args={[1.8, 0.08, 0.3]} color="#c0b090" />
     </group>
   )
 }
@@ -2090,22 +2125,22 @@ function ExteriorWalls() {
       {/* === Right wall exterior - solid === */}
       <Vox position={[4.12, 2, 0]} args={[0.06, 4, 8.2]} color="#e5d9c5" castShadow={false} />
 
-      {/* === Front wall exterior - split around door === */}
-      <Vox position={[-2.2, 2, 4.12]} args={[3.6, 4, 0.06]} color="#e8dcc8" castShadow={false} />
-      <Vox position={[2.2, 2, 4.12]} args={[3.6, 4, 0.06]} color="#e8dcc8" castShadow={false} />
-      <Vox position={[0, 3.4, 4.12]} args={[0.8, 1.2, 0.06]} color="#e8dcc8" castShadow={false} />
+      {/* === Front wall exterior - split around door (1.6w gap at x=0) === */}
+      <Vox position={[-2.4, 2, 4.12]} args={[3.2, 4, 0.06]} color="#e8dcc8" castShadow={false} />
+      <Vox position={[2.4, 2, 4.12]} args={[3.2, 4, 0.06]} color="#e8dcc8" castShadow={false} />
+      <Vox position={[0, 3.4, 4.12]} args={[1.6, 1.2, 0.06]} color="#e8dcc8" castShadow={false} />
     </group>
   )
 }
 
-function Outdoor() {
+function Outdoor({ view }) {
   return (
     <group>
       <Grass />
       <Fence />
       <Flowers />
       <Roof />
-      <ExteriorDoor />
+      <ExteriorDoor view={view} />
       <ExteriorWalls />
 
       {/* Garden furniture */}
@@ -2183,11 +2218,11 @@ function Outdoor() {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef }) {
   return (
     <group>
       <Floor />
-      <Walls onWindowClick={onWindowClick} windowOpen={view === 'outdoor'} />
+      <Walls onWindowClick={onWindowClick} windowOpen={view === 'outdoor'} onDoorClick={onDoorClick} view={view} />
       <Desk />
       <Monitor onClick={onControllerClick} view={view} onGameChange={onGameChange} />
       <DeskItems />
@@ -2217,7 +2252,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <WallArt onGithubClick={onGithubFrameClick} onLinkedinClick={onLinkedinFrameClick} onBack={onBack} view={view} />
       <Lamp />
       <Cat onClick={onCatClick} catRef={catRef} view={view} />
-      <Outdoor />
+      <Outdoor view={view} />
     </group>
   )
 }
