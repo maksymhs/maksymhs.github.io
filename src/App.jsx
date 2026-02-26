@@ -289,7 +289,7 @@ export default function App() {
   const [gameActive, setGameActive] = useState(false)
   const catRef = useRef()
   const playerRef = useRef()
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const isMobile = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 
   const handleBookshelfClick = useCallback(() => {
     setView('bookshelf')
