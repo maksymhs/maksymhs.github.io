@@ -2221,7 +2221,7 @@ const NPC_DIALOGUES = {
   ],
 }
 
-function NPCCharacter({ position, rotation, playerRef, catRef, view }) {
+function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear }) {
   const headRef = useRef()
   const bodyRef = useRef()
   const bubbleRef = useRef()
@@ -2234,6 +2234,7 @@ function NPCCharacter({ position, rotation, playerRef, catRef, view }) {
   const _targetWorldPos = useMemo(() => new THREE.Vector3(), [])
   const _npcWorldPos = useMemo(() => new THREE.Vector3(), [])
   const _localTarget = useMemo(() => new THREE.Vector3(), [])
+  const advanceDialogue = useRef(null)
 
   // Keep viewRef always in sync
   useEffect(() => { viewRef.current = view }, [view])
@@ -2299,16 +2300,39 @@ function NPCCharacter({ position, rotation, playerRef, catRef, view }) {
       topicIdx.current = Math.floor(Math.random() * dialogues.length)
       lineIdx.current = 0
       setBubbleText(dialogues[topicIdx.current])
+      onNpcNear?.(true)
+    }
+    if (!isNear && wasNear.current) {
+      onNpcNear?.(false)
     }
     wasNear.current = isNear
   })
 
-  const handleClick = (e) => {
-    e.stopPropagation()
+  const cycleDialogue = () => {
     if (viewRef.current !== 'outdoor' && viewRef.current !== 'walk') return
+    if (!wasNear.current) return
     lineIdx.current = (lineIdx.current + 1) % dialogues.length
     const nextIdx = (topicIdx.current + lineIdx.current) % dialogues.length
     setBubbleText(dialogues[nextIdx])
+  }
+
+  // Keep advanceDialogue ref up to date for E key
+  advanceDialogue.current = cycleDialogue
+
+  // E key to interact
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'e' || e.key === 'E') {
+        advanceDialogue.current?.()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  const handleClick = (e) => {
+    e.stopPropagation()
+    cycleDialogue()
   }
 
   return (
@@ -2433,7 +2457,7 @@ function NPCCharacter({ position, rotation, playerRef, catRef, view }) {
   )
 }
 
-function Outdoor({ view, playerRef, catRef }) {
+function Outdoor({ view, playerRef, catRef, onNpcNear }) {
   return (
     <group>
       <Grass />
@@ -2445,7 +2469,7 @@ function Outdoor({ view, playerRef, catRef }) {
 
       {/* Garden furniture */}
       <GardenBench position={[-8, 0, 6]} rotation={[0, Math.PI / 4, 0]} />
-      <NPCCharacter position={[-8, 0.12, 6]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} />
+      <NPCCharacter position={[-8, 0.12, 6]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} onNpcNear={onNpcNear} />
       <GardenBench position={[10, 0, -8]} rotation={[0, -Math.PI / 3, 0]} />
       <GardenBench position={[8, 0, 12]} rotation={[0, Math.PI, 0]} />
 
@@ -2519,7 +2543,7 @@ function Outdoor({ view, playerRef, catRef }) {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef, onNpcNear }) {
   return (
     <group>
       <Floor />
@@ -2553,7 +2577,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <WallArt onGithubClick={onGithubFrameClick} onLinkedinClick={onLinkedinFrameClick} onBack={onBack} view={view} />
       <Lamp />
       <Cat onClick={onCatClick} catRef={catRef} view={view} />
-      <Outdoor view={view} playerRef={playerRef} catRef={catRef} />
+      <Outdoor view={view} playerRef={playerRef} catRef={catRef} onNpcNear={onNpcNear} />
     </group>
   )
 }

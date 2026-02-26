@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import Room from './components/Room.jsx'
+import { lang } from './i18n'
 import Character from './components/Character.jsx'
 import ChatOverlay from './components/ChatOverlay.jsx'
 import OpenBook from './components/OpenBook.jsx'
@@ -290,6 +291,7 @@ export default function App() {
   const catRef = useRef()
   const playerRef = useRef()
   const isMobile = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
+  const [npcNear, setNpcNear] = useState(false)
 
   const handleBookshelfClick = useCallback(() => {
     setView('bookshelf')
@@ -421,7 +423,7 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} onNpcNear={setNpcNear} />
             <Character position={[0, 0, -0.6]} seated view={view} playerRef={playerRef} catRef={catRef} />
           </Suspense>
 
@@ -469,6 +471,30 @@ export default function App() {
         >
           {view === 'github' ? '[ Click ] Visit GitHub' : '[ Click ] Visit LinkedIn'}
         </div>
+      )}
+      {npcNear && (view === 'outdoor' || view === 'walk') && (
+        <button
+          disabled
+          style={{
+            position: 'absolute',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 10,
+            padding: '10px 20px',
+            background: 'rgba(0,0,0,0.6)',
+            color: 'white',
+            border: '2px solid rgba(255,255,255,0.3)',
+            borderRadius: '8px',
+            cursor: 'default',
+            fontSize: '14px',
+            fontFamily: 'monospace',
+            backdropFilter: 'blur(4px)',
+            opacity: 1,
+          }}
+        >
+          E → {lang === 'es' ? 'Interactuar' : lang === 'ru' ? 'Взаимодействие' : 'Interact'}
+        </button>
       )}
       {isMobile && gameActive && <GameDPad />}
       {isMobile && (view === 'outdoor' || view === 'walk') && <CatDPad />}
