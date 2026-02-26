@@ -18,11 +18,12 @@ const LINKEDIN_CAM = { position: [-2.5, 2.2, -2.5], target: [-3, 2.2, -3.95] }
 const CAT_CAM_OFFSET = { x: 0, y: 1.2, z: 1.5 }
 const CONTROLLER_CAM = { position: [0, 1.24, -0.55], target: [0, 1.22, -1.95] }
 const DANCE_CAM = { position: [1.5, 1.8, 1.5], target: [0, 0.8, 0] }
-const SLEEP_CAM = { position: [1.5, 2.2, 3.8], target: [2.8, 0.5, 2.6] }
+const SLEEP_CAM = { position: [0, 2.5, 0.5], target: [2.8, 0.4, 2.6] }
+const SOFA_CAM = { position: [0, 2.5, 0.5], target: [-2.8, 0.6, 2.5] }
 
 const OUTDOOR_CAM = { position: [-3, 2, 0], target: [-6, 0.5, 0] }
 
-const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM, sleep: SLEEP_CAM }
+const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM, sleep: SLEEP_CAM, sofa: SOFA_CAM }
 
 function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef }) {
   const animating = useRef(false)
@@ -289,6 +290,10 @@ export default function App() {
     setView('sleep')
   }, [])
 
+  const handleSofaClick = useCallback(() => {
+    setView('sofa')
+  }, [])
+
   const handleBookClick = useCallback((bookData) => {
     setSelectedBook(bookData)
   }, [])
@@ -374,7 +379,7 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} />
             <Character position={[0, 0, -0.6]} seated view={view} />
           </Suspense>
 
@@ -403,7 +408,7 @@ export default function App() {
 
       <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
       <FloatingScrollsOverlay show={!!selectedBook} onClose={handleCloseBook} />
-      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin' || view === 'cat' || view === 'controller' || view === 'dance' || view === 'outdoor' || view === 'sleep'} onClose={handleBack} />
+      <FloatingScrollsOverlay show={view === 'github' || view === 'linkedin' || view === 'cat' || view === 'controller' || view === 'dance' || view === 'outdoor' || view === 'sleep' || view === 'sofa'} onClose={handleBack} />
       {(view === 'github' || view === 'linkedin') && (
         <div
           onClick={() => {

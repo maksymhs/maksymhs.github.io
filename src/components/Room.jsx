@@ -1430,9 +1430,13 @@ function Bed({ onClick }) {
   )
 }
 
-function Sofa() {
+function Sofa({ onClick }) {
   return (
-    <group position={[-2.8, 0, 2.5]} rotation={[0, Math.PI / 2, 0]}>
+    <group position={[-2.8, 0, 2.5]} rotation={[0, Math.PI / 2, 0]}
+      onClick={(e) => { e.stopPropagation(); onClick?.() }}
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'auto')}
+    >
       {/* Base/seat */}
       <Vox position={[0, 0.35, 0]} args={[1.8, 0.3, 0.8]} color="#d06050" castShadow />
       {/* Back cushion - against wall */}
@@ -1608,7 +1612,7 @@ function WallShelf() {
 
 function CoffeeTable({ onHeadphonesClick }) {
   return (
-    <group position={[-1.8, 0, 2.5]}>
+    <group position={[-1.5, 0, 2.5]} rotation={[0, Math.PI / 2, 0]}>
       {/* Top */}
       <Vox position={[0, 0.35, 0]} args={[0.9, 0.06, 0.5]} color="#b08040" />
       {/* Legs */}
@@ -2179,7 +2183,7 @@ function Outdoor() {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick }) {
   return (
     <group>
       <Floor />
@@ -2194,7 +2198,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <Chest onClick={onChestClick} open={chestOpen} />
       <Bed onClick={onBedClick} />
       <BedRug />
-      <Sofa />
+      <Sofa onClick={onSofaClick} />
       <Nightstand />
       <CoffeeTable onHeadphonesClick={onHeadphonesClick} />
       <CeilingLamp />
