@@ -477,7 +477,7 @@ function isInsideWall(x, z, radius = 0.4) {
 }
 
 // === FPS Controller + Game Logic ===
-function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shootFlash }) {
+function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shootFlash, isMobile, mobileMoveRef, mobileLookRef, mobileShootRef }) {
   const { camera, gl } = useThree()
   const controlsRef = useRef()
   const keysRef = useRef({ w: false, a: false, s: false, d: false, crouch: false })
@@ -485,6 +485,8 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
   const jumpVel = useRef(0)
   const playerY = useRef(1.6)
   const onGround = useRef(true)
+  const mobileYaw = useRef(0)
+  const mobilePitch = useRef(0)
   const [enemies, setEnemies] = useState([])
   const enemiesRef = useRef([])
   const [hitMarkers, setHitMarkers] = useState([])
@@ -584,7 +586,34 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
     if (invincibleRef.current > 0) invincibleRef.current -= delta
     if (damageFlash.current > 0) damageFlash.current -= delta
 
-    // WASD movement
+    // Mobile look — apply touch deltas to camera rotation
+    if (isMobile && mobileLookRef.current) {
+      const lk = mobileLookRef.current
+      mobileYaw.current -= lk.dx * 0.004
+      mobilePitch.current -= lk.dy * 0.004
+      mobilePitch.current = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, mobilePitch.current))
+      camera.rotation.set(mobilePitch.current, mobileYaw.current, 0, 'YXZ')
+      lk.dx = 0; lk.dy = 0
+    }
+
+    // Mobile shoot
+    if (isMobile && mobileShootRef.current && shootCooldown.current <= 0) {
+      mobileShootRef.current = false
+      shootCooldown.current = 0.15
+      shootFlash.current = 0.08
+      const raycaster = new THREE.Raycaster()
+      raycaster.setFromCamera(new THREE.Vector2(0, 0), camera)
+      const dir = raycaster.ray.direction.clone()
+      const origin = camera.position.clone()
+      playerBulletsRef.current.push({
+        id: idRef.current++,
+        pos: [origin.x + dir.x * 0.5, origin.y + dir.y * 0.5 - 0.1, origin.z + dir.z * 0.5],
+        dir: [dir.x, dir.y, dir.z],
+        life: 1.5,
+      })
+    }
+
+    // Movement
     const speed = 8 * delta
     const forward = new THREE.Vector3()
     camera.getWorldDirection(forward)
@@ -594,10 +623,19 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
 
     let nx = camera.position.x
     let nz = camera.position.z
+
+    // Keyboard input
     if (keysRef.current.w) { nx += forward.x * speed; nz += forward.z * speed }
     if (keysRef.current.s) { nx -= forward.x * speed; nz -= forward.z * speed }
     if (keysRef.current.a) { nx -= right.x * speed; nz -= right.z * speed }
     if (keysRef.current.d) { nx += right.x * speed; nz += right.z * speed }
+
+    // Mobile joystick input
+    if (isMobile && mobileMoveRef.current) {
+      const mv = mobileMoveRef.current
+      nx += (forward.x * mv.y + right.x * mv.x) * speed
+      nz += (forward.z * mv.y + right.z * mv.x) * speed
+    }
 
     // Collision
     if (!isInsideWall(nx, camera.position.z)) camera.position.x = nx
@@ -710,7 +748,7 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
 
   return (
     <>
-      <PointerLockControls ref={controlsRef} />
+      {!isMobile && <PointerLockControls ref={controlsRef} />}
       <ambientLight intensity={0.5} color="#ffe8c0" />
       <directionalLight position={[20, 30, 10]} intensity={1.2} color="#fff0d0" castShadow />
       <directionalLight position={[-10, 15, -5]} intensity={0.3} color="#c0d0ff" />
@@ -731,6 +769,143 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
           <meshBasicMaterial color="#ffdd00" />
         </mesh>
       ))}
+    </>
+  )
+}
+
+// === Mobile Touch Controls — dual joystick layout ===
+function MobileControls({ mobileMoveRef, mobileLookRef, mobileShootRef }) {
+  const joyLRef = useRef(null)
+  const knobLRef = useRef(null)
+  const joyRRef = useRef(null)
+  const knobRRef = useRef(null)
+  const joyLOrigin = useRef({ x: 0, y: 0 })
+  const joyROrigin = useRef({ x: 0, y: 0 })
+  const touchIdL = useRef(null)
+  const touchIdR = useRef(null)
+
+  const KNOB_MAX = 40
+  const LOOK_SENS = 3.5
+
+  // --- Left joystick (movement) ---
+  const onLStart = useCallback((e) => {
+    e.preventDefault()
+    const t = e.changedTouches[0]
+    touchIdL.current = t.identifier
+    const rect = joyLRef.current.getBoundingClientRect()
+    joyLOrigin.current = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+  }, [])
+
+  const onLMove = useCallback((e) => {
+    e.preventDefault()
+    for (const t of e.changedTouches) {
+      if (t.identifier === touchIdL.current) {
+        let dx = t.clientX - joyLOrigin.current.x
+        let dy = t.clientY - joyLOrigin.current.y
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist > KNOB_MAX) { dx = dx / dist * KNOB_MAX; dy = dy / dist * KNOB_MAX }
+        if (knobLRef.current) knobLRef.current.style.transform = `translate(${dx}px, ${dy}px)`
+        mobileMoveRef.current = { x: dx / KNOB_MAX, y: -dy / KNOB_MAX }
+      }
+    }
+  }, [mobileMoveRef])
+
+  const onLEnd = useCallback((e) => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === touchIdL.current) {
+        touchIdL.current = null
+        mobileMoveRef.current = { x: 0, y: 0 }
+        if (knobLRef.current) knobLRef.current.style.transform = 'translate(0px, 0px)'
+      }
+    }
+  }, [mobileMoveRef])
+
+  // --- Right joystick (look) ---
+  const onRStart = useCallback((e) => {
+    e.preventDefault()
+    const t = e.changedTouches[0]
+    touchIdR.current = t.identifier
+    const rect = joyRRef.current.getBoundingClientRect()
+    joyROrigin.current = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+  }, [])
+
+  const onRMove = useCallback((e) => {
+    e.preventDefault()
+    for (const t of e.changedTouches) {
+      if (t.identifier === touchIdR.current) {
+        let dx = t.clientX - joyROrigin.current.x
+        let dy = t.clientY - joyROrigin.current.y
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist > KNOB_MAX) { dx = dx / dist * KNOB_MAX; dy = dy / dist * KNOB_MAX }
+        if (knobRRef.current) knobRRef.current.style.transform = `translate(${dx}px, ${dy}px)`
+        mobileLookRef.current.dx += dx / KNOB_MAX * LOOK_SENS
+        mobileLookRef.current.dy += dy / KNOB_MAX * LOOK_SENS
+      }
+    }
+  }, [mobileLookRef])
+
+  const onREnd = useCallback((e) => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === touchIdR.current) {
+        touchIdR.current = null
+        if (knobRRef.current) knobRRef.current.style.transform = 'translate(0px, 0px)'
+      }
+    }
+  }, [])
+
+  const baseStyle = {
+    position: 'absolute', borderRadius: '50%', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none',
+  }
+  const joyStyle = {
+    ...baseStyle, width: '120px', height: '120px',
+    background: 'rgba(255,255,255,0.12)', border: '2px solid rgba(255,255,255,0.25)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 70,
+  }
+  const knobStyle = {
+    width: '50px', height: '50px', borderRadius: '50%',
+    background: 'rgba(255,255,255,0.35)', border: '2px solid rgba(255,255,255,0.5)',
+    transition: 'transform 0.05s',
+  }
+
+  return (
+    <>
+      {/* Left joystick — movement */}
+      <div ref={joyLRef} onTouchStart={onLStart} onTouchMove={onLMove} onTouchEnd={onLEnd} onTouchCancel={onLEnd}
+        style={{ ...joyStyle, left: '25px', bottom: '25px' }}>
+        <div ref={knobLRef} style={knobStyle} />
+      </div>
+
+      {/* Right joystick — look */}
+      <div ref={joyRRef} onTouchStart={onRStart} onTouchMove={onRMove} onTouchEnd={onREnd} onTouchCancel={onREnd}
+        style={{ ...joyStyle, right: '25px', bottom: '25px' }}>
+        <div ref={knobRRef} style={knobStyle} />
+      </div>
+
+      {/* Shoot button — above right joystick */}
+      <div
+        onTouchStart={(e) => { e.preventDefault(); mobileShootRef.current = true }}
+        style={{
+          ...baseStyle, right: '35px', bottom: '165px', width: '70px', height: '70px',
+          background: 'rgba(255,60,60,0.3)', border: '2px solid rgba(255,60,60,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 75, fontSize: '24px', color: 'rgba(255,255,255,0.8)',
+        }}
+      >
+        🔫
+      </div>
+
+      {/* Jump button — above-left of right joystick */}
+      <div
+        onTouchStart={(e) => { e.preventDefault(); window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' })) }}
+        style={{
+          ...baseStyle, right: '120px', bottom: '165px', width: '55px', height: '55px',
+          background: 'rgba(100,200,255,0.25)', border: '2px solid rgba(100,200,255,0.4)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 75, fontSize: '16px', color: 'rgba(255,255,255,0.7)',
+        }}
+      >
+        ⬆
+      </div>
     </>
   )
 }
@@ -802,11 +977,16 @@ export default function GamePixelStrike() {
   }, [])
 
   const isMobile = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
+  const mobileMoveRef = useRef({ x: 0, y: 0 })
+  const mobileLookRef = useRef({ dx: 0, dy: 0 })
+  const mobileShootRef = useRef(false)
 
   const texts = {
     title: 'PIXEL STRIKE',
-    start: lang === 'es' ? 'CLICK PARA EMPEZAR' : lang === 'ru' ? 'КЛИКНИТЕ ЧТОБЫ НАЧАТЬ' : 'CLICK TO START',
-    controls: lang === 'es' ? 'WASD mover, Click disparar, Espacio saltar, Ctrl agacharse, ESC salir' : lang === 'ru' ? 'WASD движение, Клик стрелять, Пробел прыжок, Ctrl присесть, ESC выход' : 'WASD move, Click shoot, Space jump, Ctrl crouch, ESC exit',
+    start: lang === 'es' ? (isMobile ? 'TOCA PARA EMPEZAR' : 'CLICK PARA EMPEZAR') : lang === 'ru' ? 'КЛИКНИТЕ ЧТОБЫ НАЧАТЬ' : (isMobile ? 'TAP TO START' : 'CLICK TO START'),
+    controls: isMobile
+      ? (lang === 'es' ? 'Joystick izq. mover, Derecha apuntar y disparar' : lang === 'ru' ? 'Джойстик слева двигаться, справа целиться и стрелять' : 'Left joystick move, Right side aim & shoot')
+      : (lang === 'es' ? 'WASD mover, Click disparar, Espacio saltar, Ctrl agacharse, ESC salir' : lang === 'ru' ? 'WASD движение, Клик стрелять, Пробел прыжок, Ctrl присесть, ESC выход' : 'WASD move, Click shoot, Space jump, Ctrl crouch, ESC exit'),
     over: lang === 'es' ? '¡ELIMINADO!' : lang === 'ru' ? 'УБИТ!' : 'ELIMINATED!',
     retry: lang === 'es' ? 'Click para reiniciar' : lang === 'ru' ? 'Кликните для рестарта' : 'Click to retry',
     back: lang === 'es' ? '← Volver' : lang === 'ru' ? '← Назад' : '← Back',
@@ -826,6 +1006,10 @@ export default function GamePixelStrike() {
             gameState={gameState}
             livesRef={livesRef}
             shootFlash={shootFlash}
+            isMobile={isMobile}
+            mobileMoveRef={mobileMoveRef}
+            mobileLookRef={mobileLookRef}
+            mobileShootRef={mobileShootRef}
           />
         )}
       </Canvas>
@@ -834,7 +1018,7 @@ export default function GamePixelStrike() {
       <WeaponOverlay shootFlash={shootFlash} visible={started && !gameOver} />
 
       {/* Crosshair */}
-      {started && !gameOver && locked && (
+      {started && !gameOver && (locked || isMobile) && (
         <div style={{
           position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
           pointerEvents: 'none', zIndex: 60,
@@ -875,8 +1059,8 @@ export default function GamePixelStrike() {
           }}>
             ∞ AMMO
           </div>
-          {/* Click to lock pointer hint */}
-          {!locked && (
+          {/* Click to lock pointer hint (desktop only) */}
+          {!isMobile && !locked && (
             <div style={{
               position: 'absolute', inset: 0,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -889,6 +1073,9 @@ export default function GamePixelStrike() {
               {lang === 'es' ? 'CLICK PARA APUNTAR' : lang === 'ru' ? 'КЛИКНИТЕ ДЛЯ ПРИЦЕЛА' : 'CLICK TO AIM'}
             </div>
           )}
+
+          {/* Mobile touch controls */}
+          {isMobile && <MobileControls mobileMoveRef={mobileMoveRef} mobileLookRef={mobileLookRef} mobileShootRef={mobileShootRef} />}
         </>
       )}
 
