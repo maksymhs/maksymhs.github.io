@@ -871,13 +871,13 @@ function MobileControls({ mobileMoveRef, mobileLookRef, mobileShootRef }) {
     <>
       {/* Left joystick — movement */}
       <div ref={joyLRef} onTouchStart={onLStart} onTouchMove={onLMove} onTouchEnd={onLEnd} onTouchCancel={onLEnd}
-        style={{ ...joyStyle, left: '25px', bottom: '25px' }}>
+        style={{ ...joyStyle, left: '25px', bottom: '65px' }}>
         <div ref={knobLRef} style={knobStyle} />
       </div>
 
       {/* Right joystick — look */}
       <div ref={joyRRef} onTouchStart={onRStart} onTouchMove={onRMove} onTouchEnd={onREnd} onTouchCancel={onREnd}
-        style={{ ...joyStyle, right: '25px', bottom: '25px' }}>
+        style={{ ...joyStyle, right: '25px', bottom: '65px' }}>
         <div ref={knobRRef} style={knobStyle} />
       </div>
 
@@ -885,7 +885,7 @@ function MobileControls({ mobileMoveRef, mobileLookRef, mobileShootRef }) {
       <div
         onTouchStart={(e) => { e.preventDefault(); mobileShootRef.current = true }}
         style={{
-          ...baseStyle, right: '35px', bottom: '165px', width: '70px', height: '70px',
+          ...baseStyle, right: '35px', bottom: '205px', width: '70px', height: '70px',
           background: 'rgba(255,60,60,0.3)', border: '2px solid rgba(255,60,60,0.5)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 75, fontSize: '24px', color: 'rgba(255,255,255,0.8)',
@@ -898,7 +898,7 @@ function MobileControls({ mobileMoveRef, mobileLookRef, mobileShootRef }) {
       <div
         onTouchStart={(e) => { e.preventDefault(); window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' })) }}
         style={{
-          ...baseStyle, right: '120px', bottom: '165px', width: '55px', height: '55px',
+          ...baseStyle, right: '120px', bottom: '205px', width: '55px', height: '55px',
           background: 'rgba(100,200,255,0.25)', border: '2px solid rgba(100,200,255,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 75, fontSize: '16px', color: 'rgba(255,255,255,0.7)',
