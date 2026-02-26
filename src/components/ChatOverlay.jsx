@@ -114,7 +114,7 @@ async function askAI(conversationHistory) {
       'X-Title': 'Maksym Portfolio'
     },
     body: JSON.stringify({
-      model: 'openai/gpt-oss-20b',
+      model: 'openai/gpt-oss-120b',
       messages: [
         { role: 'system', content: systemPrompt },
         ...conversationHistory
@@ -460,9 +460,11 @@ export default function ChatOverlay({ visible = true }) {
     respondToUser(msg)
   }, [inputText, respondToUser])
 
-  // Keyboard handlers (desktop)
+  // Keyboard handlers (desktop) — only active when overlay is visible (default view)
   useEffect(() => {
     const handleKey = (e) => {
+      if (!visible) return
+
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
         if (e.key === 'Escape') {
           e.preventDefault()
@@ -484,7 +486,7 @@ export default function ChatOverlay({ visible = true }) {
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [handleVoice, startTyping])
+  }, [visible, handleVoice, startTyping])
 
   const stateClass = state === 'listening' ? 'bubble-listening'
     : state === 'speaking' ? 'bubble-speaking'

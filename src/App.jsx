@@ -385,8 +385,8 @@ export default function App() {
             maxPolarAngle={view === 'outdoor' ? Math.PI / 2.1 : Math.PI / 2.2}
             minDistance={view === 'outdoor' ? 2 : 2}
             maxDistance={view === 'outdoor' ? 12 : 4.5}
-            minAzimuthAngle={view === 'outdoor' ? -Infinity : -Math.PI / 2.5}
-            maxAzimuthAngle={view === 'outdoor' ? Infinity : Math.PI / 2.5}
+            minAzimuthAngle={view === 'outdoor' ? -Infinity : -Math.PI / 1.2}
+            maxAzimuthAngle={view === 'outdoor' ? Infinity : Math.PI / 1.2}
             enablePan={false}
             autoRotate={false}
             target={[0, 1.2, -0.5]}
