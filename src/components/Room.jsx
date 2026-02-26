@@ -1400,9 +1400,13 @@ function Cat({ onClick, catRef: externalRef, view }) {
 
 // ========== COZY FURNITURE ==========
 
-function Bed() {
+function Bed({ onClick }) {
   return (
-    <group position={[2.8, 0, 2.6]} rotation={[0, Math.PI, 0]}>
+    <group position={[2.8, 0, 2.6]} rotation={[0, Math.PI, 0]}
+      onClick={(e) => { e.stopPropagation(); onClick?.() }}
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'auto')}
+    >
       {/* Frame */}
       <Vox position={[0, 0.25, 0]} args={[1.8, 0.12, 2.4]} color="#a07040" castShadow />
       {/* Legs */}
@@ -2175,7 +2179,7 @@ function Outdoor() {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick }) {
   return (
     <group>
       <Floor />
@@ -2188,7 +2192,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <Chair view={view} />
       <Bookshelf onClick={onBookshelfClick} onBookClick={onBookClick} interactive={view === 'bookshelf'} />
       <Chest onClick={onChestClick} open={chestOpen} />
-      <Bed />
+      <Bed onClick={onBedClick} />
       <BedRug />
       <Sofa />
       <Nightstand />
