@@ -1786,17 +1786,60 @@ function BedRug() {
 
 function Nightstand() {
   const [lampOn, setLampOn] = useState(true)
+  const [topOpen, setTopOpen] = useState(false)
+  const [botOpen, setBotOpen] = useState(false)
+  const topRef = useRef()
+  const botRef = useRef()
+  const topSlide = useRef(0)
+  const botSlide = useRef(0)
+
+  useFrame(() => {
+    if (topRef.current) {
+      const t1 = topOpen ? -0.25 : 0
+      topSlide.current += (t1 - topSlide.current) * 0.1
+      topRef.current.position.z = topSlide.current
+    }
+    if (botRef.current) {
+      const t2 = botOpen ? -0.25 : 0
+      botSlide.current += (t2 - botSlide.current) * 0.1
+      botRef.current.position.z = botSlide.current
+    }
+  })
+
   return (
     <group position={[1.6, 0, 3.4]}>
       {/* Top */}
       <Vox position={[0, 0.5, 0]} args={[0.5, 0.06, 0.45]} color="#a07040" />
       {/* Body */}
       <Vox position={[0, 0.3, 0]} args={[0.48, 0.34, 0.43]} color="#b07838" />
-      {/* Drawer */}
-      <Vox position={[0, 0.35, 0.22]} args={[0.4, 0.14, 0.02]} color="#c08848" />
-      <Vox position={[0, 0.35, 0.24]} args={[0.08, 0.04, 0.02]} color="#f0c040" />
-      <Vox position={[0, 0.2, 0.22]} args={[0.4, 0.14, 0.02]} color="#c08848" />
-      <Vox position={[0, 0.2, 0.24]} args={[0.08, 0.04, 0.02]} color="#f0c040" />
+      {/* Upper drawer - slides out toward room (-Z) */}
+      <group
+        ref={topRef}
+        onClick={(e) => { e.stopPropagation(); setTopOpen(!topOpen) }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        <Vox position={[0, 0.35, -0.22]} args={[0.4, 0.14, 0.02]} color="#c08848" />
+        <Vox position={[0, 0.35, 0.18]} args={[0.4, 0.14, 0.02]} color="#a05820" />
+        <Vox position={[-0.19, 0.35, -0.02]} args={[0.02, 0.14, 0.38]} color="#a05820" />
+        <Vox position={[0.19, 0.35, -0.02]} args={[0.02, 0.14, 0.38]} color="#a05820" />
+        <Vox position={[0, 0.29, -0.02]} args={[0.36, 0.02, 0.38]} color="#c08038" />
+        <Vox position={[0, 0.35, -0.24]} args={[0.08, 0.04, 0.02]} color="#f0c040" />
+      </group>
+      {/* Lower drawer - slides out toward room (-Z) */}
+      <group
+        ref={botRef}
+        onClick={(e) => { e.stopPropagation(); setBotOpen(!botOpen) }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = 'auto')}
+      >
+        <Vox position={[0, 0.2, -0.22]} args={[0.4, 0.14, 0.02]} color="#c08848" />
+        <Vox position={[0, 0.2, 0.18]} args={[0.4, 0.14, 0.02]} color="#a05820" />
+        <Vox position={[-0.19, 0.2, -0.02]} args={[0.02, 0.14, 0.38]} color="#a05820" />
+        <Vox position={[0.19, 0.2, -0.02]} args={[0.02, 0.14, 0.38]} color="#a05820" />
+        <Vox position={[0, 0.14, -0.02]} args={[0.36, 0.02, 0.38]} color="#c08038" />
+        <Vox position={[0, 0.2, -0.24]} args={[0.08, 0.04, 0.02]} color="#f0c040" />
+      </group>
       {/* Legs */}
       {[[-0.2, 0.06, -0.18], [0.2, 0.06, -0.18], [-0.2, 0.06, 0.18], [0.2, 0.06, 0.18]].map((pos, i) => (
         <Vox key={i} position={pos} args={[0.06, 0.12, 0.06]} color="#886030" />
