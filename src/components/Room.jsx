@@ -2057,6 +2057,135 @@ function Butterfly({ startPos }) {
   )
 }
 
+function PixelPig({ position, scale = 1, facing = 0, siblingRef, groupRef: externalRef }) {
+  const ref = useRef()
+  useEffect(() => { if (externalRef) externalRef.current = ref.current }, [])
+  const headRef = useRef()
+  const tailRef = useRef()
+  const flRef = useRef()
+  const frRef = useRef()
+  const blRef = useRef()
+  const brRef = useRef()
+  const startPos = useMemo(() => [...position], [])
+  const wanderAngle = useRef(facing)
+  const wanderTimer = useRef(Math.random() * 10)
+  const rooting = useRef(false)
+
+  useFrame((state) => {
+    if (!ref.current) return
+    const t = state.clock.elapsedTime
+    const dt = state.clock.getDelta() || 0.016
+
+    wanderTimer.current -= dt
+    if (wanderTimer.current <= 0) {
+      rooting.current = !rooting.current
+      wanderTimer.current = rooting.current ? 2 + Math.random() * 3 : 1.5 + Math.random() * 2.5
+      if (!rooting.current) wanderAngle.current += (Math.random() - 0.5) * 2
+    }
+
+    const walking = !rooting.current
+    if (walking) {
+      const spd = 0.015
+      ref.current.position.x += Math.sin(wanderAngle.current) * spd
+      ref.current.position.z += Math.cos(wanderAngle.current) * spd
+    }
+    const px = ref.current.position.x
+    const pz = ref.current.position.z
+    const dx = px - startPos[0]
+    const dz = pz - startPos[2]
+    if (dx * dx + dz * dz > 25) {
+      wanderAngle.current = Math.atan2(-dx, -dz) + (Math.random() - 0.5) * 0.3
+    }
+    // Avoid sibling pig
+    if (siblingRef?.current) {
+      const sx = siblingRef.current.position.x - px
+      const sz = siblingRef.current.position.z - pz
+      const sd = Math.sqrt(sx * sx + sz * sz)
+      if (sd < 2.0) {
+        wanderAngle.current = Math.atan2(-sx, -sz) + (Math.random() - 0.5) * 0.3
+        ref.current.position.x -= sx * 0.02
+        ref.current.position.z -= sz * 0.02
+      }
+    }
+    if (px > -26 && px < 26 && pz > -26 && pz < 26) {
+      const dists = [px + 26, 26 - px, pz + 26, 26 - pz]
+      const mi = dists.indexOf(Math.min(...dists))
+      if (mi === 0) ref.current.position.x = -26
+      else if (mi === 1) ref.current.position.x = 26
+      else if (mi === 2) ref.current.position.z = -26
+      else ref.current.position.z = 26
+      wanderAngle.current += Math.PI
+    }
+    ref.current.position.x = Math.max(-35, Math.min(35, ref.current.position.x))
+    ref.current.position.z = Math.max(-35, Math.min(35, ref.current.position.z))
+    ref.current.rotation.y = wanderAngle.current
+
+    const legSwing = walking ? Math.sin(t * 5) * 0.3 : 0
+    if (flRef.current) flRef.current.rotation.x = legSwing
+    if (brRef.current) brRef.current.rotation.x = legSwing
+    if (frRef.current) frRef.current.rotation.x = -legSwing
+    if (blRef.current) blRef.current.rotation.x = -legSwing
+
+    if (headRef.current) {
+      headRef.current.rotation.x = rooting.current
+        ? Math.sin(t * 3) * 0.1 + 0.3
+        : Math.sin(t * 0.8) * 0.05
+    }
+    if (tailRef.current) {
+      tailRef.current.rotation.z = Math.sin(t * 6) * 0.4
+      tailRef.current.rotation.x = Math.sin(t * 4) * 0.2
+    }
+  })
+
+  const s = scale
+  return (
+    <group ref={ref} position={position} rotation={[0, facing, 0]}>
+      {/* Body */}
+      <Vox position={[0, 0.5 * s, 0]} args={[0.7 * s, 0.55 * s, 1.0 * s]} color="#f0a8a0" />
+      <Vox position={[0, 0.55 * s, 0]} args={[0.65 * s, 0.45 * s, 0.9 * s]} color="#f0b0a8" />
+      {/* Head */}
+      <group ref={headRef} position={[0, 0.55 * s, 0.55 * s]}>
+        <Vox position={[0, 0.05 * s, 0.1 * s]} args={[0.5 * s, 0.45 * s, 0.45 * s]} color="#f0a8a0" />
+        {/* Snout */}
+        <Vox position={[0, -0.02 * s, 0.32 * s]} args={[0.32 * s, 0.24 * s, 0.18 * s]} color="#e89890" />
+        {/* Nostrils */}
+        <Vox position={[-0.06 * s, -0.04 * s, 0.42 * s]} args={[0.06 * s, 0.06 * s, 0.04 * s]} color="#c07068" />
+        <Vox position={[0.06 * s, -0.04 * s, 0.42 * s]} args={[0.06 * s, 0.06 * s, 0.04 * s]} color="#c07068" />
+        {/* Eyes */}
+        <Vox position={[-0.16 * s, 0.1 * s, 0.32 * s]} args={[0.12 * s, 0.12 * s, 0.06 * s]} color="#ffffff" />
+        <Vox position={[0.16 * s, 0.1 * s, 0.32 * s]} args={[0.12 * s, 0.12 * s, 0.06 * s]} color="#ffffff" />
+        <Vox position={[-0.16 * s, 0.09 * s, 0.36 * s]} args={[0.07 * s, 0.07 * s, 0.04 * s]} color="#101010" />
+        <Vox position={[0.16 * s, 0.09 * s, 0.36 * s]} args={[0.07 * s, 0.07 * s, 0.04 * s]} color="#101010" />
+        {/* Ears - floppy */}
+        <Vox position={[-0.22 * s, 0.22 * s, 0.05 * s]} args={[0.14 * s, 0.18 * s, 0.1 * s]} color="#e8a098" />
+        <Vox position={[0.22 * s, 0.22 * s, 0.05 * s]} args={[0.14 * s, 0.18 * s, 0.1 * s]} color="#e8a098" />
+      </group>
+      {/* Legs */}
+      <group ref={flRef} position={[-0.2 * s, 0.2 * s, 0.35 * s]}>
+        <Vox position={[0, -0.1 * s, 0]} args={[0.16 * s, 0.35 * s, 0.16 * s]} color="#e89890" />
+        <Vox position={[0, -0.28 * s, 0]} args={[0.14 * s, 0.06 * s, 0.14 * s]} color="#c08078" />
+      </group>
+      <group ref={frRef} position={[0.2 * s, 0.2 * s, 0.35 * s]}>
+        <Vox position={[0, -0.1 * s, 0]} args={[0.16 * s, 0.35 * s, 0.16 * s]} color="#e89890" />
+        <Vox position={[0, -0.28 * s, 0]} args={[0.14 * s, 0.06 * s, 0.14 * s]} color="#c08078" />
+      </group>
+      <group ref={blRef} position={[-0.2 * s, 0.2 * s, -0.35 * s]}>
+        <Vox position={[0, -0.1 * s, 0]} args={[0.16 * s, 0.35 * s, 0.16 * s]} color="#e89890" />
+        <Vox position={[0, -0.28 * s, 0]} args={[0.14 * s, 0.06 * s, 0.14 * s]} color="#c08078" />
+      </group>
+      <group ref={brRef} position={[0.2 * s, 0.2 * s, -0.35 * s]}>
+        <Vox position={[0, -0.1 * s, 0]} args={[0.16 * s, 0.35 * s, 0.16 * s]} color="#e89890" />
+        <Vox position={[0, -0.28 * s, 0]} args={[0.14 * s, 0.06 * s, 0.14 * s]} color="#c08078" />
+      </group>
+      {/* Curly tail */}
+      <group ref={tailRef} position={[0, 0.6 * s, -0.55 * s]}>
+        <Vox position={[0, 0.04 * s, -0.04 * s]} args={[0.06 * s, 0.06 * s, 0.1 * s]} color="#f0a8a0" />
+        <Vox position={[0, 0.08 * s, -0.08 * s]} args={[0.05 * s, 0.06 * s, 0.05 * s]} color="#e89890" />
+      </group>
+    </group>
+  )
+}
+
 function PixelCow({ position, color = '#f0f0f0', spotColor = '#303030', facing = 0 }) {
   const ref = useRef()
   const headRef = useRef()
@@ -2143,10 +2272,6 @@ function PixelCow({ position, color = '#f0f0f0', spotColor = '#303030', facing =
     <group ref={ref} position={position} rotation={[0, facing, 0]}>
       {/* Body */}
       <Vox position={[0, 1.1, 0]} args={[1.0, 0.8, 1.8]} color={color} />
-      {/* Spots */}
-      <Vox position={[0.3, 1.2, 0.3]} args={[0.35, 0.25, 0.45]} color={spotColor} />
-      <Vox position={[-0.2, 1.15, -0.35]} args={[0.3, 0.2, 0.35]} color={spotColor} />
-      <Vox position={[0.1, 1.3, -0.1]} args={[0.2, 0.15, 0.3]} color={spotColor} />
       {/* Head */}
       <group ref={headRef} position={[0, 1.3, 0.9]}>
         <Vox position={[0, 0.1, 0.2]} args={[0.7, 0.6, 0.6]} color={color} />
@@ -2725,6 +2850,8 @@ function ExteriorVegetation() {
 }
 
 function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
+  const pig1Ref = useRef()
+  const pig2Ref = useRef()
   return (
     <group>
       <Grass />
@@ -2799,6 +2926,10 @@ function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
 
       {/* Exterior vegetation — scattered naturally using seeded random */}
       <ExteriorVegetation />
+
+      {/* Pigs on the sparse side */}
+      <PixelPig position={[20, 0, 28]} scale={1.3} facing={-0.6} groupRef={pig1Ref} siblingRef={pig2Ref} />
+      <PixelPig position={[22, 0, 30]} scale={0.8} facing={0.8} groupRef={pig2Ref} siblingRef={pig1Ref} />
 
       {/* Cows grazing outside the fence */}
       <PixelCow position={[-28, 0, 8]} facing={0.5} />
