@@ -188,40 +188,6 @@ function fireKey(key, type = 'keydown') {
 }
 
 function pressKey(key) { return { onTouchStart: (e) => { e.preventDefault(); fireKey(key) }, onTouchEnd: () => fireKey(key, 'keyup'), onMouseDown: (e) => { e.preventDefault(); fireKey(key) }, onMouseUp: () => fireKey(key, 'keyup'), onMouseLeave: () => fireKey(key, 'keyup') } }
-function tapKey(key) { return { onTouchStart: (e) => { e.preventDefault(); fireKey(key) }, onMouseDown: (e) => { e.preventDefault(); fireKey(key) } } }
-
-function GameDPad() {
-  return (
-    <>
-      {/* Left side: ◀ ▶ — bottom-left */}
-      <div style={{
-        position: 'absolute', bottom: '40px', left: '20px',
-        zIndex: 200, pointerEvents: 'auto', display: 'flex', gap: '8px', alignItems: 'center',
-      }}>
-        <button style={catBtn} {...pressKey('ArrowLeft')}>◀</button>
-        <button style={catBtn} {...pressKey('ArrowRight')}>▶</button>
-      </div>
-
-      {/* Right side: ▲ ▼ + DROP — bottom-right */}
-      <div style={{
-        position: 'absolute', bottom: '40px', right: '20px',
-        zIndex: 200, pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-      }}>
-        <button style={catBtn} {...pressKey('ArrowUp')}>▲</button>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button style={catBtn} {...pressKey('ArrowDown')}>▼</button>
-          <button style={{
-            ...catBtn, width: '68px', height: '68px', fontSize: '13px',
-            fontFamily: "'Press Start 2P', monospace", background: 'rgba(100,180,255,0.4)',
-            border: '2px solid rgba(140,200,255,0.6)',
-          }} {...tapKey(' ')}>DROP</button>
-        </div>
-      </div>
-
-    </>
-  )
-}
-
 const catBtn = {
   width: '58px', height: '58px', display: 'flex', alignItems: 'center', justifyContent: 'center',
   background: 'rgba(0,0,0,0.35)', border: '2px solid rgba(255,255,255,0.4)',
@@ -269,7 +235,6 @@ export default function App() {
   const [chestOpen, setChestOpen] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
   const [cardSelected, setCardSelected] = useState(false)
-  const [gameActive, setGameActive] = useState(false)
   const catRef = useRef()
   const playerRef = useRef()
   const isMobile = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
@@ -382,7 +347,7 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onGameChange={setGameActive} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} onNpcNear={setNpcNear} npcInteractRef={npcInteractCb} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} onNpcNear={setNpcNear} npcInteractRef={npcInteractCb} />
             <Character position={[0, 0, -0.6]} seated view={view} playerRef={playerRef} catRef={catRef} />
           </Suspense>
 
@@ -495,7 +460,6 @@ export default function App() {
           }
         </button>
       )}
-      {isMobile && gameActive && <GameDPad />}
       {isMobile && (view === 'outdoor' || view === 'walk') && <CatDPad />}
       <ChatOverlay visible={view === 'default'} />
       <SplashScreen />

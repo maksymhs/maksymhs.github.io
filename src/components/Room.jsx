@@ -2,7 +2,7 @@ import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react'
 import { useFrame, useLoader, useThree } from '@react-three/fiber'
 import { Text, Billboard } from '@react-three/drei'
 import * as THREE from 'three'
-import { SnakeGame, PongGame, TetrisGame } from './MiniGames.jsx'
+// Games now open as fullscreen 3D worlds at /game_xxx routes
 import { lang } from '../i18n'
 
 // Helper: pixel-art style flat material
@@ -304,32 +304,20 @@ const LOG_LINES = [
 ]
 
 const GAMES = [
-  { name: 'Snake', color: '#40c040' },
-  { name: 'Pong', color: '#4080e0' },
-  { name: 'Tetris', color: '#e04040' },
+  { name: 'Space Runner', color: '#4090ff', url: '/game_space' },
+  { name: 'Neon Racer', color: '#ff00ff', url: '/game_racing' },
+  { name: '3D Jumper', color: '#40c040', url: '/game_platformer' },
 ]
 
-function Monitor({ onClick, view, onGameChange }) {
+function Monitor({ onClick, view }) {
   const screenRef = useRef()
   const linesRef = useRef()
   const scrollRef = useRef(0)
-  const [activeGame, setActiveGame] = useState(null)
   const LINE_H = 0.04
   const VISIBLE = 8
   const SCREEN_TOP = 0.57
   const SCREEN_BOT = 0.23
-  const showMenu = view === 'controller' && !activeGame
-  const showGame = view === 'controller' && activeGame
-
-  // Reset game when leaving controller view
-  React.useEffect(() => {
-    if (view !== 'controller') setActiveGame(null)
-  }, [view])
-
-  // Notify parent when game changes
-  React.useEffect(() => {
-    onGameChange?.(!!activeGame)
-  }, [activeGame, onGameChange])
+  const showMenu = view === 'controller'
 
   useFrame((state, delta) => {
     if (screenRef.current) {
@@ -337,7 +325,7 @@ function Monitor({ onClick, view, onGameChange }) {
       screenRef.current.material.emissive.set('#2040a0')
       screenRef.current.material.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.08
     }
-    if (showMenu || showGame) return
+    if (showMenu) return
     scrollRef.current += delta * 0.3
     if (linesRef.current) {
       const step = Math.floor(scrollRef.current / LINE_H)
@@ -371,8 +359,8 @@ function Monitor({ onClick, view, onGameChange }) {
         <boxGeometry args={[0.95, 0.6, 0.02]} />
         <meshLambertMaterial color="#1a1a30" emissive="#2040a0" emissiveIntensity={0.3} flatShading />
       </mesh>
-      {/* Scrolling log lines (hidden when menu/game active) */}
-      <group ref={linesRef} visible={!showMenu && !showGame}>
+      {/* Scrolling log lines (hidden when menu active) */}
+      <group ref={linesRef} visible={!showMenu}>
         {Array.from({ length: VISIBLE + 2 }).map((_, i) => (
           <mesh key={i} position={[0, SCREEN_TOP - i * LINE_H, 0.175]}>
             <boxGeometry args={[0.9, 0.02, 0.005]} />
@@ -404,7 +392,7 @@ function Monitor({ onClick, view, onGameChange }) {
             <group
               key={i}
               position={[0, 0.08 - i * 0.12, 0]}
-              onClick={(e) => { e.stopPropagation(); setActiveGame(game.name.toLowerCase()) }}
+              onClick={(e) => { e.stopPropagation(); window.location.href = game.url }}
               onPointerOver={() => (document.body.style.cursor = 'pointer')}
               onPointerOut={() => (document.body.style.cursor = 'auto')}
             >
@@ -443,14 +431,6 @@ function Monitor({ onClick, view, onGameChange }) {
               <meshBasicMaterial color="#000000" opacity={0.15} transparent />
             </mesh>
           ))}
-        </group>
-      )}
-      {/* Active game on screen */}
-      {showGame && (
-        <group position={[0, 0.4, 0.18]}>
-          {activeGame === 'snake' && <SnakeGame onExit={() => setActiveGame(null)} />}
-          {activeGame === 'pong' && <PongGame onExit={() => setActiveGame(null)} />}
-          {activeGame === 'tetris' && <TetrisGame onExit={() => setActiveGame(null)} />}
         </group>
       )}
       {/* Stand */}
@@ -2818,7 +2798,7 @@ function ExteriorWalls() {
 const NPC_DIALOGUES = {
   en: [
     "Hey there! Have you checked out the bookshelf inside? Each book is a different project!",
-    "There's a game console on the desk — try Snake, Pong or Tetris!",
+    "There's a game console on the desk — try Space Runner, Neon Racer or 3D Jumper!",
     "Click the headphones on the desk... you won't regret it!",
     "Michi knocked my coffee off the table this morning. Again.",
     "That cat once sat on the keyboard and deleted an entire file. True story.",
@@ -2832,7 +2812,7 @@ const NPC_DIALOGUES = {
   ],
   es: [
     "¡Ey! ¿Has mirado la estantería dentro? ¡Cada libro es un proyecto diferente!",
-    "Hay una consola de juegos en el escritorio — ¡prueba Snake, Pong o Tetris!",
+    "Hay una consola de juegos en el escritorio — ¡prueba Space Runner, Neon Racer o 3D Jumper!",
     "Haz clic en los auriculares del escritorio... ¡no te arrepentirás!",
     "Michi me ha tirado el café de la mesa esta mañana. Otra vez.",
     "Ese gato una vez se sentó en el teclado y borró un archivo entero. Historia real.",
@@ -2846,7 +2826,7 @@ const NPC_DIALOGUES = {
   ],
   ru: [
     "Привет! Ты видел книжную полку внутри? Каждая книга — это отдельный проект!",
-    "На столе есть игровая приставка — попробуй Snake, Pong или Tetris!",
+    "На столе есть игровая приставка — попробуй Space Runner, Neon Racer или 3D Jumper!",
     "Кликни на наушники на столе... не пожалеешь!",
     "Мичи опрокинул мне кофе со стола сегодня утром. Опять.",
     "Этот кот однажды сел на клавиатуру и удалил целый файл. Реальная история.",
@@ -3434,13 +3414,13 @@ function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onGameChange, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef, onNpcNear, npcInteractRef }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef, onNpcNear, npcInteractRef }) {
   return (
     <group>
       <Floor />
       <Walls onWindowClick={onWindowClick} windowOpen={view === 'outdoor'} onDoorClick={onDoorClick} view={view} />
       <Desk />
-      <Monitor onClick={onControllerClick} view={view} onGameChange={onGameChange} />
+      <Monitor onClick={onControllerClick} view={view} />
       <DeskItems />
       <Keyboard />
       <Mouse />
