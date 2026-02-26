@@ -1001,10 +1001,10 @@ const wallColliders = [
 // Other colliders — only enforced near ground (can jump over)
 const groundColliders = [
   // Trees — back side (radius ~0.6)
-  ...[ [-6,-10],[-3,-12],[2,-11],[6,-9],[10,-13],[-10,-14],[14,-11],[-14,-10] ]
+  ...[ [-6,-10],[-3,-12],[2,-11],[6,-9],[10,-13],[-10,-14],[14,-11] ]
     .map(([x,z]) => [x-0.6, x+0.6, z-0.6, z+0.6]),
   // Trees — left side
-  ...[ [-10,-4],[-12,2],[-9,7],[-13,10],[-11,-8] ]
+  ...[ [-10,-4],[-12,2],[-13,10],[-11,-8] ]
     .map(([x,z]) => [x-0.6, x+0.6, z-0.6, z+0.6]),
   // Trees — right side
   ...[ [10,-5],[12,2],[14,8],[11,14],[9,-12] ]
@@ -1016,7 +1016,7 @@ const groundColliders = [
   ...[ [-20,-20],[20,-18],[-18,18],[18,20],[0,-22],[-22,0],[22,0],[0,22] ]
     .map(([x,z]) => [x-0.6, x+0.6, z-0.6, z+0.6]),
   // Benches
-  [-8.6, -7.4, 5.4, 6.6],
+  [-7.6, -6.4, 4.4, 5.6],
   [9.4, 10.6, -8.6, -7.4],
   [7.4, 8.6, 11.4, 12.6],
   // Vegetable garden fence (center -15, -15)
@@ -1950,18 +1950,17 @@ function Grass() {
       {[[-8,-8],[-15,5],[12,-12],[18,8],[-20,-15],[8,15],[-12,18],[20,-8],[0,-18],[-18,12],[15,-18],[0,18]].map(([x,z],i) => (
         <Vox key={`gp${i}`} position={[x, -0.07, z]} args={[3+i%3, 0.05, 2+i%4]} color={i%2===0?'#50a830':'#68c048'} castShadow={false} />
       ))}
-      {/* Stone paths around house */}
-      <Vox position={[0, -0.06, -6]} args={[1.4, 0.06, 4]} color="#d4b888" castShadow={false} />
-      <Vox position={[0, -0.06, -10]} args={[1.4, 0.06, 6]} color="#ccb080" castShadow={false} />
-      <Vox position={[-6, -0.06, 0]} args={[4, 0.06, 1.4]} color="#d4b888" castShadow={false} />
-      <Vox position={[-10, -0.06, 0]} args={[6, 0.06, 1.4]} color="#ccb080" castShadow={false} />
-      <Vox position={[6, -0.06, 0]} args={[4, 0.06, 1.4]} color="#d4b888" castShadow={false} />
-      <Vox position={[0, -0.06, 6]} args={[1.4, 0.06, 4]} color="#d4b888" castShadow={false} />
-      {/* Circular path around house */}
-      <Vox position={[0, -0.06, -15]} args={[18, 0.06, 1.2]} color="#c8a878" castShadow={false} />
-      <Vox position={[0, -0.06, 15]} args={[18, 0.06, 1.2]} color="#c8a878" castShadow={false} />
-      <Vox position={[-15, -0.06, 0]} args={[1.2, 0.06, 30]} color="#c8a878" castShadow={false} />
-      <Vox position={[15, -0.06, 0]} args={[1.2, 0.06, 30]} color="#c8a878" castShadow={false} />
+      {/* Path from entrance door to vegetable garden — right angles only */}
+      {/* 1. From door straight forward (z=4 to z=7) */}
+      <Vox position={[0, -0.06, 5.5]} args={[1.4, 0.06, 3]} color="#d4b888" castShadow={false} />
+      {/* 2. Corner tile */}
+      <Vox position={[0, -0.06, 7]} args={[1.4, 0.06, 1.4]} color="#ccb080" castShadow={false} />
+      {/* 3. Turn left — straight to x=-15 */}
+      <Vox position={[-7.5, -0.06, 7]} args={[14, 0.06, 1.4]} color="#d4b888" castShadow={false} />
+      {/* 4. Corner tile */}
+      <Vox position={[-15, -0.06, 7]} args={[1.4, 0.06, 1.4]} color="#ccb080" castShadow={false} />
+      {/* 5. Turn back — straight down to garden (z=7 to z=-13) */}
+      <Vox position={[-15, -0.06, -3]} args={[1.4, 0.06, 19]} color="#d4b888" castShadow={false} />
       {/* Distant hills all around */}
       <Vox position={[0, 0.5, -40]} args={[80, 2, 6]} color="#48a038" castShadow={false} />
       <Vox position={[0, 0.5, 40]} args={[80, 2, 6]} color="#48a038" castShadow={false} />
@@ -1992,6 +1991,11 @@ function Flowers() {
       const z = -25 + r() * 50
       // Skip if inside house footprint
       if (Math.abs(x) < 5 && Math.abs(z) < 5) continue
+      // Skip if on the path (door to garden)
+      const onPath1 = x > -1 && x < 1 && z > 4 && z < 8      // door forward
+      const onPath2 = x > -16 && x < 1 && z > 6 && z < 8.5    // left turn
+      const onPath3 = x > -16 && x < -14 && z > -13 && z < 8  // down to garden
+      if (onPath1 || onPath2 || onPath3) continue
       flowers.push({
         x, z,
         color: colors[Math.floor(r() * colors.length)],
@@ -3006,8 +3010,8 @@ function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
       <ExteriorWalls />
 
       {/* Garden furniture */}
-      <GardenBench position={[-8, 0, 6]} rotation={[0, Math.PI / 4, 0]} />
-      <NPCCharacter position={[-8, 0.12, 6]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} onNpcNear={onNpcNear} npcInteractRef={npcInteractRef} />
+      <GardenBench position={[-7, 0, 5]} rotation={[0, Math.PI / 4, 0]} />
+      <NPCCharacter position={[-7, 0.12, 5]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} onNpcNear={onNpcNear} npcInteractRef={npcInteractRef} />
       <GardenBench position={[10, 0, -8]} rotation={[0, -Math.PI / 3, 0]} />
       <GardenBench position={[8, 0, 12]} rotation={[0, Math.PI, 0]} />
 
@@ -3038,12 +3042,10 @@ function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
       <PixelTree position={[10, -0.1, -13]} leafColor="#50b850" />
       <PixelTree position={[-10, -0.1, -14]} leafColor="#38a038" />
       <PixelTree position={[14, -0.1, -11]} trunkColor="#685020" leafColor="#48b048" />
-      <PixelTree position={[-14, -0.1, -10]} leafColor="#40a840" />
 
       {/* Left side */}
       <PixelTree position={[-10, -0.1, -4]} leafColor="#48b848" />
       <PixelTree position={[-12, -0.1, 2]} trunkColor="#704828" leafColor="#38a038" />
-      <PixelTree position={[-9, -0.1, 7]} leafColor="#50b050" />
       <PixelTree position={[-13, -0.1, 10]} leafColor="#48b048" />
       <PixelTree position={[-11, -0.1, -8]} trunkColor="#685020" leafColor="#50b050" />
 
