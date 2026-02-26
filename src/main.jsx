@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App.jsx'
 import GameCatRunner from './components/GameCatRunner.jsx'
 import GamePlatformer from './components/GamePlatformer.jsx'
-import GameRacing from './components/GameRacing.jsx'
+import GamePixelStrike from './components/GamePixelStrike.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/" element={<App />} />
         <Route path="/game_catrunner" element={<GameCatRunner />} />
         <Route path="/game_platformer" element={<GamePlatformer />} />
-        <Route path="/game_racing" element={<GameRacing />} />
+        <Route path="/game_pixelstrike" element={<GamePixelStrike />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

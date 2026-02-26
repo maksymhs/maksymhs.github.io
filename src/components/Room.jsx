@@ -305,7 +305,7 @@ const LOG_LINES = [
 
 const GAMES = [
   { name: 'Cat Runner', color: '#f0a860', url: '/game_catrunner' },
-  { name: 'Neon Racer', color: '#ff00ff', url: '/game_racing' },
+  { name: 'Pixel Strike', color: '#ff4040', url: '/game_pixelstrike' },
   { name: '3D Jumper', color: '#40c040', url: '/game_platformer' },
 ]
 
@@ -2798,7 +2798,7 @@ function ExteriorWalls() {
 const NPC_DIALOGUES = {
   en: [
     "Hey there! Have you checked out the bookshelf inside? Each book is a different project!",
-    "There's a game console on the desk — try Cat Runner, Neon Racer or 3D Jumper!",
+    "There's a game console on the desk — try Cat Runner, Pixel Strike or 3D Jumper!",
     "Click the headphones on the desk... you won't regret it!",
     "Michi knocked my coffee off the table this morning. Again.",
     "That cat once sat on the keyboard and deleted an entire file. True story.",
@@ -2812,7 +2812,7 @@ const NPC_DIALOGUES = {
   ],
   es: [
     "¡Ey! ¿Has mirado la estantería dentro? ¡Cada libro es un proyecto diferente!",
-    "Hay una consola de juegos en el escritorio — ¡prueba Cat Runner, Neon Racer o 3D Jumper!",
+    "Hay una consola de juegos en el escritorio — ¡prueba Cat Runner, Pixel Strike o 3D Jumper!",
     "Haz clic en los auriculares del escritorio... ¡no te arrepentirás!",
     "Michi me ha tirado el café de la mesa esta mañana. Otra vez.",
     "Ese gato una vez se sentó en el teclado y borró un archivo entero. Historia real.",
@@ -2826,7 +2826,7 @@ const NPC_DIALOGUES = {
   ],
   ru: [
     "Привет! Ты видел книжную полку внутри? Каждая книга — это отдельный проект!",
-    "На столе есть игровая приставка — попробуй Cat Runner, Neon Racer или 3D Jumper!",
+    "На столе есть игровая приставка — попробуй Cat Runner, Pixel Strike или 3D Jumper!",
     "Кликни на наушники на столе... не пожалеешь!",
     "Мичи опрокинул мне кофе со стола сегодня утром. Опять.",
     "Этот кот однажды сел на клавиатуру и удалил целый файл. Реальная история.",
