@@ -162,6 +162,16 @@ const UNIFORMS = [
 // Gun component removed — replaced by FPSWeapon above
 
 // === Enemy bot — NPC style matching Room.jsx characters ===
+// Pick a random walkable position on the map
+function randomWaypoint() {
+  for (let tries = 0; tries < 30; tries++) {
+    const x = (Math.random() - 0.5) * 50
+    const z = (Math.random() - 0.5) * 50
+    if (!isInsideWall(x, z, 0.5)) return { x, z }
+  }
+  return { x: 0, z: 0 }
+}
+
 function Enemy({ data }) {
   const ref = useRef()
   const flashRef = useRef()
@@ -172,32 +182,132 @@ function Enemy({ data }) {
   const armLRef = useRef()
   const armRRef = useRef()
   const prevPos = useRef({ x: data.x, z: data.z })
+  const facingAngle = useRef(0)
   const u = data.uniform || UNIFORMS[0]
 
-  useFrame((state) => {
+  // Waypoint AI state stored on data object (mutable)
+  if (!data._wp) {
+    const wp = randomWaypoint()
+    data._wp = { tx: wp.x, tz: wp.z, idle: 0, moveSpeed: 2.5 + Math.random() * 2 }
+    data._pos = { x: data.x, z: data.z }
+  }
+
+  useFrame((state, delta) => {
     if (!ref.current || !data.alive) return
     const t = state.clock.elapsedTime + data.offset
-    let nx = data.x + Math.sin(t * data.speed) * data.range
-    let nz = data.z + Math.cos(t * data.speed * 0.7) * data.range * 0.6
-    // NPC wall collision — stay out of walls
-    if (isInsideWall(nx, nz, 0.3)) {
-      nx = ref.current.position.x
-      nz = ref.current.position.z
-    }
-    ref.current.position.x = nx
-    ref.current.position.z = nz
+    const wp = data._wp
+    const pos = data._pos
 
-    // Rotate body to face camera
+    // Idle pause
+    if (wp.idle > 0) {
+      wp.idle -= delta
+    } else {
+      // Walk toward waypoint
+      const dxW = wp.tx - pos.x
+      const dzW = wp.tz - pos.z
+      const distW = Math.sqrt(dxW * dxW + dzW * dzW)
+
+      if (distW < 1.5) {
+        // Reached waypoint — pick new one, maybe pause
+        const nwp = randomWaypoint()
+        wp.tx = nwp.x
+        wp.tz = nwp.z
+        wp.idle = 0.5 + Math.random() * 2
+        wp.moveSpeed = 2 + Math.random() * 2.5
+      } else {
+        const dirX = dxW / distW
+        const dirZ = dzW / distW
+        const step = wp.moveSpeed * delta
+        let nx = pos.x + dirX * step
+        let nz = pos.z + dirZ * step
+        let moved = false
+
+        if (!isInsideWall(nx, nz, 0.4)) {
+          moved = true
+        } else {
+          // Try sliding along each axis
+          if (!isInsideWall(nx, pos.z, 0.4)) {
+            nz = pos.z; moved = true
+          } else if (!isInsideWall(pos.x, nz, 0.4)) {
+            nx = pos.x; moved = true
+          } else {
+            // Try perpendicular directions to go around wall
+            const perpLX = pos.x + (-dirZ) * step
+            const perpLZ = pos.z + (dirX) * step
+            const perpRX = pos.x + (dirZ) * step
+            const perpRZ = pos.z + (-dirX) * step
+            const leftOk = !isInsideWall(perpLX, perpLZ, 0.4)
+            const rightOk = !isInsideWall(perpRX, perpRZ, 0.4)
+            if (leftOk && rightOk) {
+              // Pick the one closer to waypoint
+              const dL = (wp.tx - perpLX) ** 2 + (wp.tz - perpLZ) ** 2
+              const dR = (wp.tx - perpRX) ** 2 + (wp.tz - perpRZ) ** 2
+              if (dL < dR) { nx = perpLX; nz = perpLZ } else { nx = perpRX; nz = perpRZ }
+              moved = true
+            } else if (leftOk) {
+              nx = perpLX; nz = perpLZ; moved = true
+            } else if (rightOk) {
+              nx = perpRX; nz = perpRZ; moved = true
+            }
+          }
+        }
+
+        if (!moved) {
+          // Truly stuck — increment stuck counter, pick new waypoint after a few frames
+          wp._stuck = (wp._stuck || 0) + 1
+          if (wp._stuck > 10) {
+            const nwp = randomWaypoint()
+            wp.tx = nwp.x; wp.tz = nwp.z
+            wp._stuck = 0
+          }
+          nx = pos.x; nz = pos.z
+        } else {
+          wp._stuck = 0
+        }
+
+        // Player avoidance
+        const cam = state.camera.position
+        const dpx = nx - cam.x, dpz = nz - cam.z
+        if (dpx * dpx + dpz * dpz < 1.5) {
+          nx = pos.x; nz = pos.z
+        }
+
+        // Clamp to map bounds
+        nx = Math.max(-27, Math.min(27, nx))
+        nz = Math.max(-27, Math.min(27, nz))
+
+        pos.x = nx
+        pos.z = nz
+      }
+    }
+
+    ref.current.position.x = pos.x
+    ref.current.position.z = pos.z
+
+    // Smooth rotation toward movement direction or toward player when close
     const cam = state.camera.position
-    const angle = Math.atan2(cam.x - nx, cam.z - nz)
-    ref.current.rotation.y = angle
+    const dToPlayer = Math.sqrt((cam.x - pos.x) ** 2 + (cam.z - pos.z) ** 2)
+    let targetAngle
+    if (dToPlayer < 15) {
+      // Face player when nearby
+      targetAngle = Math.atan2(cam.x - pos.x, cam.z - pos.z)
+    } else {
+      // Face movement direction
+      targetAngle = Math.atan2(wp.tx - pos.x, wp.tz - pos.z)
+    }
+    // Smooth turn
+    let angleDiff = targetAngle - facingAngle.current
+    while (angleDiff > Math.PI) angleDiff -= Math.PI * 2
+    while (angleDiff < -Math.PI) angleDiff += Math.PI * 2
+    facingAngle.current += angleDiff * Math.min(1, 5 * delta)
+    ref.current.rotation.y = facingAngle.current
 
     // Walking animation
-    const dx = nx - prevPos.current.x
-    const dz = nz - prevPos.current.z
+    const dx = pos.x - prevPos.current.x
+    const dz = pos.z - prevPos.current.z
     const moving = Math.sqrt(dx * dx + dz * dz) > 0.001
-    prevPos.current.x = nx
-    prevPos.current.z = nz
+    prevPos.current.x = pos.x
+    prevPos.current.z = pos.z
 
     const walkCycle = Math.sin(t * 8)
     if (moving) {
@@ -209,19 +319,24 @@ function Enemy({ data }) {
       }
       if (armLRef.current) armLRef.current.rotation.x = -walkCycle * 0.3
     } else {
-      if (legLRef.current) legLRef.current.rotation.x *= 0.9
-      if (legRRef.current) legRRef.current.rotation.x *= 0.9
+      if (legLRef.current) legLRef.current.rotation.x *= 0.85
+      if (legRRef.current) legRRef.current.rotation.x *= 0.85
       if (bodyRef.current) { bodyRef.current.rotation.z *= 0.9; bodyRef.current.position.y = 1.05 }
-      if (armLRef.current) armLRef.current.rotation.x *= 0.9
+      if (armLRef.current) armLRef.current.rotation.x *= 0.85
     }
 
-    // Head tracks player
+    // Head tracks player with smooth look
     if (headRef.current) {
-      headRef.current.rotation.y = Math.sin(t * 0.5) * 0.08
+      if (dToPlayer < 20) {
+        const localAngle = targetAngle - facingAngle.current
+        headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, Math.max(-0.6, Math.min(0.6, localAngle)), 0.1)
+      } else {
+        headRef.current.rotation.y *= 0.92
+      }
       headRef.current.rotation.x = Math.sin(t * 0.7) * 0.04
     }
 
-    // Right arm holds gun aimed forward — slight recoil when shooting
+    // Right arm holds gun — recoil
     if (armRRef.current) {
       armRRef.current.rotation.x = -1.4 + (data.shooting > 0 ? 0.15 : 0)
     }
@@ -387,21 +502,18 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
   // Spawn enemies
   const spawnWave = useCallback(() => {
     const count = 3 + waveRef.current * 2
-    const spawns = [
-      [-15, -20], [10, -7], [20, -15], [-20, 10], [15, 15],
-      [-15, 15], [0, -25], [25, 0], [-25, -10], [10, 20],
-    ]
     const newEnemies = []
-    for (let i = 0; i < count && i < spawns.length; i++) {
+    for (let i = 0; i < count && i < 10; i++) {
+      const sp = randomWaypoint()
       newEnemies.push({
         id: idRef.current++,
-        x: spawns[i][0],
-        z: spawns[i][1],
+        x: sp.x,
+        z: sp.z,
         alive: true,
         offset: Math.random() * 10,
-        speed: 0.4 + Math.random() * 0.4,
-        range: 2 + Math.random() * 3,
+        shooting: 0,
         uniform: UNIFORMS[Math.floor(Math.random() * UNIFORMS.length)],
+        _wp: null, _pos: null,
       })
     }
     enemiesRef.current = newEnemies
@@ -520,10 +632,9 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
       }
       // Enemy hit check
       for (const enemy of enemiesRef.current) {
-        if (!enemy.alive) continue
-        const now = performance.now() / 1000
-        const ex = enemy.x + Math.sin((now + enemy.offset) * enemy.speed) * enemy.range
-        const ez = enemy.z + Math.cos((now + enemy.offset) * enemy.speed * 0.7) * enemy.range * 0.6
+        if (!enemy.alive || !enemy._pos) continue
+        const ex = enemy._pos.x
+        const ez = enemy._pos.z
         const dx = b.pos[0] - ex, dz = b.pos[2] - ez
         if (dx * dx + dz * dz < 0.5) {
           enemy.alive = false
@@ -543,9 +654,9 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
     // Enemy shooting AI
     const now = performance.now() / 1000
     for (const enemy of enemiesRef.current) {
-      if (!enemy.alive) continue
-      const ex = enemy.x + Math.sin((now + enemy.offset) * enemy.speed) * enemy.range
-      const ez = enemy.z + Math.cos((now + enemy.offset) * enemy.speed * 0.7) * enemy.range * 0.6
+      if (!enemy.alive || !enemy._pos) continue
+      const ex = enemy._pos.x
+      const ez = enemy._pos.z
       const dx = camera.position.x - ex
       const dz = camera.position.z - ez
       const dist = Math.sqrt(dx * dx + dz * dz)
