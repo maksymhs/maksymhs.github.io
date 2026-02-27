@@ -1,0 +1,62 @@
+import { buildMultilingualPrompt, PROFILE } from '../../profileContext'
+
+export const SPEECH_LANGS = { en: 'en-US', es: 'es-ES', ru: 'ru-RU' }
+
+export const i18n = {
+  en: {
+    welcome: "Hi! I'm Maksym, a Software Engineer.\nPress SPACE to talk or ENTER to type!",
+    idle: "Press SPACE to talk or ENTER to type!",
+    listening: "I'm listening...",
+    noSpeech: "I didn't hear you. Press SPACEBAR again!",
+    thinking: "Let me think...",
+    fallback: `I can't connect right now. Check out my profile on LinkedIn[${PROFILE.linkedinUrl}] or leave me a {{MESSAGE}}`,
+    hintIdle: "[ SPACE ] Talk",
+    hintType: "[ ENTER ] Type",
+    hintListening: "Listening...",
+    hintSkip: "[ SPACE ] Skip",
+    typingPlaceholder: "Type your question...",
+    dmPlaceholder: "Write your message to Maksym...",
+    dmSent: "Message sent! Thanks for reaching out.",
+    dmError: `Couldn't send the message. Try LinkedIn[${PROFILE.linkedinUrl}] instead.`,
+    messageLabel: "Message",
+    speechLang: "en-US",
+  },
+  es: {
+    welcome: "¡Hola! Soy Maksym, Ingeniero de Software.\n¡Pulsa ESPACIO para hablar o INTRO para escribir!",
+    idle: "¡Pulsa ESPACIO para hablar o INTRO para escribir!",
+    listening: "Te escucho...",
+    noSpeech: "No te he oído. ¡Pulsa ESPACIO otra vez!",
+    thinking: "Déjame pensar...",
+    fallback: `No puedo conectarme ahora. Visita mi perfil en LinkedIn[${PROFILE.linkedinUrl}] o déjame un {{MESSAGE}}`,
+    hintIdle: "[ ESPACIO ] Hablar",
+    hintType: "[ ENTER ] Escribir",
+    hintListening: "Escuchando...",
+    hintSkip: "[ ESPACIO ] Saltar",
+    typingPlaceholder: "Escribe tu pregunta...",
+    dmPlaceholder: "Escribe tu mensaje para Maksym...",
+    dmSent: "¡Mensaje enviado! Gracias por escribirme.",
+    dmError: `No pude enviar el mensaje. Prueba por LinkedIn[${PROFILE.linkedinUrl}].`,
+    messageLabel: "Mensaje",
+    speechLang: "es-ES",
+  },
+  ru: {
+    welcome: "Привет! Я Максим, инженер-программист.\nНажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
+    idle: "Нажми ПРОБЕЛ чтобы говорить или ENTER чтобы написать!",
+    listening: "Слушаю...",
+    noSpeech: "Я тебя не услышал. Нажми ПРОБЕЛ ещё раз!",
+    thinking: "Дай подумать...",
+    fallback: `Не могу подключиться. Загляни в мой LinkedIn[${PROFILE.linkedinUrl}] или оставь {{MESSAGE}}`,
+    hintIdle: "[ ПРОБЕЛ ] Говорить",
+    hintType: "[ ENTER ] Написать",
+    hintListening: "Слушаю...",
+    hintSkip: "[ ПРОБЕЛ ] Пропустить",
+    typingPlaceholder: "Напиши свой вопрос...",
+    dmPlaceholder: "Напиши сообщение для Максима...",
+    dmSent: "Сообщение отправлено! Спасибо что написал.",
+    dmError: `Не удалось отправить. Попробуй через LinkedIn[${PROFILE.linkedinUrl}].`,
+    messageLabel: "Сообщение",
+    speechLang: "ru-RU",
+  },
+}
+
+export const multilingualPrompt = buildMultilingualPrompt()
