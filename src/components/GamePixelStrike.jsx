@@ -6,95 +6,328 @@ import { lang } from '../i18n'
 import GameSplash from './GameSplash.jsx'
 
 // === Voxel helper ===
-function Vox({ position, args = [1, 1, 1], color, castShadow = false }) {
+function Vox({ position, args = [1, 1, 1], color, idx = 0 }) {
   return (
-    <mesh position={position} castShadow={castShadow} receiveShadow>
+    <mesh position={position}>
       <boxGeometry args={args} />
-      <meshLambertMaterial color={color} flatShading />
+      <meshBasicMaterial color={color} />
     </mesh>
   )
 }
 
-// === Map constants ===
-const WALL_H = 4
+// === StoneWall — lightweight wall with horizontal stone block lines (max 3 lines) ===
+function BrickWall({ position, args = [1, 1, 1], baseColor = '#908870', mortarColor = '#787060' }) {
+  const [sx, sy, sz] = args
+  const m = 0.035
+  // Max 3 horizontal lines evenly spaced
+  const count = Math.min(3, Math.max(1, Math.floor(sy / 1.2)))
+  const spacing = sy / (count + 1)
+  return (
+    <group position={position}>
+      <mesh><boxGeometry args={args} /><meshBasicMaterial color={baseColor} /></mesh>
+      {Array.from({ length: count }, (_, i) => (
+        <mesh key={i} position={[0, -sy / 2 + spacing * (i + 1), 0]}>
+          <boxGeometry args={[sx + 0.01, m, sz + 0.01]} />
+          <meshBasicMaterial color={mortarColor} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+// === Crate — wooden box with cross trim ===
+function Crate({ position, args = [1, 1, 1], baseColor = '#a08040', trimColor = '#685020' }) {
+  const [sx, sy, sz] = args
+  const t = 0.04 // trim thickness
+  return (
+    <group position={position}>
+      <mesh><boxGeometry args={args} /><meshBasicMaterial color={baseColor} /></mesh>
+      {/* Horizontal bands */}
+      <mesh position={[0, sy * 0.3, 0]}><boxGeometry args={[sx + 0.01, t, sz + 0.01]} /><meshBasicMaterial color={trimColor} /></mesh>
+      <mesh position={[0, -sy * 0.3, 0]}><boxGeometry args={[sx + 0.01, t, sz + 0.01]} /><meshBasicMaterial color={trimColor} /></mesh>
+      {/* Vertical bands on front/back */}
+      <mesh position={[0, 0, sz / 2 + 0.005]}><boxGeometry args={[t, sy + 0.01, t]} /><meshBasicMaterial color={trimColor} /></mesh>
+      <mesh position={[sx * 0.3, 0, sz / 2 + 0.005]}><boxGeometry args={[t, sy + 0.01, t]} /><meshBasicMaterial color={trimColor} /></mesh>
+      <mesh position={[-sx * 0.3, 0, sz / 2 + 0.005]}><boxGeometry args={[t, sy + 0.01, t]} /><meshBasicMaterial color={trimColor} /></mesh>
+      {/* Vertical bands on sides */}
+      <mesh position={[sx / 2 + 0.005, 0, 0]}><boxGeometry args={[t, sy + 0.01, t]} /><meshBasicMaterial color={trimColor} /></mesh>
+      <mesh position={[sx / 2 + 0.005, 0, sz * 0.3]}><boxGeometry args={[t, sy + 0.01, t]} /><meshBasicMaterial color={trimColor} /></mesh>
+      <mesh position={[sx / 2 + 0.005, 0, -sz * 0.3]}><boxGeometry args={[t, sy + 0.01, t]} /><meshBasicMaterial color={trimColor} /></mesh>
+    </group>
+  )
+}
+
+// === DUST2 MAP ===
+// Orientation: T Spawn south (+Z~35), CT Spawn north (-Z~-35), A Site NW, B Site NE
+// Scale: ~80x80 units playable area
+const W = 4.5 // wall height
+const T = 1   // wall thickness
+
 const MAP_WALLS = [
-  // Outer walls
-  { pos: [0, WALL_H / 2, -30], size: [60, WALL_H, 1] },
-  { pos: [0, WALL_H / 2, 30], size: [60, WALL_H, 1] },
-  { pos: [-30, WALL_H / 2, 0], size: [1, WALL_H, 60] },
-  { pos: [30, WALL_H / 2, 0], size: [1, WALL_H, 60] },
-  // Mid building (B site area)
-  { pos: [10, WALL_H / 2, -10], size: [8, WALL_H, 1] },
-  { pos: [14, WALL_H / 2, -6], size: [1, WALL_H, 8] },
-  { pos: [6, WALL_H / 2, -6], size: [1, WALL_H, 8] },
-  // Long A corridor walls
-  { pos: [-10, WALL_H / 2, -5], size: [1, WALL_H, 20] },
-  { pos: [-6, WALL_H / 2, -5], size: [1, WALL_H, 20] },
-  // Boxes at A site
-  { pos: [-15, 1, -20], size: [3, 2, 3] },
-  { pos: [-18, 1, -22], size: [2, 2, 2] },
-  { pos: [-12, 1.5, -18], size: [2, 3, 2] },
-  // Mid corridor
-  { pos: [0, WALL_H / 2, 5], size: [8, WALL_H, 1] },
-  { pos: [0, WALL_H / 2, -5], size: [4, WALL_H, 1] },
-  // T spawn area walls
-  { pos: [5, WALL_H / 2, 20], size: [10, WALL_H, 1] },
-  { pos: [-5, WALL_H / 2, 20], size: [10, WALL_H, 1] },
-  // B tunnel
-  { pos: [18, WALL_H / 2, 5], size: [1, WALL_H, 14] },
-  { pos: [22, WALL_H / 2, 5], size: [1, WALL_H, 14] },
-  // Crates scattered
-  { pos: [3, 0.75, 15], size: [1.5, 1.5, 1.5] },
-  { pos: [-3, 0.75, 12], size: [1.5, 1.5, 1.5] },
-  { pos: [20, 0.75, -15], size: [1.5, 1.5, 1.5] },
-  { pos: [20, 2, -15], size: [1.5, 1.5, 1.5] },
-  { pos: [-20, 0.75, 10], size: [1.5, 1.5, 1.5] },
-  { pos: [-22, 0.75, 8], size: [1.5, 1.5, 1.5] },
-  { pos: [8, 0.75, 0], size: [1.5, 1.5, 1.5] },
-  // Ramp
-  { pos: [-20, 0.5, 0], size: [4, 1, 6] },
-  // Pillars
-  { pos: [0, WALL_H / 2, 0], size: [1, WALL_H, 1] },
-  { pos: [15, WALL_H / 2, 15], size: [1, WALL_H, 1] },
-  { pos: [-15, WALL_H / 2, 15], size: [1, WALL_H, 1] },
+  // ============ OUTER BOUNDARY ============
+  { pos: [0, W/2, -40], size: [82, W, T] },    // north
+  { pos: [0, W/2, 40], size: [82, W, T] },     // south
+  { pos: [-41, W/2, 0], size: [T, W, 80] },    // west
+  { pos: [41, W/2, 0], size: [T, W, 80] },     // east
+
+  // ============ T SPAWN AREA (south, z=28..38) ============
+  // T spawn enclosure walls
+  { pos: [-12, W/2, 28], size: [T, W, 6] },    // left wall of T area
+  { pos: [12, W/2, 30], size: [T, W, 10] },    // right wall of T area
+  { pos: [-20, W/2, 25], size: [16, W, T] },   // wall separating T from Long A entrance
+
+  // ============ LONG A (west side, x=-28..-14, z=25..-20) ============
+  // Long A corridor — left (west) wall
+  { pos: [-30, W/2, 5], size: [T, W, 40] },
+  // Long A corridor — right (east) wall, with gap for A cross / pit
+  { pos: [-22, W/2, 15], size: [T, W, 20] },   // upper part
+  { pos: [-22, W/2, -12], size: [T, W, 16] },  // lower part
+  // Long A Doors (iconic double doors)
+  { pos: [-26, W/2, 5], size: [T, W, 3] },     // left door panel
+  { pos: [-24, W/2, 5], size: [T, W, 3] },     // right door panel
+  // Long A corner wall before A site
+  { pos: [-26, W/2, -20], size: [8, W, T] },
+
+  // ============ A SITE (NW area, x=-30..-14, z=-20..-32) ============
+  // A site back wall (north)
+  { pos: [-22, W/2, -32], size: [18, W, T] },
+  // A site left wall
+  { pos: [-31, W/2, -26], size: [T, W, 12] },
+  // A platform (elevated)
+  { pos: [-22, 0.5, -26], size: [10, 1, 8] },
+  // Goose corner (small wall)
+  { pos: [-14, W/2, -30], size: [T, W, 4] },
+  // A ramp from CT spawn side
+  { pos: [-14, 0.25, -28], size: [4, 0.5, 4] },
+  // A site boxes (iconic)
+  { pos: [-25, 1, -24], size: [2, 2, 2] },     // default box
+  { pos: [-19, 0.75, -22], size: [1.5, 1.5, 1.5] }, // short box
+  { pos: [-27, 1.5, -28], size: [2, 3, 2] },   // tall box (headshot)
+  // Barrels at A
+  { pos: [-17, 0.6, -28], size: [1.2, 1.2, 1.2] },
+
+  // ============ A SHORT / CATWALK (x=-14..-6, z=-10..-24) ============
+  // Catwalk left wall
+  { pos: [-14, W/2, -15], size: [T, W, 18] },
+  // Catwalk right wall
+  { pos: [-6, W/2, -17], size: [T, W, 14] },
+  // Catwalk elevated floor
+  { pos: [-10, 1, -17], size: [8, 2, 14] },
+  // Catwalk stairs down to A (step blocks)
+  { pos: [-10, 0.75, -24], size: [8, 1.5, 2] },
+  { pos: [-10, 0.4, -25.5], size: [8, 0.8, 2] },
+
+  // ============ MID (center, x=-8..8, z=-10..18) ============
+  // Mid left wall (toward A short)
+  { pos: [-6, W/2, 2], size: [T, W, 24] },     // from T mid to catwalk entrance
+  // Mid right wall (toward B)
+  { pos: [8, W/2, 2], size: [T, W, 24] },
+  // Mid Doors (CT side, z~-8)
+  { pos: [-3, W/2, -8], size: [T, W, 4] },     // left mid door
+  { pos: [3, W/2, -8], size: [T, W, 4] },      // right mid door
+  // Mid boxes for cover
+  { pos: [0, 0.75, 0], size: [1.5, 1.5, 1.5] },
+  { pos: [4, 0.75, 5], size: [1.5, 1.5, 1.5] },
+  { pos: [-3, 0.75, -4], size: [1.5, 1.5, 1.5] },
+  // Xbox (the iconic elevated box in mid)
+  { pos: [0, 1.5, -5], size: [2, 3, 2] },
+
+  // ============ B TUNNELS (east side, x=12..26, z=10..28) ============
+  // Upper tunnel (from T spawn)
+  { pos: [12, W/2, 22], size: [T, W, 12] },    // left wall
+  { pos: [20, W/2, 22], size: [T, W, 12] },    // right wall
+  { pos: [16, W/2, 16], size: [8, W, T] },     // tunnel turn wall
+  // Lower tunnel toward B site
+  { pos: [20, W/2, 10], size: [T, W, 12] },    // right wall continues
+  { pos: [12, W/2, 8], size: [T, W, 8] },      // left wall continues
+  // Tunnel ceiling/arch marker boxes
+  { pos: [16, 0.75, 20], size: [1.5, 1.5, 1.5] }, // crate in tunnel
+  { pos: [14, 0.75, 12], size: [1.5, 1.5, 1.5] }, // crate at tunnel exit
+
+  // ============ B SITE (NE area, x=14..34, z=-8..-28) ============
+  // B site enclosure walls
+  { pos: [14, W/2, -8], size: [T, W, 8] },     // B entrance left
+  { pos: [34, W/2, -18], size: [T, W, 24] },   // B back right wall
+  { pos: [24, W/2, -30], size: [20, W, T] },   // B back wall (north)
+  { pos: [14, W/2, -22], size: [T, W, 16] },   // B left wall
+  // B platform (elevated plant area)
+  { pos: [24, 0.5, -20], size: [12, 1, 8] },
+  // B Doors / Window
+  { pos: [20, W/2, -8], size: [4, W, T] },     // B doors wall (with gap)
+  { pos: [30, W/2, -8], size: [8, W, T] },     // B doors wall right part
+  // B site boxes
+  { pos: [18, 1, -18], size: [2, 2, 2] },      // B default box
+  { pos: [28, 0.75, -22], size: [1.5, 1.5, 1.5] }, // back of B box
+  { pos: [30, 1.5, -16], size: [2, 3, 2] },    // tall box
+  { pos: [22, 0.75, -12], size: [1.5, 1.5, 1.5] }, // close box
+  // B barrels
+  { pos: [16, 0.6, -14], size: [1.2, 1.2, 1.2] },
+  { pos: [32, 0.6, -24], size: [1.2, 1.2, 1.2] },
+
+  // ============ CT SPAWN (north center, x=-10..10, z=-30..-38) ============
+  // CT spawn walls
+  { pos: [-10, W/2, -32], size: [T, W, 8] },
+  { pos: [10, W/2, -32], size: [T, W, 8] },
+  { pos: [0, W/2, -36], size: [20, W, T] },
+  // CT to A connector
+  { pos: [-12, W/2, -32], size: [4, W, T] },
+  // CT to B connector
+  { pos: [12, W/2, -30], size: [4, W, T] },
+  // CT boxes
+  { pos: [-5, 0.75, -34], size: [1.5, 1.5, 1.5] },
+  { pos: [5, 0.75, -33], size: [1.5, 1.5, 1.5] },
+
+  // ============ CONNECTOR: MID TO B ============
+  { pos: [8, W/2, -4], size: [T, W, 8] },
+  { pos: [14, W/2, -4], size: [T, W, 8] },
+
+  // ============ PIT (below A site, x=-30..-22, z=-20..-14) ============
+  // Pit walls (lower area near A)
+  { pos: [-30, W/2, -14], size: [T, W, 4] },
+  { pos: [-22, W/2, -20], size: [T, W, 2] },
 ]
 
-const WALL_COLORS = ['#c8b080', '#b8a070', '#d0b888', '#a89868', '#bca878']
+// Ground height zones — platforms and ramps
+const ELEVATED_ZONES = [
+  // A platform
+  { x: [-27, -17], z: [-30, -22], y: 1 },
+  // A ramp (smooth transition from ground to A platform)
+  { x: [-16, -12], z: [-30, -26], y: 0.5, ramp: true },
+  // Catwalk (elevated walkway)
+  { x: [-14, -6], z: [-24, -10], y: 2 },
+  // Catwalk stairs step 1
+  { x: [-14, -6], z: [-26, -24], y: 1.5, ramp: true },
+  // Catwalk stairs step 2
+  { x: [-14, -6], z: [-27, -26], y: 0.8, ramp: true },
+  // B platform
+  { x: [18, 30], z: [-24, -16], y: 1 },
+  // B ramp
+  { x: [16, 18], z: [-24, -16], y: 0.5, ramp: true },
+  // Mid xbox area (small elevation)
+  { x: [-1, 3], z: [-7, -3], y: 0 },
+]
+
+function getGroundY(x, z, playerFeetY) {
+  let maxY = 0
+  // Check predefined elevated zones
+  for (const zone of ELEVATED_ZONES) {
+    if (x >= zone.x[0] && x <= zone.x[1] && z >= zone.z[0] && z <= zone.z[1]) {
+      if (zone.y > maxY) maxY = zone.y
+    }
+  }
+  // Check MAP_WALLS as standable surfaces (boxes, crates, platforms)
+  // Player can land on top of any wall/box if they are above it
+  const radius = 0.35
+  for (const w of MAP_WALLS) {
+    const [wx, wy, wz] = w.pos
+    const [sx, sy, sz] = w.size
+    const wallTop = wy + sy / 2
+    // Skip tall boundary walls — not climbable
+    if (sy >= W && (sx > 40 || sz > 40)) continue
+    // Only consider surfaces the player is horizontally overlapping
+    const hx = sx / 2 + radius, hz = sz / 2 + radius
+    if (x > wx - hx && x < wx + hx && z > wz - hz && z < wz + hz) {
+      // Player can stand on this if their feet are coming from above (or stepping up small heights)
+      if (playerFeetY !== undefined) {
+        // Allow landing from above or stepping up ≤0.6 units
+        if (playerFeetY >= wallTop - 0.6 && wallTop > maxY) {
+          maxY = wallTop
+        }
+      } else {
+        if (wallTop > maxY) maxY = wallTop
+      }
+    }
+  }
+  return maxY
+}
+
+// Detect wall type
+function getWallType(w) {
+  const [sx, sy, sz] = w.size
+  if (sx <= 1.3 && sz <= 1.3 && sy <= 1.3) return 'barrel'
+  if (sy <= 2 && sx <= 2.5 && sz <= 2.5) return 'crate'
+  if (sy === 3 && sx <= 2.5) return 'tallcrate'
+  if (sy <= 1.1) return 'platform'
+  if (sy <= 2) return 'stairs'
+  return 'wall'
+}
+
+function getWallColor(i, w) {
+  const t = getWallType(w)
+  if (t === 'barrel') return '#887858'
+  if (t === 'platform') return '#888068'
+  if (t === 'stairs') return '#807860'
+  return '#908870' // walls
+}
 
 // === Map geometry ===
 function DustMap() {
   return (
     <group>
-      {/* Ground */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[60, 60]} />
-        <meshLambertMaterial color="#c8b480" flatShading />
+      {/* Ground — sandy desert floor */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+        <planeGeometry args={[84, 84]} />
+        <meshBasicMaterial color="#706848" />
       </mesh>
-      {/* Ground detail patches */}
-      {[[-10, 0.01, -15], [8, 0.01, 10], [-18, 0.01, 5], [15, 0.01, -5]].map((p, i) => (
-        <mesh key={`gp${i}`} rotation={[-Math.PI / 2, 0, 0]} position={p}>
-          <planeGeometry args={[6 + i * 2, 6 + i]} />
-          <meshLambertMaterial color="#b8a470" flatShading />
-        </mesh>
-      ))}
-      {/* Walls */}
-      {MAP_WALLS.map((w, i) => (
-        <Vox key={i} position={w.pos} args={w.size} color={WALL_COLORS[i % WALL_COLORS.length]} castShadow />
-      ))}
-      {/* Sky box - simple dome color */}
+      {/* Ground tile grid — stone slab pattern */}
+      {Array.from({ length: 21 }, (_, i) => {
+        const p = -40 + i * 4
+        return (
+          <React.Fragment key={`g${i}`}>
+            <mesh position={[p, 0.005, 0]}><boxGeometry args={[0.06, 0.01, 84]} /><meshBasicMaterial color="#605838" /></mesh>
+            <mesh position={[0, 0.005, p]}><boxGeometry args={[84, 0.01, 0.06]} /><meshBasicMaterial color="#605838" /></mesh>
+          </React.Fragment>
+        )
+      })}
+
+      {/* Walls — use type-based coloring, crates get special treatment */}
+      {MAP_WALLS.map((w, i) => {
+        const t = getWallType(w)
+        if (t === 'crate') return <Crate key={i} position={w.pos} args={w.size} baseColor="#b89050" trimColor="#7a5828" />
+        if (t === 'tallcrate') return <Crate key={i} position={w.pos} args={w.size} baseColor="#a88040" trimColor="#6a4820" />
+        if (t === 'barrel') return (
+          <group key={i} position={w.pos}>
+            <mesh><boxGeometry args={w.size} /><meshBasicMaterial color="#907848" /></mesh>
+            <mesh><boxGeometry args={[w.size[0] + 0.01, 0.04, w.size[2] + 0.01]} /><meshBasicMaterial color="#685030" /></mesh>
+            <mesh position={[0, w.size[1] * 0.3, 0]}><boxGeometry args={[w.size[0] + 0.01, 0.04, w.size[2] + 0.01]} /><meshBasicMaterial color="#685030" /></mesh>
+            <mesh position={[0, -w.size[1] * 0.3, 0]}><boxGeometry args={[w.size[0] + 0.01, 0.04, w.size[2] + 0.01]} /><meshBasicMaterial color="#685030" /></mesh>
+          </group>
+        )
+        if (t === 'platform') return <BrickWall key={i} position={w.pos} args={w.size} baseColor="#888068" mortarColor="#706850" />
+        if (t === 'stairs') return <BrickWall key={i} position={w.pos} args={w.size} baseColor="#807860" mortarColor="#686048" />
+        return <BrickWall key={i} position={w.pos} args={w.size} baseColor="#908870" mortarColor="#787060" />
+      })}
+
+      {/* Sky dome — smooth desert sky */}
       <mesh>
-        <sphereGeometry args={[80, 8, 8]} />
-        <meshBasicMaterial color="#87ceeb" side={THREE.BackSide} />
+        <sphereGeometry args={[120, 32, 32]} />
+        <meshBasicMaterial color="#b0d4e8" side={THREE.BackSide} />
       </mesh>
-      {/* A site marker */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-15, 0.02, -20]}>
-        <circleGeometry args={[3, 8]} />
-        <meshBasicMaterial color="#ff4040" transparent opacity={0.3} />
+      {/* Horizon warm band */}
+      <mesh>
+        <sphereGeometry args={[119, 32, 16, 0, Math.PI * 2, Math.PI * 0.55, Math.PI * 0.45]} />
+        <meshBasicMaterial color="#d8d0c0" side={THREE.BackSide} transparent opacity={0.5} />
       </mesh>
-      {/* B site marker */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[10, 0.02, -7]}>
-        <circleGeometry args={[3, 8]} />
-        <meshBasicMaterial color="#4040ff" transparent opacity={0.3} />
+      {/* Sun glow */}
+      <mesh position={[40, 55, -60]}>
+        <sphereGeometry args={[6, 16, 16]} />
+        <meshBasicMaterial color="#fff8d0" />
+      </mesh>
+      {/* Sun halo */}
+      <mesh position={[40, 55, -60]}>
+        <sphereGeometry args={[12, 16, 16]} />
+        <meshBasicMaterial color="#ffeecc" transparent opacity={0.2} />
+      </mesh>
+
+      {/* A site marker — painted on platform */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-22, 1.06, -26]}>
+        <circleGeometry args={[2.5, 12]} />
+        <meshBasicMaterial color="#cc5040" transparent opacity={0.25} depthWrite={false} polygonOffset polygonOffsetFactor={-1} />
+      </mesh>
+      {/* B site marker — painted on platform */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[24, 1.06, -20]}>
+        <circleGeometry args={[2.5, 12]} />
+        <meshBasicMaterial color="#4060cc" transparent opacity={0.25} depthWrite={false} polygonOffset polygonOffsetFactor={-1} />
       </mesh>
     </group>
   )
@@ -166,14 +399,133 @@ const UNIFORMS = [
 // Gun component removed — replaced by FPSWeapon above
 
 // === Enemy bot — NPC style matching Room.jsx characters ===
-// Pick a random walkable position on the map
-function randomWaypoint() {
-  for (let tries = 0; tries < 30; tries++) {
-    const x = (Math.random() - 0.5) * 50
-    const z = (Math.random() - 0.5) * 50
-    if (!isInsideWall(x, z, 0.5)) return { x, z }
+// Connected waypoint graph for natural NPC patrol across the full map
+// Each waypoint: { x, z, y (ground height), edges: [indices of connected waypoints] }
+const NAV_NODES = [
+  // T Spawn (0-3)
+  { x: 0, z: 34, y: 0 },        // 0 T spawn center
+  { x: -6, z: 32, y: 0 },       // 1 T spawn left
+  { x: 6, z: 32, y: 0 },        // 2 T spawn right
+  { x: 0, z: 28, y: 0 },        // 3 T spawn exit
+  // Long A corridor (4-9)
+  { x: -15, z: 25, y: 0 },      // 4 Long A entrance from T
+  { x: -26, z: 20, y: 0 },      // 5 Long A upper
+  { x: -26, z: 10, y: 0 },      // 6 Long A mid
+  { x: -26, z: 0, y: 0 },       // 7 Long A doors area
+  { x: -26, z: -10, y: 0 },     // 8 Long A lower
+  { x: -26, z: -18, y: 0 },     // 9 Long A corner before A site
+  // A site (10-14)
+  { x: -22, z: -24, y: 1 },     // 10 A site platform center
+  { x: -25, z: -26, y: 1 },     // 11 A site back
+  { x: -18, z: -22, y: 1 },     // 12 A site front
+  { x: -14, z: -28, y: 0.5 },   // 13 A ramp
+  { x: -27, z: -28, y: 1 },     // 14 A tall box area
+  // Catwalk / A short (15-17)
+  { x: -10, z: -12, y: 2 },     // 15 Catwalk upper
+  { x: -10, z: -18, y: 2 },     // 16 Catwalk mid
+  { x: -10, z: -23, y: 1.5 },   // 17 Catwalk stairs down to A
+  // Mid (18-23)
+  { x: -3, z: 14, y: 0 },       // 18 T to mid entrance
+  { x: 0, z: 10, y: 0 },        // 19 Mid upper
+  { x: 0, z: 5, y: 0 },         // 20 Mid center
+  { x: 0, z: 0, y: 0 },         // 21 Mid lower
+  { x: 0, z: -5, y: 0 },        // 22 Mid xbox area
+  { x: 3, z: -8, y: 0 },        // 23 Mid doors (CT side)
+  // B tunnels (24-27)
+  { x: 12, z: 26, y: 0 },       // 24 B tunnel entrance from T
+  { x: 16, z: 22, y: 0 },       // 25 B upper tunnel
+  { x: 16, z: 14, y: 0 },       // 26 B lower tunnel
+  { x: 16, z: 6, y: 0 },        // 27 B tunnel exit
+  // B site (28-32)
+  { x: 20, z: -10, y: 0 },      // 28 B entrance
+  { x: 18, z: -16, y: 0 },      // 29 B close
+  { x: 24, z: -18, y: 1 },      // 30 B platform center
+  { x: 28, z: -20, y: 1 },      // 31 B platform back
+  { x: 30, z: -16, y: 0 },      // 32 B tall box side
+  // CT spawn (33-36)
+  { x: 0, z: -33, y: 0 },       // 33 CT center
+  { x: -5, z: -34, y: 0 },      // 34 CT left
+  { x: 5, z: -33, y: 0 },       // 35 CT right
+  { x: 0, z: -30, y: 0 },       // 36 CT exit toward mid
+  // Connector mid to B (37-38)
+  { x: 11, z: -2, y: 0 },       // 37 Connector entrance
+  { x: 11, z: -6, y: 0 },       // 38 Connector exit to B
+  // Extra: transitions (39-42)
+  { x: -6, z: -10, y: 0 },      // 39 Mid to catwalk entrance
+  { x: -14, z: -20, y: 0 },     // 40 Below catwalk (ground level)
+  { x: 8, z: 22, y: 0 },        // 41 T toward B tunnel split
+  { x: -10, z: 25, y: 0 },      // 42 T toward Long A split
+]
+
+// Edge connections — bidirectional
+const NAV_EDGES = [
+  // T Spawn internal
+  [0,1],[0,2],[0,3],[1,3],[2,3],
+  // T Spawn exits
+  [3,18],[3,42],[3,41],[2,41],
+  // T to Long A
+  [42,4],[4,5],[5,6],[6,7],[7,8],[8,9],
+  // Long A to A site
+  [9,13],[13,10],[13,12],[10,11],[10,12],[11,14],[10,14],
+  // Catwalk
+  [39,15],[15,16],[16,17],[17,12],[17,10],
+  // Mid to Catwalk entrance
+  [21,39],[22,39],
+  // A site to CT
+  [12,40],[40,33],[40,34],
+  // Mid chain
+  [18,19],[19,20],[20,21],[21,22],[22,23],
+  // Mid to CT
+  [23,36],[36,33],[36,34],[36,35],[33,34],[33,35],
+  // T to B tunnels
+  [41,24],[24,25],[25,26],[26,27],
+  // B tunnel to B site
+  [27,28],[28,29],[29,30],[30,31],[31,32],[29,32],[28,37],
+  // Connector mid to B
+  [20,37],[37,38],[38,28],
+  // CT to B
+  [35,38],[35,28],
+]
+
+// Build adjacency list
+const NAV_ADJ = NAV_NODES.map(() => [])
+for (const [a, b] of NAV_EDGES) {
+  NAV_ADJ[a].push(b)
+  NAV_ADJ[b].push(a)
+}
+
+// BFS to find path between two node indices
+function navFindPath(fromIdx, toIdx) {
+  if (fromIdx === toIdx) return [toIdx]
+  const visited = new Set([fromIdx])
+  const queue = [[fromIdx]]
+  while (queue.length > 0) {
+    const path = queue.shift()
+    const curr = path[path.length - 1]
+    for (const nb of NAV_ADJ[curr]) {
+      if (nb === toIdx) return [...path, nb]
+      if (!visited.has(nb)) {
+        visited.add(nb)
+        queue.push([...path, nb])
+      }
+    }
   }
-  return { x: 0, z: 0 }
+  return null // no path
+}
+
+// Find nearest nav node to a position
+function nearestNavNode(x, z) {
+  let best = 0, bestD = Infinity
+  for (let i = 0; i < NAV_NODES.length; i++) {
+    const dx = NAV_NODES[i].x - x, dz = NAV_NODES[i].z - z
+    const d = dx * dx + dz * dz
+    if (d < bestD) { bestD = d; best = i }
+  }
+  return best
+}
+
+function randomNavNode() {
+  return Math.floor(Math.random() * NAV_NODES.length)
 }
 
 function Enemy({ data }) {
@@ -189,115 +541,152 @@ function Enemy({ data }) {
   const facingAngle = useRef(0)
   const u = data.uniform || UNIFORMS[0]
 
-  // Waypoint AI state stored on data object (mutable)
-  if (!data._wp) {
-    const wp = randomWaypoint()
-    data._wp = { tx: wp.x, tz: wp.z, idle: 0, moveSpeed: 2.5 + Math.random() * 2 }
+  // Nav AI state stored on data object (mutable)
+  if (!data._ai) {
+    const startNode = nearestNavNode(data.x, data.z)
+    const goalNode = randomNavNode()
+    const path = navFindPath(startNode, goalNode) || [startNode]
+    data._ai = {
+      path: path,
+      pathIdx: 0,
+      idle: 0,
+      moveSpeed: 3 + Math.random() * 1.5,
+      jumpVel: 0,
+      feetY: 0,
+      onGround: true,
+      stuck: 0,
+      runMode: Math.random() < 0.3, // 30% chance to run faster
+    }
     data._pos = { x: data.x, z: data.z }
   }
 
   useFrame((state, delta) => {
     if (!ref.current || !data.alive) return
     const t = state.clock.elapsedTime + data.offset
-    const wp = data._wp
+    const ai = data._ai
     const pos = data._pos
 
+    // NPC jump physics
+    const GRAVITY = 15
+    if (!ai.onGround) {
+      ai.jumpVel -= GRAVITY * delta
+      ai.feetY += ai.jumpVel * delta
+    }
+    const groundY = getGroundY(pos.x, pos.z, ai.feetY)
+    if (ai.feetY <= groundY) {
+      ai.feetY = groundY
+      ai.jumpVel = 0
+      ai.onGround = true
+    }
+    if (ai.onGround) {
+      // Smooth step to ground level
+      ai.feetY += (groundY - ai.feetY) * 0.3
+    }
+
     // Idle pause
-    if (wp.idle > 0) {
-      wp.idle -= delta
+    if (ai.idle > 0) {
+      ai.idle -= delta
     } else {
-      // Walk toward waypoint
-      const dxW = wp.tx - pos.x
-      const dzW = wp.tz - pos.z
-      const distW = Math.sqrt(dxW * dxW + dzW * dzW)
-
-      if (distW < 1.5) {
-        // Reached waypoint — pick new one, maybe pause
-        const nwp = randomWaypoint()
-        wp.tx = nwp.x
-        wp.tz = nwp.z
-        wp.idle = 0.5 + Math.random() * 2
-        wp.moveSpeed = 2 + Math.random() * 2.5
+      // Get current target waypoint from path
+      if (ai.pathIdx >= ai.path.length) {
+        // Reached end of path — pick a new distant destination
+        const curNode = nearestNavNode(pos.x, pos.z)
+        let goalNode
+        // Pick a goal at least 5 hops away for longer patrols
+        for (let attempt = 0; attempt < 10; attempt++) {
+          goalNode = randomNavNode()
+          const p = navFindPath(curNode, goalNode)
+          if (p && p.length >= 4) break
+        }
+        const path = navFindPath(curNode, goalNode != null ? goalNode : randomNavNode())
+        ai.path = path || [curNode]
+        ai.pathIdx = 0
+        ai.idle = 0.3 + Math.random() * 1.0
+        ai.moveSpeed = ai.runMode ? (4 + Math.random() * 2) : (2.5 + Math.random() * 1.5)
+        ai.runMode = Math.random() < 0.3
       } else {
-        const dirX = dxW / distW
-        const dirZ = dzW / distW
-        const step = wp.moveSpeed * delta
-        let nx = pos.x + dirX * step
-        let nz = pos.z + dirZ * step
-        let moved = false
+        const targetNode = NAV_NODES[ai.path[ai.pathIdx]]
+        const tx = targetNode.x, tz = targetNode.z, ty = targetNode.y || 0
 
-        if (!isInsideWall(nx, nz, 0.4)) {
-          moved = true
+        const dxW = tx - pos.x
+        const dzW = tz - pos.z
+        const distW = Math.sqrt(dxW * dxW + dzW * dzW)
+
+        if (distW < 1.8) {
+          // Reached this waypoint — advance to next
+          ai.pathIdx++
+          // Short pause at some waypoints (20% chance)
+          if (Math.random() < 0.2) {
+            ai.idle = 0.3 + Math.random() * 0.8
+          }
         } else {
-          // Try sliding along each axis
-          if (!isInsideWall(nx, pos.z, 0.4)) {
-            nz = pos.z; moved = true
-          } else if (!isInsideWall(pos.x, nz, 0.4)) {
-            nx = pos.x; moved = true
-          } else {
-            // Try perpendicular directions to go around wall
-            const perpLX = pos.x + (-dirZ) * step
-            const perpLZ = pos.z + (dirX) * step
-            const perpRX = pos.x + (dirZ) * step
-            const perpRZ = pos.z + (-dirX) * step
-            const leftOk = !isInsideWall(perpLX, perpLZ, 0.4)
-            const rightOk = !isInsideWall(perpRX, perpRZ, 0.4)
-            if (leftOk && rightOk) {
-              // Pick the one closer to waypoint
-              const dL = (wp.tx - perpLX) ** 2 + (wp.tz - perpLZ) ** 2
-              const dR = (wp.tx - perpRX) ** 2 + (wp.tz - perpRZ) ** 2
-              if (dL < dR) { nx = perpLX; nz = perpLZ } else { nx = perpRX; nz = perpRZ }
-              moved = true
-            } else if (leftOk) {
-              nx = perpLX; nz = perpLZ; moved = true
-            } else if (rightOk) {
-              nx = perpRX; nz = perpRZ; moved = true
+          const dirX = dxW / distW
+          const dirZ = dzW / distW
+          const step = ai.moveSpeed * delta
+          let nx = pos.x + dirX * step
+          let nz = pos.z + dirZ * step
+
+          // Jump if target is elevated and NPC is on ground
+          if (ai.onGround && ty > ai.feetY + 0.3) {
+            ai.jumpVel = 7
+            ai.onGround = false
+          }
+
+          // Resolve collision using NPC feet height
+          const [rx, rz] = resolveCollision(nx, nz, 0.4, ai.feetY)
+          const didMove = Math.abs(rx - pos.x) > 0.001 || Math.abs(rz - pos.z) > 0.001
+          nx = rx; nz = rz
+
+          if (!didMove) {
+            ai.stuck++
+            // If stuck, try jumping over obstacle
+            if (ai.stuck > 8 && ai.onGround) {
+              ai.jumpVel = 7
+              ai.onGround = false
+              ai.stuck = 0
             }
+            if (ai.stuck > 20) {
+              // Really stuck — skip to next waypoint
+              ai.pathIdx++
+              ai.stuck = 0
+            }
+          } else {
+            ai.stuck = 0
           }
-        }
 
-        if (!moved) {
-          // Truly stuck — increment stuck counter, pick new waypoint after a few frames
-          wp._stuck = (wp._stuck || 0) + 1
-          if (wp._stuck > 10) {
-            const nwp = randomWaypoint()
-            wp.tx = nwp.x; wp.tz = nwp.z
-            wp._stuck = 0
+          // Player avoidance
+          const cam = state.camera.position
+          const dpx = nx - cam.x, dpz = nz - cam.z
+          if (dpx * dpx + dpz * dpz < 1.5) {
+            nx = pos.x; nz = pos.z
           }
-          nx = pos.x; nz = pos.z
-        } else {
-          wp._stuck = 0
+
+          // Clamp to map bounds
+          nx = Math.max(-39, Math.min(39, nx))
+          nz = Math.max(-39, Math.min(39, nz))
+
+          pos.x = nx
+          pos.z = nz
         }
-
-        // Player avoidance
-        const cam = state.camera.position
-        const dpx = nx - cam.x, dpz = nz - cam.z
-        if (dpx * dpx + dpz * dpz < 1.5) {
-          nx = pos.x; nz = pos.z
-        }
-
-        // Clamp to map bounds
-        nx = Math.max(-27, Math.min(27, nx))
-        nz = Math.max(-27, Math.min(27, nz))
-
-        pos.x = nx
-        pos.z = nz
       }
     }
 
+    // Set enemy position
     ref.current.position.x = pos.x
+    ref.current.position.y = ai.feetY
     ref.current.position.z = pos.z
 
     // Smooth rotation toward movement direction or toward player when close
     const cam = state.camera.position
     const dToPlayer = Math.sqrt((cam.x - pos.x) ** 2 + (cam.z - pos.z) ** 2)
+    const currentTarget = ai.pathIdx < ai.path.length ? NAV_NODES[ai.path[ai.pathIdx]] : null
     let targetAngle
     if (dToPlayer < 15) {
-      // Face player when nearby
       targetAngle = Math.atan2(cam.x - pos.x, cam.z - pos.z)
+    } else if (currentTarget) {
+      targetAngle = Math.atan2(currentTarget.x - pos.x, currentTarget.z - pos.z)
     } else {
-      // Face movement direction
-      targetAngle = Math.atan2(wp.tx - pos.x, wp.tz - pos.z)
+      targetAngle = facingAngle.current
     }
     // Smooth turn
     let angleDiff = targetAngle - facingAngle.current
@@ -469,15 +858,53 @@ function BulletHoles({ holes }) {
   )
 }
 
-// === Wall collision helper ===
-function isInsideWall(x, z, radius = 0.4) {
+// === Wall collision helper (height-aware) ===
+function isInsideWall(x, z, radius = 0.4, playerFeetY = 0) {
   for (const w of MAP_WALLS) {
     const [wx, wy, wz] = w.pos
     const [sx, sy, sz] = w.size
+    const wallTop = wy + sy / 2
+    // If player's feet are above the wall top, they are standing on it — no collision
+    if (playerFeetY >= wallTop - 0.15) continue
     const hx = sx / 2 + radius, hz = sz / 2 + radius
     if (x > wx - hx && x < wx + hx && z > wz - hz && z < wz + hz) return true
   }
   return false
+}
+
+// Resolve position: push player out of any overlapping wall and return corrected [x, z]
+function resolveCollision(x, z, radius = 0.4, playerFeetY = 0) {
+  let rx = x, rz = z
+  for (let iter = 0; iter < 3; iter++) { // iterate to resolve multiple overlaps
+    let pushed = false
+    for (const w of MAP_WALLS) {
+      const [wx, wy, wz] = w.pos
+      const [sx, sy, sz] = w.size
+      const wallTop = wy + sy / 2
+      // If player's feet are above the wall top, they are on it — no collision
+      if (playerFeetY >= wallTop - 0.15) continue
+      const hx = sx / 2 + radius, hz = sz / 2 + radius
+      if (rx > wx - hx && rx < wx + hx && rz > wz - hz && rz < wz + hz) {
+        // Find smallest push-out direction
+        const pushLeft = (wx - hx) - rx
+        const pushRight = (wx + hx) - rx
+        const pushUp = (wz - hz) - rz
+        const pushDown = (wz + hz) - rz
+        const absL = Math.abs(pushLeft), absR = Math.abs(pushRight)
+        const absU = Math.abs(pushUp), absD = Math.abs(pushDown)
+        const minX = absL < absR ? pushLeft : pushRight
+        const minZ = absU < absD ? pushUp : pushDown
+        if (Math.abs(minX) < Math.abs(minZ)) {
+          rx += minX
+        } else {
+          rz += minZ
+        }
+        pushed = true
+      }
+    }
+    if (!pushed) break
+  }
+  return [rx, rz]
 }
 
 // === FPS Controller + Game Logic ===
@@ -509,8 +936,15 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
   const spawnWave = useCallback(() => {
     const count = 3 + waveRef.current * 2
     const newEnemies = []
+    // Filter spawn nodes far from player start (0, 34)
+    const PLAYER_START_X = 0, PLAYER_START_Z = 34, MIN_SPAWN_DIST = 20
+    const farNodes = NAV_NODES.map((n, idx) => ({ n, idx })).filter(({ n }) => {
+      const dx = n.x - PLAYER_START_X, dz = n.z - PLAYER_START_Z
+      return Math.sqrt(dx * dx + dz * dz) >= MIN_SPAWN_DIST
+    })
     for (let i = 0; i < count && i < 10; i++) {
-      const sp = randomWaypoint()
+      const pick = farNodes.length > 0 ? farNodes[Math.floor(Math.random() * farNodes.length)] : { n: NAV_NODES[0], idx: 0 }
+      const sp = pick.n
       newEnemies.push({
         id: idRef.current++,
         x: sp.x,
@@ -519,7 +953,7 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
         offset: Math.random() * 10,
         shooting: 0,
         uniform: UNIFORMS[Math.floor(Math.random() * UNIFORMS.length)],
-        _wp: null, _pos: null,
+        _ai: null, _pos: null,
       })
     }
     enemiesRef.current = newEnemies
@@ -528,7 +962,7 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
 
   useEffect(() => {
     if (gameState.current === 'playing') {
-      camera.position.set(0, 1.6, 25)
+      camera.position.set(0, 1.6, 34)
       camera.rotation.set(0, 0, 0)
       waveRef.current = 1
       spawnWave()
@@ -542,7 +976,7 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
       if (e.key === 's' || e.key === 'ArrowDown') keysRef.current.s = true
       if (e.key === 'a' || e.key === 'ArrowLeft') keysRef.current.a = true
       if (e.key === 'd' || e.key === 'ArrowRight') keysRef.current.d = true
-      if (e.code === 'Space' && onGround.current) { jumpVel.current = 6; onGround.current = false }
+      if (e.code === 'Space' && onGround.current) { jumpVel.current = 7.5; onGround.current = false }
       if (e.key === 'Control') keysRef.current.crouch = true
     }
     const onUp = (e) => {
@@ -642,22 +1076,34 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
       nz += (forward.z * mv.y + right.z * mv.x) * mobileSpeed
     }
 
-    // Collision
-    if (!isInsideWall(nx, camera.position.z)) camera.position.x = nx
-    if (!isInsideWall(camera.position.x, nz)) camera.position.z = nz
-    camera.position.x = Math.max(-29, Math.min(29, camera.position.x))
-    camera.position.z = Math.max(-29, Math.min(29, camera.position.z))
+    // Player feet Y (eye height minus 1.6)
+    const eyeHeight = 1.6
+    const playerFeetY = playerY.current - eyeHeight
+
+    // Resolve collisions with wall pushback (height-aware)
+    const [resolvedX, resolvedZ] = resolveCollision(nx, nz, 0.4, playerFeetY)
+    camera.position.x = Math.max(-40, Math.min(40, resolvedX))
+    camera.position.z = Math.max(-39, Math.min(39, resolvedZ))
+
+    // Ground Y at final position — pass playerFeetY so we know what surfaces are reachable
+    const groundY = getGroundY(camera.position.x, camera.position.z, playerFeetY)
 
     // Jump physics
     jumpVel.current -= 15 * delta
     playerY.current += jumpVel.current * delta
-    if (playerY.current <= 1.6) {
-      playerY.current = 1.6
+    const floorY = groundY + eyeHeight
+    if (playerY.current <= floorY) {
+      playerY.current = floorY
       jumpVel.current = 0
       onGround.current = true
     }
+    // Smooth step up/down when walking between levels (not jumping)
+    if (onGround.current) {
+      const targetFloor = groundY + eyeHeight
+      playerY.current += (targetFloor - playerY.current) * 0.25
+    }
     // Crouch
-    const targetY = keysRef.current.crouch ? 0.9 : playerY.current
+    const targetY = keysRef.current.crouch ? playerY.current - 0.7 : playerY.current
     camera.position.y = targetY
 
     // Update player bullets — check enemy hits and wall collisions
@@ -754,10 +1200,11 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
   return (
     <>
       {!isMobile && <PointerLockControls ref={controlsRef} />}
-      <ambientLight intensity={0.5} color="#ffe8c0" />
-      <directionalLight position={[20, 30, 10]} intensity={1.2} color="#fff0d0" castShadow />
-      <directionalLight position={[-10, 15, -5]} intensity={0.3} color="#c0d0ff" />
-      <fog attach="fog" args={['#c0b898', 30, 80]} />
+      <ambientLight intensity={0.85} color="#ffe8c0" />
+      <directionalLight position={[20, 30, 10]} intensity={0.8} color="#fff4e0" />
+      <directionalLight position={[-10, 15, -5]} intensity={0.35} color="#d0e0ff" />
+      <hemisphereLight args={['#90c8e8', '#c8a868', 0.4]} />
+      <fog attach="fog" args={['#c8c0a8', 30, 85]} />
 
       <DustMap />
 
@@ -936,6 +1383,8 @@ export default function GamePixelStrike() {
     setGameOver(false)
     setStarted(true)
     gameState.current = 'playing'
+    // Auto-lock pointer on start (desktop)
+    setTimeout(() => document.querySelector('canvas')?.requestPointerLock(), 100)
   }, [])
 
   useEffect(() => {
@@ -979,6 +1428,7 @@ export default function GamePixelStrike() {
     livesRef.current = MAX_LIVES
     setGameOver(false)
     gameState.current = 'playing'
+    setTimeout(() => document.querySelector('canvas')?.requestPointerLock(), 100)
   }, [])
 
   const isMobile = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
@@ -1000,9 +1450,9 @@ export default function GamePixelStrike() {
   }
 
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#c0b898', position: 'relative', cursor: started && !gameOver ? 'none' : 'auto' }}>
-      <Canvas shadows camera={{ position: [0, 1.6, 25], fov: 75, near: 0.01 }} gl={{ antialias: false }}>
-        <color attach="background" args={['#87ceeb']} />
+    <div style={{ width: '100vw', height: '100vh', background: '#c8c0a8', position: 'relative', cursor: started && !gameOver ? 'none' : 'auto' }}>
+      <Canvas camera={{ position: [0, 1.6, 34], fov: 75, near: 0.1 }} gl={{ antialias: true, logarithmicDepthBuffer: true }}>
+        <color attach="background" args={['#c8c0a8']} />
         {started && (
           <FPSScene
             onScoreUpdate={setScore}
@@ -1064,20 +1514,6 @@ export default function GamePixelStrike() {
           }}>
             ∞ AMMO
           </div>
-          {/* Click to lock pointer hint (desktop only) */}
-          {!isMobile && !locked && (
-            <div style={{
-              position: 'absolute', inset: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: "'Press Start 2P', monospace", fontSize: '12px',
-              color: '#fff', textShadow: '2px 2px 0 #000',
-              background: 'rgba(0,0,0,0.3)', cursor: 'pointer',
-            }}
-              onClick={() => document.querySelector('canvas')?.requestPointerLock()}
-            >
-              {lang === 'es' ? 'CLICK PARA APUNTAR' : lang === 'ru' ? 'КЛИКНИТЕ ДЛЯ ПРИЦЕЛА' : 'CLICK TO AIM'}
-            </div>
-          )}
 
           {/* Mobile touch controls */}
           {isMobile && <MobileControls mobileMoveRef={mobileMoveRef} mobileLookRef={mobileLookRef} mobileShootRef={mobileShootRef} />}
