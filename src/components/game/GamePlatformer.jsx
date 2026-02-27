@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
-import { lang } from '../i18n'
+import { lang } from '../../i18n'
 
 const FONT = '/fonts/PressStart2P-Regular.ttf'
 

@@ -2,9 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App.jsx'
-import GameCatRunner from './components/GameCatRunner.jsx'
-import GamePlatformer from './components/GamePlatformer.jsx'
-import GamePixelStrike from './components/GamePixelStrike.jsx'
+import GameCatRunner from './components/game/GameCatRunner.jsx'
+import GamePlatformer from './components/game/GamePlatformer.jsx'
+import GamePixelStrike from './components/game/GamePixelStrike.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(

@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { lang } from '../i18n'
+import { lang } from '../../i18n'
 import GameSplash from './GameSplash.jsx'
-import GameScene from './game_catrunner/GameScene'
+import GameScene from './catrunner/GameScene'
 
 const MAX_LIVES = 3
 

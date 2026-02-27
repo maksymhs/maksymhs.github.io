@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { lang } from '../i18n'
+import { lang } from '../../i18n'
 import GameSplash from './GameSplash.jsx'
-import FPSScene from './game_pixelstrike/FPSScene'
-import WeaponOverlay from './game_pixelstrike/Weapon'
-import MobileControls from './game_pixelstrike/MobileControls'
+import FPSScene from './pixelstrike/FPSScene'
+import WeaponOverlay from './pixelstrike/Weapon'
+import MobileControls from './pixelstrike/MobileControls'
 
 const MAX_LIVES = 3
 
