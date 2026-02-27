@@ -19,7 +19,7 @@ import Outdoor from './outdoor/Outdoor'
 // Re-export outdoorCollide so Character.jsx can still import from './Room.jsx'
 export { outdoorCollide } from './outdoor/collisions'
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef, onNpcNear, npcInteractRef, currentLang }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onClockClick, onBack, onCatClick, catRef, onControllerClick, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef, onNpcNear, npcInteractRef, currentLang }) {
   return (
     <group>
       <Floor />
@@ -39,7 +39,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <CoffeeTable onHeadphonesClick={onHeadphonesClick} />
       <CeilingLamp />
       <FloorLamp />
-      <WallClock />
+      <WallClock onClick={onClockClick} />
       <Poster />
       <FairyLights />
       <WallShelf />

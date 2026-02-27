@@ -22,10 +22,12 @@ const DANCE_CAM = { position: [2.5, 2.2, 2.5], target: [0, 0.8, 0] }
 const SLEEP_CAM = { position: [0, 2.5, 0.5], target: [2.8, 0.4, 2.6] }
 const SOFA_CAM = { position: [0, 2.5, 0.5], target: [-2.8, 0.6, 2.5] }
 
+const CLOCK_CAM = { position: [2.5, 2.8, -2.8], target: [3.9, 2.8, -2.8] }
+
 const OUTDOOR_CAM = { position: [-3, 2, 0], target: [-6, 0.5, 0] }
 const WALK_CAM = { position: [0, 2.5, 7], target: [0, 1, 4.5] }
 
-const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM, sleep: SLEEP_CAM, sofa: SOFA_CAM, walk: WALK_CAM }
+const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, clock: CLOCK_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM, sleep: SLEEP_CAM, sofa: SOFA_CAM, walk: WALK_CAM }
 
 function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef, isMobile }) {
   const animating = useRef(false)
@@ -262,6 +264,10 @@ export default function App() {
     setView('linkedin')
   }, [])
 
+  const handleClockClick = useCallback(() => {
+    setView('clock')
+  }, [])
+
   const handleCatClick = useCallback(() => {
     setView('outdoor')
   }, [])
@@ -305,6 +311,8 @@ export default function App() {
       dance: () => setView('dance'),
       github: () => setView('github'),
       linkedin: () => setView('linkedin'),
+      clock: () => setView('clock'),
+      meeting: () => setView('clock'),
       sleep: () => setView('sleep'),
       sofa: () => setView('sofa'),
       default: () => { setSelectedBook(null); setChestOpen(false); setView('default') },
@@ -374,7 +382,7 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} onNpcNear={setNpcNear} npcInteractRef={npcInteractCb} currentLang={currentLang} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onClockClick={handleClockClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} onNpcNear={setNpcNear} npcInteractRef={npcInteractCb} currentLang={currentLang} />
             <Character position={[0, 0, -0.6]} seated view={view} playerRef={playerRef} catRef={catRef} />
           </Suspense>
 
@@ -451,6 +459,53 @@ export default function App() {
           }}
         >
           {view === 'github' ? '[ Click ] Visit GitHub' : '[ Click ] Visit LinkedIn'}
+        </div>
+      )}
+      {view === 'clock' && (
+        <div
+          style={{
+            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px',
+            fontFamily: "'Press Start 2P', monospace", zIndex: 100, pointerEvents: 'auto',
+          }}
+        >
+          <div style={{
+            fontSize: window.innerWidth < 768 ? '10px' : '14px', color: '#fff',
+            textShadow: '0 0 10px rgba(0,0,0,0.9), 2px 2px 0 #000', textAlign: 'center',
+            lineHeight: '1.8',
+          }}>
+            {currentLang === 'es' ? '¿Agendamos una reunión?' : currentLang === 'ru' ? 'Назначим встречу?' : 'Schedule a meeting?'}
+          </div>
+          <button
+            onClick={() => {
+              window.open('https://calendly.com/maksymhs', '_blank')
+            }}
+            style={{
+              fontFamily: "'Press Start 2P', monospace", fontSize: window.innerWidth < 768 ? '9px' : '11px',
+              color: '#fff', cursor: 'pointer', padding: '12px 24px',
+              background: 'rgba(80,160,80,0.8)', border: '2px solid rgba(100,200,100,0.6)',
+              borderRadius: '6px', backdropFilter: 'blur(4px)',
+              textShadow: '1px 1px 0 #000', letterSpacing: '1px',
+            }}
+            onMouseEnter={(e) => (e.target.style.background = 'rgba(80,180,80,0.95)')}
+            onMouseLeave={(e) => (e.target.style.background = 'rgba(80,160,80,0.8)')}
+          >
+            📅 {currentLang === 'es' ? 'Agendar reunión' : currentLang === 'ru' ? 'Назначить встречу' : 'Book a meeting'}
+          </button>
+          <button
+            onClick={handleBack}
+            style={{
+              fontFamily: "'Press Start 2P', monospace", fontSize: window.innerWidth < 768 ? '8px' : '10px',
+              color: '#ccc', cursor: 'pointer', padding: '8px 16px',
+              background: 'rgba(30,40,50,0.75)', border: '2px solid rgba(100,140,180,0.5)',
+              borderRadius: '6px', backdropFilter: 'blur(4px)',
+              textShadow: '1px 1px 0 #000',
+            }}
+            onMouseEnter={(e) => (e.target.style.background = 'rgba(30,40,50,0.9)')}
+            onMouseLeave={(e) => (e.target.style.background = 'rgba(30,40,50,0.75)')}
+          >
+            ← {currentLang === 'es' ? 'Volver' : currentLang === 'ru' ? 'Назад' : 'Back'}
+          </button>
         </div>
       )}
       {npcNear && (view === 'outdoor' || view === 'walk') && (

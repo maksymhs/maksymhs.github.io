@@ -72,9 +72,10 @@ export function LivingRug() {
   )
 }
 
-export function WallClock() {
+export function WallClock({ onClick }) {
   const minuteRef = useRef()
   const hourRef = useRef()
+  const [hovered, setHovered] = useState(false)
 
   useFrame((state) => {
     const t = state.clock.elapsedTime
@@ -83,9 +84,14 @@ export function WallClock() {
   })
 
   return (
-    <group position={[3.9, 2.8, -2.8]}>
+    <group
+      position={[3.9, 2.8, -2.8]}
+      onClick={onClick}
+      onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer' }}
+      onPointerOut={() => { setHovered(false); document.body.style.cursor = 'auto' }}
+    >
       {/* Clock body - round face */}
-      <Vox position={[0, 0, 0]} args={[0.08, 0.6, 0.6]} color="#f8f0e0" />
+      <Vox position={[0, 0, 0]} args={[0.08, 0.6, 0.6]} color={hovered ? '#fff8e8' : '#f8f0e0'} />
       {/* Frame border */}
       <Vox position={[-0.01, 0.28, 0]} args={[0.1, 0.06, 0.58]} color="#c08040" />
       <Vox position={[-0.01, -0.28, 0]} args={[0.1, 0.06, 0.58]} color="#c08040" />
