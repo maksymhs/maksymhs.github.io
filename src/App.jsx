@@ -267,11 +267,13 @@ export default function App() {
   const handleClockClick = useCallback(() => {
     if (view === 'clock') {
       window.open('https://calendly.com/maksymhs', '_blank')
-      handleBack()
+      setSelectedBook(null)
+      setChestOpen(false)
+      setView('default')
     } else {
       setView('clock')
     }
-  }, [view, handleBack])
+  }, [view])
 
   const handleCatClick = useCallback(() => {
     setView('outdoor')
