@@ -64,6 +64,18 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
     // Try local command matching FIRST for instant action responses
     const localMatch = tryLocalCommand(userMessage, curLang)
     if (localMatch) {
+      if (localMatch.lang && ['en', 'es', 'ru'].includes(localMatch.lang)) {
+        langRef.current = localMatch.lang
+        setCurrentLang(localMatch.lang)
+        if (onLangChange) onLangChange(localMatch.lang)
+        const newSpeechLang = SPEECH_LANGS[localMatch.lang] || 'en-US'
+        setBubbleText(localMatch.response)
+        setState('speaking')
+        stateRef.current = 'speaking'
+        if (mode === 'voice') speakTTS(localMatch.response, newSpeechLang)
+        sendToTelegram(userMessage, '[LOCAL] ' + localMatch.response, mode)
+        return
+      }
       setBubbleText(localMatch.response)
       setState('speaking')
       stateRef.current = 'speaking'
