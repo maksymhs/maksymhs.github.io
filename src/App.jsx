@@ -266,7 +266,7 @@ export default function App() {
 
   const handleClockClick = useCallback(() => {
     if (view === 'clock') {
-      window.open('https://calendly.com/maksymhs', '_blank')
+      window.open('https://calendly.com/maksymhe', '_blank')
       setSelectedBook(null)
       setChestOpen(false)
       setView('default')
@@ -471,7 +471,7 @@ export default function App() {
       {view === 'clock' && (
         <div
           onClick={() => {
-            window.open('https://calendly.com/maksymhs', '_blank')
+            window.open('https://calendly.com/maksymhe', '_blank')
             handleBack()
           }}
           style={{
