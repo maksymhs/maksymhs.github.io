@@ -381,7 +381,7 @@ export default function App() {
           <CameraAnimator view={view} controlsRef={controlsRef} catRef={catRef} playerRef={playerRef} isMobile={isMobile} />
 
           <OpenBook book={selectedBook} onClose={handleCloseBook} />
-          <FloatingScrolls open={chestOpen} view={view} onCardSelect={setCardSelected} />
+          <FloatingScrolls open={chestOpen} view={view} onCardSelect={setCardSelected} currentLang={currentLang} />
 
           <OrbitControls
             ref={controlsRef}

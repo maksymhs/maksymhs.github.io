@@ -361,7 +361,7 @@ export function FloatingScrollsOverlay({ show, onClose }) {
   )
 }
 
-export default function FloatingScrolls({ open, view, onCardSelect }) {
+export default function FloatingScrolls({ open, view, onCardSelect, currentLang }) {
   const [selectedIdx, setSelectedIdx] = useState(null)
   const parentRef = useRef()
   const isMobile = useIsMobile()
@@ -391,8 +391,8 @@ export default function FloatingScrolls({ open, view, onCardSelect }) {
 
   const experiences = useMemo(() => {
     const keys = ['openbank', 'paradigma', 'experis', 'everis']
-    return keys.map(k => EXP[k]?.[lang] || EXP[k]?.en)
-  }, [])
+    return keys.map(k => EXP[k]?.[currentLang || lang] || EXP[k]?.en)
+  }, [currentLang])
 
   // Expose deselect for overlay click
   FloatingScrolls.deselect = () => setSelectedIdx(null)
