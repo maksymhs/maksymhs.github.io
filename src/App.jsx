@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import Room from './components/Room.jsx'
-import { lang } from './i18n'
+import { lang as initialLang } from './i18n'
 import Character from './components/Character.jsx'
 import ChatOverlay from './components/ChatOverlay.jsx'
 import OpenBook from './components/OpenBook.jsx'
@@ -233,6 +233,7 @@ function CatDPad() {
 
 export default function App() {
   const [view, setView] = useState('default')
+  const [currentLang, setCurrentLang] = useState(initialLang)
   const controlsRef = useRef()
 
   const [chestOpen, setChestOpen] = useState(false)
@@ -287,6 +288,10 @@ export default function App() {
 
   const handleDoorClick = useCallback(() => {
     setView('walk')
+  }, [])
+
+  const handleLangChange = useCallback((newLang) => {
+    setCurrentLang(newLang)
   }, [])
 
   const handleChatAction = useCallback((action) => {
@@ -369,7 +374,7 @@ export default function App() {
           <pointLight position={[2, 2, -1]} intensity={0.2} color="#80c0ff" distance={6} />
 
           <Suspense fallback={null}>
-            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} onNpcNear={setNpcNear} npcInteractRef={npcInteractCb} />
+            <Room onBookshelfClick={handleBookshelfClick} onChestClick={handleChestClick} chestOpen={chestOpen} onBookClick={handleBookClick} view={view} onGithubFrameClick={handleGithubFrameClick} onLinkedinFrameClick={handleLinkedinFrameClick} onBack={handleBack} onCatClick={handleCatClick} catRef={catRef} onControllerClick={handleControllerClick} onHeadphonesClick={handleHeadphonesClick} onWindowClick={handleWindowClick} onBedClick={handleBedClick} onSofaClick={handleSofaClick} onDoorClick={handleDoorClick} playerRef={playerRef} onNpcNear={setNpcNear} npcInteractRef={npcInteractCb} currentLang={currentLang} />
             <Character position={[0, 0, -0.6]} seated view={view} playerRef={playerRef} catRef={catRef} />
           </Suspense>
 
@@ -424,7 +429,7 @@ export default function App() {
           onMouseEnter={(e) => (e.target.style.background = 'rgba(30,40,50,0.9)')}
           onMouseLeave={(e) => (e.target.style.background = 'rgba(30,40,50,0.75)')}
         >
-          ← {lang === 'es' ? 'Salir' : lang === 'ru' ? 'Выход' : 'Exit'}
+          ← {currentLang === 'es' ? 'Salir' : currentLang === 'ru' ? 'Выход' : 'Exit'}
         </button>
       )}
       <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
@@ -477,13 +482,13 @@ export default function App() {
           }}
         >
           {isMobile
-            ? (lang === 'es' ? '💬 Hablar' : lang === 'ru' ? '💬 Говорить' : '💬 Talk')
-            : `E → ${lang === 'es' ? 'Hablar' : lang === 'ru' ? 'Говорить' : 'Talk'}`
+            ? (currentLang === 'es' ? '💬 Hablar' : currentLang === 'ru' ? '💬 Говорить' : '💬 Talk')
+            : `E → ${currentLang === 'es' ? 'Hablar' : currentLang === 'ru' ? 'Говорить' : 'Talk'}`
           }
         </button>
       )}
       {isMobile && (view === 'outdoor' || view === 'walk') && <CatDPad />}
-      <ChatOverlay visible={view === 'default'} onAction={handleChatAction} />
+      <ChatOverlay visible={view === 'default'} onAction={handleChatAction} onLangChange={handleLangChange} />
       <SplashScreen />
 
     </>

@@ -669,7 +669,7 @@ function Book({ data, basePosition, onBookClick, interactive }) {
   )
 }
 
-function Bookshelf({ onClick, onBookClick, interactive }) {
+function Bookshelf({ onClick, onBookClick, interactive, currentLang }) {
   return (
     <group
       position={[3.8, 0, -1.5]}
@@ -687,7 +687,7 @@ function Bookshelf({ onClick, onBookClick, interactive }) {
         <Vox key={i} position={[x, 1.6, 0]} args={[0.06, 3.2, 0.4]} color="#a06020" />
       ))}
       {/* Interactive books */}
-      {getBookData(lang).map((book) => {
+      {getBookData(currentLang || lang).map((book) => {
         const shelfY = SHELF_Y[book.shelf]
         const baseY = shelfY + book.height / 2 + 0.03
         const baseX = -0.28 + book.col * 0.19
@@ -2840,7 +2840,7 @@ const NPC_DIALOGUES = {
   ],
 }
 
-function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear, npcInteractRef }) {
+function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear, npcInteractRef, currentLang }) {
   const headRef = useRef()
   const bodyRef = useRef()
   const bubbleRef = useRef()
@@ -2849,7 +2849,7 @@ function NPCCharacter({ position, rotation, playerRef, catRef, view, onNpcNear, 
   const lineIdx = useRef(0)
   const viewRef = useRef(view)
   const [bubbleText, setBubbleText] = useState(null)
-  const dialogues = NPC_DIALOGUES[lang] || NPC_DIALOGUES.en
+  const dialogues = NPC_DIALOGUES[currentLang || lang] || NPC_DIALOGUES.en
   const _targetWorldPos = useMemo(() => new THREE.Vector3(), [])
   const _npcWorldPos = useMemo(() => new THREE.Vector3(), [])
   const _localTarget = useMemo(() => new THREE.Vector3(), [])
@@ -3304,7 +3304,7 @@ function ExteriorVegetation() {
   )
 }
 
-function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
+function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef, currentLang }) {
   const pig1Ref = useRef()
   const pig2Ref = useRef()
   return (
@@ -3318,7 +3318,7 @@ function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
 
       {/* Garden furniture */}
       <GardenBench position={[-7, 0, 5]} rotation={[0, Math.PI / 4, 0]} />
-      <NPCCharacter position={[-7, 0.12, 5]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} onNpcNear={onNpcNear} npcInteractRef={npcInteractRef} />
+      <NPCCharacter position={[-7, 0.12, 5]} rotation={[0, Math.PI / 4, 0]} playerRef={playerRef} catRef={catRef} view={view} onNpcNear={onNpcNear} npcInteractRef={npcInteractRef} currentLang={currentLang} />
       <GardenBench position={[10, 0, -8]} rotation={[0, -Math.PI / 3, 0]} />
       <GardenBench position={[8, 0, 12]} rotation={[0, Math.PI, 0]} />
 
@@ -3414,7 +3414,7 @@ function Outdoor({ view, playerRef, catRef, onNpcNear, npcInteractRef }) {
   )
 }
 
-export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef, onNpcNear, npcInteractRef }) {
+export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBookClick, view, onGithubFrameClick, onLinkedinFrameClick, onBack, onCatClick, catRef, onControllerClick, onHeadphonesClick, onWindowClick, onBedClick, onSofaClick, onDoorClick, playerRef, onNpcNear, npcInteractRef, currentLang }) {
   return (
     <group>
       <Floor />
@@ -3425,7 +3425,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <Keyboard />
       <Mouse />
       <Chair view={view} />
-      <Bookshelf onClick={onBookshelfClick} onBookClick={onBookClick} interactive={view === 'bookshelf'} />
+      <Bookshelf onClick={onBookshelfClick} onBookClick={onBookClick} interactive={view === 'bookshelf'} currentLang={currentLang} />
       <Chest onClick={onChestClick} open={chestOpen} />
       <Bed onClick={onBedClick} />
       <BedRug />
@@ -3448,7 +3448,7 @@ export default function Room({ onBookshelfClick, onChestClick, chestOpen, onBook
       <WallArt onGithubClick={onGithubFrameClick} onLinkedinClick={onLinkedinFrameClick} onBack={onBack} view={view} />
       <Lamp />
       <Cat onClick={onCatClick} catRef={catRef} view={view} />
-      <Outdoor view={view} playerRef={playerRef} catRef={catRef} onNpcNear={onNpcNear} npcInteractRef={npcInteractRef} />
+      <Outdoor view={view} playerRef={playerRef} catRef={catRef} onNpcNear={onNpcNear} npcInteractRef={npcInteractRef} currentLang={currentLang} />
     </group>
   )
 }

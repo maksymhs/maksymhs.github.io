@@ -267,7 +267,7 @@ function stripLang(text) {
 }
 
 // States: idle, listening, speaking, typing
-export default function ChatOverlay({ visible = true, onAction }) {
+export default function ChatOverlay({ visible = true, onAction, onLangChange }) {
   const [currentLang, setCurrentLang] = useState(initialLang)
   const langRef = useRef(initialLang)
   const t = i18n[currentLang] || i18n.en
@@ -340,6 +340,7 @@ export default function ChatOverlay({ visible = true, onAction }) {
       if (detectedLang && detectedLang !== langRef.current) {
         langRef.current = detectedLang
         setCurrentLang(detectedLang)
+        if (onLangChange) onLangChange(detectedLang)
       }
       const replyLang = detectedLang || curLang
       const speechLang = SPEECH_LANGS[replyLang] || 'en-US'
@@ -374,7 +375,7 @@ export default function ChatOverlay({ visible = true, onAction }) {
 
       sendToTelegram(userMessage, '[ERROR] ' + err.message, mode)
     }
-  }, [onAction])
+  }, [onAction, onLangChange])
 
   const startListening = useCallback(() => {
     if (!SpeechRecognition || stateRef.current !== 'idle') return
