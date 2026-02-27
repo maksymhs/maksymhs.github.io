@@ -259,7 +259,7 @@ export default function App() {
   }, [])
 
   const handleCatClick = useCallback(() => {
-    setView('cat')
+    setView('outdoor')
   }, [])
 
   const handleControllerClick = useCallback(() => {
@@ -284,6 +284,25 @@ export default function App() {
 
   const handleDoorClick = useCallback(() => {
     setView('walk')
+  }, [])
+
+  const handleChatAction = useCallback((action) => {
+    const actionMap = {
+      outdoor: () => setView('outdoor'),
+      walk: () => setView('walk'),
+      cat: () => setView('outdoor'),
+      bookshelf: () => setView('bookshelf'),
+      chest: () => { setView('chest'); setChestOpen(true) },
+      controller: () => setView('controller'),
+      dance: () => setView('dance'),
+      github: () => setView('github'),
+      linkedin: () => setView('linkedin'),
+      sleep: () => setView('sleep'),
+      sofa: () => setView('sofa'),
+      default: () => { setSelectedBook(null); setChestOpen(false); setView('default') },
+    }
+    const handler = actionMap[action]
+    if (handler) handler()
   }, [])
 
   const handleBookClick = useCallback((bookData) => {
@@ -461,7 +480,7 @@ export default function App() {
         </button>
       )}
       {isMobile && (view === 'outdoor' || view === 'walk') && <CatDPad />}
-      <ChatOverlay visible={view === 'default'} />
+      <ChatOverlay visible={view === 'default'} onAction={handleChatAction} />
       <SplashScreen />
 
     </>

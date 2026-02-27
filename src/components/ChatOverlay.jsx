@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { buildSystemPrompt, PROFILE } from '../profileContext'
+import { buildSystemPrompt, buildMultilingualPrompt, PROFILE } from '../profileContext'
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const OPENROUTER_KEY = import.meta.env.VITE_OPENROUTER_API_KEY
@@ -37,7 +37,9 @@ function sendToTelegram(question, answer, mode) {
   } catch (e) { return Promise.reject(e) }
 }
 
-import { lang } from '../i18n'
+import { lang as initialLang } from '../i18n'
+
+const SPEECH_LANGS = { en: 'en-US', es: 'es-ES', ru: 'ru-RU' }
 
 const i18n = {
   en: {
@@ -96,11 +98,10 @@ const i18n = {
   },
 }
 
-const t = i18n[lang]
-const systemPrompt = buildSystemPrompt(lang)
+const multilingualPrompt = buildMultilingualPrompt()
 
 // Call OpenRouter API
-async function askAI(conversationHistory) {
+async function askAI(conversationHistory, currentLang) {
   if (!OPENROUTER_KEY || OPENROUTER_KEY === 'your-api-key-here') {
     throw new Error('No API key')
   }
@@ -116,7 +117,7 @@ async function askAI(conversationHistory) {
     body: JSON.stringify({
       model: 'openai/gpt-oss-120b',
       messages: [
-        { role: 'system', content: systemPrompt },
+        { role: 'system', content: multilingualPrompt },
         ...conversationHistory
       ],
       max_tokens: 150,
@@ -126,7 +127,7 @@ async function askAI(conversationHistory) {
 
   if (!res.ok) throw new Error(`API error: ${res.status}`)
   const data = await res.json()
-  return data.choices?.[0]?.message?.content || t.fallback
+  return data.choices?.[0]?.message?.content || i18n[currentLang].fallback
 }
 
 let speakTimer = null
@@ -203,7 +204,7 @@ function warmupTTS() {
 }
 
 // Text-to-speech using Web Speech Synthesis API
-function speakTTS(text) {
+function speakTTS(text, speechLang) {
   if (!window.speechSynthesis) return
   window.speechSynthesis.cancel()
   // Clean text: remove URLs, markdown, special patterns
@@ -214,8 +215,8 @@ function speakTTS(text) {
     .trim()
   if (!clean) return
   const utterance = new SpeechSynthesisUtterance(clean)
-  utterance.lang = t.speechLang
-  const voice = getMaleVoice(t.speechLang)
+  utterance.lang = speechLang || 'en-US'
+  const voice = getMaleVoice(speechLang || 'en-US')
   if (voice) utterance.voice = voice
   utterance.rate = 1.0
   utterance.pitch = 0.9
@@ -224,7 +225,7 @@ function speakTTS(text) {
 
 // Convert URLs in text to clickable links
 // Supports: plain URLs, Word[url] pattern, and {{MESSAGE}} placeholder
-function renderTextWithLinks(text, onMessageClick) {
+function renderTextWithLinks(text, onMessageClick, messageLabel) {
   if (!text) return text
   const parts = text.split(/(\n|\{\{MESSAGE\}\}|\w+\[https?:\/\/[^\]]+\]|https?:\/\/[^\s]+)/g)
   if (parts.length === 1) return text
@@ -232,7 +233,7 @@ function renderTextWithLinks(text, onMessageClick) {
   return parts.map((part, i) => {
     if (part === '\n') return <br key={i} />
     if (part === '{{MESSAGE}}') {
-      return <span key={i} style={linkStyle} onClick={onMessageClick}>{t.messageLabel}</span>
+      return <span key={i} style={linkStyle} onClick={onMessageClick}>{messageLabel}</span>
     }
     const labeled = part.match(/^(\w+)\[(https?:\/\/[^\]]+)\]$/)
     if (labeled) {
@@ -245,10 +246,34 @@ function renderTextWithLinks(text, onMessageClick) {
   })
 }
 
+// Extract {{ACTION:name}} from AI response
+const ACTION_RE = /\{\{ACTION:(\w+)\}\}/
+function extractAction(text) {
+  const m = text.match(ACTION_RE)
+  return m ? m[1] : null
+}
+function stripAction(text) {
+  return text.replace(ACTION_RE, '').trim()
+}
+
+// Extract {{LANG:xx}} from AI response
+const LANG_RE = /\{\{LANG:(\w+)\}\}/
+function extractLang(text) {
+  const m = text.match(LANG_RE)
+  return m && ['en', 'es', 'ru'].includes(m[1]) ? m[1] : null
+}
+function stripLang(text) {
+  return text.replace(LANG_RE, '').trim()
+}
+
 // States: idle, listening, speaking, typing
-export default function ChatOverlay({ visible = true }) {
+export default function ChatOverlay({ visible = true, onAction }) {
+  const [currentLang, setCurrentLang] = useState(initialLang)
+  const langRef = useRef(initialLang)
+  const t = i18n[currentLang] || i18n.en
+
   const [state, setState] = useState('speaking')
-  const [bubbleText, setBubbleText] = useState(t.welcome)
+  const [bubbleText, setBubbleText] = useState(i18n[initialLang].welcome)
   const [displayText, setDisplayText] = useState('')
   const [inputText, setInputText] = useState('')
   const recognitionRef = useRef(null)
@@ -289,8 +314,10 @@ export default function ChatOverlay({ visible = true }) {
   const directMessageRef = useRef(false)
 
   const respondToUser = useCallback(async (userMessage) => {
+    const curLang = langRef.current
+    const curT = i18n[curLang] || i18n.en
     // Show thinking state
-    setBubbleText(t.thinking)
+    setBubbleText(curT.thinking)
     setState('speaking')
     stateRef.current = 'speaking'
 
@@ -304,30 +331,50 @@ export default function ChatOverlay({ visible = true }) {
     }
 
     try {
-      const reply = await askAI(conversationRef.current)
+      const reply = await askAI(conversationRef.current, curLang)
       // Add assistant reply to history
       conversationRef.current.push({ role: 'assistant', content: reply })
 
-      setBubbleText(reply)
+      // Extract language tag and switch if needed
+      const detectedLang = extractLang(reply)
+      if (detectedLang && detectedLang !== langRef.current) {
+        langRef.current = detectedLang
+        setCurrentLang(detectedLang)
+      }
+      const replyLang = detectedLang || curLang
+      const speechLang = SPEECH_LANGS[replyLang] || 'en-US'
+
+      // Extract and execute action command if present
+      const action = extractAction(reply)
+      let cleanReply = stripAction(reply)
+      cleanReply = stripLang(cleanReply)
+
+      setBubbleText(cleanReply)
       setState('speaking')
       stateRef.current = 'speaking'
 
       // Speak aloud only if user used voice
-      if (mode === 'voice') speakTTS(reply)
+      if (mode === 'voice') speakTTS(cleanReply, speechLang)
+
+      // Trigger the action after a short delay so user reads the response
+      if (action && onAction) {
+        setTimeout(() => onAction(action), 1800)
+      }
 
       // Track interaction via Telegram
-      sendToTelegram(userMessage, reply, mode)
+      sendToTelegram(userMessage, cleanReply, mode)
     } catch (err) {
       console.warn('AI error:', err)
-      setBubbleText(t.fallback)
+      const errT = i18n[langRef.current] || i18n.en
+      setBubbleText(errT.fallback)
       setState('speaking')
       stateRef.current = 'speaking'
 
-      if (mode === 'voice') speakTTS(t.fallback)
+      if (mode === 'voice') speakTTS(errT.fallback, SPEECH_LANGS[langRef.current] || 'en-US')
 
       sendToTelegram(userMessage, '[ERROR] ' + err.message, mode)
     }
-  }, [])
+  }, [onAction])
 
   const startListening = useCallback(() => {
     if (!SpeechRecognition || stateRef.current !== 'idle') return
@@ -335,7 +382,7 @@ export default function ChatOverlay({ visible = true }) {
     stopSpeaking()
 
     const recognition = new SpeechRecognition()
-    recognition.lang = t.speechLang
+    recognition.lang = SPEECH_LANGS[langRef.current] || 'en-US'
     recognition.continuous = false
     recognition.interimResults = true
     recognition.maxAlternatives = 1
@@ -343,7 +390,8 @@ export default function ChatOverlay({ visible = true }) {
     recognition.onstart = () => {
       setState('listening')
       stateRef.current = 'listening'
-      setBubbleText(t.listening)
+      const curT = i18n[langRef.current] || i18n.en
+      setBubbleText(curT.listening)
     }
 
     recognition.onresult = (event) => {
@@ -360,7 +408,8 @@ export default function ChatOverlay({ visible = true }) {
     recognition.onerror = (event) => {
       console.warn('Speech error:', event.error)
       if (event.error === 'no-speech') {
-        setBubbleText(t.noSpeech)
+        const curT = i18n[langRef.current] || i18n.en
+        setBubbleText(curT.noSpeech)
       }
       setState('idle')
       stateRef.current = 'idle'
@@ -370,7 +419,8 @@ export default function ChatOverlay({ visible = true }) {
       if (stateRef.current === 'listening') {
         setState('idle')
         stateRef.current = 'idle'
-        setBubbleText(t.idle)
+        const curT = i18n[langRef.current] || i18n.en
+        setBubbleText(curT.idle)
       }
     }
 
@@ -442,13 +492,14 @@ export default function ChatOverlay({ visible = true }) {
       directMessageRef.current = false
       setState('speaking')
       stateRef.current = 'speaking'
-      setBubbleText(t.thinking)
+      const curT = i18n[langRef.current] || i18n.en
+      setBubbleText(curT.thinking)
       sendToTelegram(msg, '[DIRECT MESSAGE]', 'text')
         .then(() => {
-          setBubbleText(t.dmSent)
+          setBubbleText(curT.dmSent)
         })
         .catch(() => {
-          setBubbleText(t.dmError)
+          setBubbleText(curT.dmError)
         })
       return
     }
@@ -470,7 +521,8 @@ export default function ChatOverlay({ visible = true }) {
           e.preventDefault()
           setState('idle')
           stateRef.current = 'idle'
-          setBubbleText(t.idle)
+          const curT = i18n[langRef.current] || i18n.en
+          setBubbleText(curT.idle)
           setInputText('')
         }
         return
@@ -516,7 +568,7 @@ export default function ChatOverlay({ visible = true }) {
               />
             </form>
           ) : (
-            <span className="bubble-text">{renderTextWithLinks(displayText, startDirectMessage)}</span>
+            <span className="bubble-text">{renderTextWithLinks(displayText, startDirectMessage, t.messageLabel)}</span>
           )}
         </div>
         <div className="bubble-tail" />
