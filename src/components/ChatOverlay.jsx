@@ -58,12 +58,27 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
   const respondToUser = useCallback(async (userMessage) => {
     const curLang = langRef.current
     const curT = i18n[curLang] || i18n.en
-    // Show thinking state
+    const mode = inputModeRef.current
+    const speechLang = SPEECH_LANGS[curLang] || 'en-US'
+
+    // Try local command matching FIRST for instant action responses
+    const localMatch = tryLocalCommand(userMessage, curLang)
+    if (localMatch) {
+      setBubbleText(localMatch.response)
+      setState('speaking')
+      stateRef.current = 'speaking'
+      if (mode === 'voice') speakTTS(localMatch.response, speechLang)
+      if (localMatch.action && onAction) {
+        setTimeout(() => onAction(localMatch.action), 1800)
+      }
+      sendToTelegram(userMessage, '[LOCAL] ' + localMatch.response, mode)
+      return
+    }
+
+    // No local match — ask OpenRouter for a richer response
     setBubbleText(curT.thinking)
     setState('speaking')
     stateRef.current = 'speaking'
-
-    const mode = inputModeRef.current
 
     // Add user message to history
     conversationRef.current.push({ role: 'user', content: userMessage })
@@ -85,7 +100,7 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
         if (onLangChange) onLangChange(detectedLang)
       }
       const replyLang = detectedLang || curLang
-      const speechLang = SPEECH_LANGS[replyLang] || 'en-US'
+      const replySpeechLang = SPEECH_LANGS[replyLang] || 'en-US'
 
       // Extract and execute action command if present
       const action = extractAction(reply)
@@ -97,7 +112,7 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
       stateRef.current = 'speaking'
 
       // Speak aloud only if user used voice
-      if (mode === 'voice') speakTTS(cleanReply, speechLang)
+      if (mode === 'voice') speakTTS(cleanReply, replySpeechLang)
 
       // Trigger the action after a short delay so user reads the response
       if (action && onAction) {
@@ -108,27 +123,12 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
       sendToTelegram(userMessage, cleanReply, mode)
     } catch (err) {
       console.warn('AI error:', err)
-      const errLang = langRef.current
-      const errT = i18n[errLang] || i18n.en
-
-      // Try local command matching before showing generic fallback
-      const localMatch = tryLocalCommand(userMessage, errLang)
-      if (localMatch) {
-        setBubbleText(localMatch.response)
-        setState('speaking')
-        stateRef.current = 'speaking'
-        if (mode === 'voice') speakTTS(localMatch.response, SPEECH_LANGS[errLang] || 'en-US')
-        if (localMatch.action && onAction) {
-          setTimeout(() => onAction(localMatch.action), 1800)
-        }
-        sendToTelegram(userMessage, '[OFFLINE] ' + localMatch.response, mode)
-      } else {
-        setBubbleText(errT.fallback)
-        setState('speaking')
-        stateRef.current = 'speaking'
-        if (mode === 'voice') speakTTS(errT.fallback, SPEECH_LANGS[errLang] || 'en-US')
-        sendToTelegram(userMessage, '[ERROR] ' + err.message, mode)
-      }
+      const errT = i18n[langRef.current] || i18n.en
+      setBubbleText(errT.fallback)
+      setState('speaking')
+      stateRef.current = 'speaking'
+      if (mode === 'voice') speakTTS(errT.fallback, SPEECH_LANGS[langRef.current] || 'en-US')
+      sendToTelegram(userMessage, '[ERROR] ' + err.message, mode)
     }
   }, [onAction, onLangChange])
 
