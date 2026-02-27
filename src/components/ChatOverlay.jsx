@@ -256,6 +256,35 @@ function stripAction(text) {
   return text.replace(ACTION_RE, '').trim()
 }
 
+// Local command matching for offline fallback
+const LOCAL_COMMANDS = [
+  { action: 'walk',      keywords: { en: ['street','walk','outside','go out','door'], es: ['calle','pasear','salir','puerta','caminar','fuera'], ru: ['улица','гулять','выйти','дверь','прогулка'] }, response: { en: 'Let\'s go for a walk! 🚶', es: '¡Vamos a dar un paseo! 🚶', ru: 'Пойдём на прогулку! 🚶' } },
+  { action: 'outdoor',   keywords: { en: ['garden','outdoor','window','cat','michi','outside','yard'], es: ['jardín','exterior','ventana','gato','michi','patio'], ru: ['сад','улица','окно','кот','мичи','двор'] }, response: { en: 'Let\'s go outside! 🌳', es: '¡Vamos afuera! 🌳', ru: 'Пойдём на улицу! 🌳' } },
+  { action: 'bookshelf', keywords: { en: ['bookshelf','books','skills','shelf','library','read'], es: ['estantería','libros','skills','leer','biblioteca','estante'], ru: ['полка','книги','навыки','библиотека','читать'] }, response: { en: 'Here are my skills! 📚', es: '¡Aquí están mis skills! 📚', ru: 'Вот мои навыки! 📚' } },
+  { action: 'chest',     keywords: { en: ['chest','experience','work','career','treasure','job'], es: ['cofre','experiencia','trabajo','carrera','tesoro'], ru: ['сундук','опыт','работа','карьера','клад'] }, response: { en: 'Let me show you my experience! 💼', es: '¡Te enseño mi experiencia! 💼', ru: 'Покажу тебе мой опыт! 💼' } },
+  { action: 'dance',     keywords: { en: ['dance','music','headphones','dj','party'], es: ['bailar','música','auriculares','fiesta','baile'], ru: ['танцевать','музыка','наушники','вечеринка','танец'] }, response: { en: 'Let\'s dance! 🎶', es: '¡A bailar! 🎶', ru: 'Давай танцевать! 🎶' } },
+  { action: 'sleep',     keywords: { en: ['sleep','bed','rest','nap','tired'], es: ['dormir','cama','descansar','siesta','cansado'], ru: ['спать','кровать','отдых','сон','устал'] }, response: { en: 'Time to rest... 😴', es: 'Hora de descansar... 😴', ru: 'Пора отдыхать... 😴' } },
+  { action: 'sofa',      keywords: { en: ['sofa','couch','sit','relax','chill'], es: ['sofá','sofa','sentar','relajar','descanso'], ru: ['диван','сесть','отдохнуть','расслабиться'] }, response: { en: 'Let\'s chill on the sofa! 🛋️', es: '¡Vamos al sofá! 🛋️', ru: 'Пойдём на диван! 🛋️' } },
+  { action: 'controller',keywords: { en: ['game','play','controller','arcade','retro'], es: ['juego','jugar','mando','arcade','retro'], ru: ['игра','играть','контроллер','аркада','ретро'] }, response: { en: 'Let\'s play! 🎮', es: '¡Vamos a jugar! 🎮', ru: 'Давай играть! 🎮' } },
+  { action: 'github',    keywords: { en: ['github','code','projects','repository','repo'], es: ['github','código','proyectos','repositorio'], ru: ['github','код','проекты','репозиторий'] }, response: { en: 'Check out my code! 💻', es: '¡Mira mi código! 💻', ru: 'Смотри мой код! 💻' } },
+  { action: 'linkedin',  keywords: { en: ['linkedin','professional','profile','connect','hire'], es: ['linkedin','profesional','perfil','conectar','contratar'], ru: ['linkedin','профиль','профессиональный','связаться'] }, response: { en: 'Here\'s my LinkedIn! 🔗', es: '¡Aquí mi LinkedIn! 🔗', ru: 'Вот мой LinkedIn! 🔗' } },
+  { action: 'default',   keywords: { en: ['back','return','home','room','go back'], es: ['volver','regresar','casa','habitación','atrás'], ru: ['назад','вернуться','домой','комната'] }, response: { en: 'Back to the room! 🏠', es: '¡De vuelta a la habitación! 🏠', ru: 'Назад в комнату! 🏠' } },
+]
+
+function tryLocalCommand(userMessage, lang) {
+  const msg = userMessage.toLowerCase()
+  for (const cmd of LOCAL_COMMANDS) {
+    const langs = [lang, 'en', 'es', 'ru']
+    for (const l of langs) {
+      const kws = cmd.keywords[l]
+      if (kws && kws.some(kw => msg.includes(kw))) {
+        return { action: cmd.action, response: cmd.response[lang] || cmd.response.en }
+      }
+    }
+  }
+  return null
+}
+
 // Extract {{LANG:xx}} from AI response
 const LANG_RE = /\{\{LANG:(\w+)\}\}/
 function extractLang(text) {
@@ -366,14 +395,27 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
       sendToTelegram(userMessage, cleanReply, mode)
     } catch (err) {
       console.warn('AI error:', err)
-      const errT = i18n[langRef.current] || i18n.en
-      setBubbleText(errT.fallback)
-      setState('speaking')
-      stateRef.current = 'speaking'
+      const errLang = langRef.current
+      const errT = i18n[errLang] || i18n.en
 
-      if (mode === 'voice') speakTTS(errT.fallback, SPEECH_LANGS[langRef.current] || 'en-US')
-
-      sendToTelegram(userMessage, '[ERROR] ' + err.message, mode)
+      // Try local command matching before showing generic fallback
+      const localMatch = tryLocalCommand(userMessage, errLang)
+      if (localMatch) {
+        setBubbleText(localMatch.response)
+        setState('speaking')
+        stateRef.current = 'speaking'
+        if (mode === 'voice') speakTTS(localMatch.response, SPEECH_LANGS[errLang] || 'en-US')
+        if (localMatch.action && onAction) {
+          setTimeout(() => onAction(localMatch.action), 1800)
+        }
+        sendToTelegram(userMessage, '[OFFLINE] ' + localMatch.response, mode)
+      } else {
+        setBubbleText(errT.fallback)
+        setState('speaking')
+        stateRef.current = 'speaking'
+        if (mode === 'voice') speakTTS(errT.fallback, SPEECH_LANGS[errLang] || 'en-US')
+        sendToTelegram(userMessage, '[ERROR] ' + err.message, mode)
+      }
     }
   }, [onAction, onLangChange])
 
