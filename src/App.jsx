@@ -463,49 +463,20 @@ export default function App() {
       )}
       {view === 'clock' && (
         <div
+          onClick={() => {
+            window.open('https://calendly.com/maksymhs', '_blank')
+            handleBack()
+          }}
           style={{
-            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px',
-            fontFamily: "'Press Start 2P', monospace", zIndex: 100, pointerEvents: 'auto',
+            position: 'absolute', top: '70px', left: '50%', transform: 'translateX(-50%)',
+            fontFamily: "'Press Start 2P', monospace", fontSize: window.innerWidth < 768 ? '9px' : '11px',
+            color: '#fff', cursor: 'pointer', pointerEvents: 'auto',
+            textShadow: '0 0 10px rgba(0,0,0,0.9), 2px 2px 0 #000',
+            zIndex: 100, whiteSpace: 'nowrap',
+            padding: '10px 20px', background: 'rgba(0,0,0,0.5)', borderRadius: '4px',
           }}
         >
-          <div style={{
-            fontSize: window.innerWidth < 768 ? '10px' : '14px', color: '#fff',
-            textShadow: '0 0 10px rgba(0,0,0,0.9), 2px 2px 0 #000', textAlign: 'center',
-            lineHeight: '1.8',
-          }}>
-            {currentLang === 'es' ? '¿Agendamos una reunión?' : currentLang === 'ru' ? 'Назначим встречу?' : 'Schedule a meeting?'}
-          </div>
-          <button
-            onClick={() => {
-              window.open('https://calendly.com/maksymhs', '_blank')
-            }}
-            style={{
-              fontFamily: "'Press Start 2P', monospace", fontSize: window.innerWidth < 768 ? '9px' : '11px',
-              color: '#fff', cursor: 'pointer', padding: '12px 24px',
-              background: 'rgba(80,160,80,0.8)', border: '2px solid rgba(100,200,100,0.6)',
-              borderRadius: '6px', backdropFilter: 'blur(4px)',
-              textShadow: '1px 1px 0 #000', letterSpacing: '1px',
-            }}
-            onMouseEnter={(e) => (e.target.style.background = 'rgba(80,180,80,0.95)')}
-            onMouseLeave={(e) => (e.target.style.background = 'rgba(80,160,80,0.8)')}
-          >
-            📅 {currentLang === 'es' ? 'Agendar reunión' : currentLang === 'ru' ? 'Назначить встречу' : 'Book a meeting'}
-          </button>
-          <button
-            onClick={handleBack}
-            style={{
-              fontFamily: "'Press Start 2P', monospace", fontSize: window.innerWidth < 768 ? '8px' : '10px',
-              color: '#ccc', cursor: 'pointer', padding: '8px 16px',
-              background: 'rgba(30,40,50,0.75)', border: '2px solid rgba(100,140,180,0.5)',
-              borderRadius: '6px', backdropFilter: 'blur(4px)',
-              textShadow: '1px 1px 0 #000',
-            }}
-            onMouseEnter={(e) => (e.target.style.background = 'rgba(30,40,50,0.9)')}
-            onMouseLeave={(e) => (e.target.style.background = 'rgba(30,40,50,0.75)')}
-          >
-            ← {currentLang === 'es' ? 'Volver' : currentLang === 'ru' ? 'Назад' : 'Back'}
-          </button>
+          {currentLang === 'es' ? '[ Click ] Agendar reunión' : currentLang === 'ru' ? '[ Клик ] Назначить встречу' : '[ Click ] Schedule a meeting'}
         </div>
       )}
       {npcNear && (view === 'outdoor' || view === 'walk') && (
