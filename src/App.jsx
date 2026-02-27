@@ -158,6 +158,9 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef,
 
     if (!animating.current) return
 
+    // For walk/outdoor, don't lerp to static cam — wait for chase cam ref to be ready
+    if ((view === 'walk' && !playerRef?.current) || (view === 'outdoor' && !catRef?.current)) return
+
     const cam = CAM_MAP[view] || DEFAULT_CAM
     targetPos.current.set(...cam.position)
     targetLook.current.set(...cam.target)
