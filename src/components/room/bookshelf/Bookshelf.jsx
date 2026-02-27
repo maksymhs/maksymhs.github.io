@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
 import * as THREE from 'three'
-import Vox from '../common/Vox'
-import { lang } from '../../i18n'
+import Vox from '../../common/Vox'
+import { lang } from '../../../i18n'
 
 const BOOK_I18N = {
   java: {

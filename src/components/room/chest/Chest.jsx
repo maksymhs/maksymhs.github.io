@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import Vox from '../common/Vox'
+import Vox from '../../common/Vox'
 
 export default function Chest({ onClick, open }) {
   const lidRef = useRef()

@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Html, Text } from '@react-three/drei'
 import * as THREE from 'three'
-import { lang } from '../i18n'
+import { lang } from '../../../i18n'
 
 const EXP = {
   openbank: {

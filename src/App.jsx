@@ -6,8 +6,8 @@ import Room from './components/Room.jsx'
 import { lang as initialLang } from './i18n'
 import Character from './components/Character.jsx'
 import ChatOverlay from './components/ChatOverlay.jsx'
-import OpenBook from './components/OpenBook.jsx'
-import FloatingScrolls, { FloatingScrollsOverlay } from './components/FloatingScrolls.jsx'
+import OpenBook from './components/room/bookshelf/OpenBook.jsx'
+import FloatingScrolls, { FloatingScrollsOverlay } from './components/room/bookshelf/FloatingScrolls.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
 
 const DEFAULT_CAM = { position: [0, 2.5, 2.8], target: [0, 1.2, -0.5] }
