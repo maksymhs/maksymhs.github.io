@@ -101,22 +101,26 @@ function DustMap() {
 }
 
 // === Weapon Overlay — separate Canvas on top for FPS gun ===
-function WeaponGun({ shootFlash }) {
+function WeaponGun({ shootFlash, isMobile }) {
   const ref = useRef()
   const flashRef = useRef()
+  const baseX = isMobile ? 0.22 : 0.3
+  const baseY = isMobile ? -0.18 : -0.25
+  const baseZ = isMobile ? -0.35 : -0.5
+  const sc = isMobile ? 1.3 : 1
 
   useFrame((state) => {
     if (!ref.current) return
     const t = state.clock.elapsedTime
     const recoil = shootFlash.current > 0 ? 0.06 : 0
-    ref.current.position.set(0.3, -0.25 + Math.cos(t * 2) * 0.004, -0.5 + recoil)
+    ref.current.position.set(baseX, baseY + Math.cos(t * 2) * 0.004, baseZ + recoil)
     ref.current.rotation.x = Math.sin(t * 1.5) * 0.003 - recoil * 1.5
     if (flashRef.current) flashRef.current.visible = shootFlash.current > 0.02
     if (shootFlash.current > 0) shootFlash.current -= 0.016
   })
 
   return (
-    <group ref={ref} position={[0.3, -0.25, -0.5]}>
+    <group ref={ref} position={[baseX, baseY, baseZ]} scale={[sc, sc, sc]}>
       <mesh position={[0, 0, 0]}><boxGeometry args={[0.07, 0.09, 0.45]} /><meshLambertMaterial color="#3a3a3a" /></mesh>
       <mesh position={[0, 0.02, -0.3]}><boxGeometry args={[0.035, 0.035, 0.25]} /><meshLambertMaterial color="#4a4a4a" /></mesh>
       <mesh position={[0, 0.05, -0.42]}><boxGeometry args={[0.02, 0.04, 0.02]} /><meshLambertMaterial color="#333" /></mesh>
@@ -136,14 +140,14 @@ function WeaponGun({ shootFlash }) {
   )
 }
 
-function WeaponOverlay({ shootFlash, visible }) {
+function WeaponOverlay({ shootFlash, visible, isMobile }) {
   if (!visible) return null
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 40 }}>
-      <Canvas camera={{ position: [0, 0, 0], fov: 50, near: 0.01 }} gl={{ alpha: true, antialias: false }} style={{ background: 'transparent' }}>
+      <Canvas camera={{ position: [0, 0, 0], fov: isMobile ? 60 : 50, near: 0.01 }} gl={{ alpha: true, antialias: false }} style={{ background: 'transparent' }}>
         <ambientLight intensity={0.8} />
         <directionalLight position={[2, 3, 1]} intensity={1} />
-        <WeaponGun shootFlash={shootFlash} />
+        <WeaponGun shootFlash={shootFlash} isMobile={isMobile} />
       </Canvas>
     </div>
   )
@@ -630,11 +634,12 @@ function FPSScene({ onScoreUpdate, onGameOver, gameState, onHit, livesRef, shoot
     if (keysRef.current.a) { nx -= right.x * speed; nz -= right.z * speed }
     if (keysRef.current.d) { nx += right.x * speed; nz += right.z * speed }
 
-    // Mobile joystick input
+    // Mobile joystick input (1.8x multiplier for snappier feel)
     if (isMobile && mobileMoveRef.current) {
       const mv = mobileMoveRef.current
-      nx += (forward.x * mv.y + right.x * mv.x) * speed
-      nz += (forward.z * mv.y + right.z * mv.x) * speed
+      const mobileSpeed = speed * 1.8
+      nx += (forward.x * mv.y + right.x * mv.x) * mobileSpeed
+      nz += (forward.z * mv.y + right.z * mv.x) * mobileSpeed
     }
 
     // Collision
@@ -785,7 +790,7 @@ function MobileControls({ mobileMoveRef, mobileLookRef, mobileShootRef }) {
   const touchIdR = useRef(null)
 
   const KNOB_MAX = 40
-  const LOOK_SENS = 3.5
+  const LOOK_SENS = 5.5
 
   // --- Left joystick (movement) ---
   const onLStart = useCallback((e) => {
@@ -871,13 +876,13 @@ function MobileControls({ mobileMoveRef, mobileLookRef, mobileShootRef }) {
     <>
       {/* Left joystick — movement */}
       <div ref={joyLRef} onTouchStart={onLStart} onTouchMove={onLMove} onTouchEnd={onLEnd} onTouchCancel={onLEnd}
-        style={{ ...joyStyle, left: '25px', bottom: '65px' }}>
+        style={{ ...joyStyle, left: '25px', bottom: '160px' }}>
         <div ref={knobLRef} style={knobStyle} />
       </div>
 
       {/* Right joystick — look */}
       <div ref={joyRRef} onTouchStart={onRStart} onTouchMove={onRMove} onTouchEnd={onREnd} onTouchCancel={onREnd}
-        style={{ ...joyStyle, right: '25px', bottom: '65px' }}>
+        style={{ ...joyStyle, right: '25px', bottom: '160px' }}>
         <div ref={knobRRef} style={knobStyle} />
       </div>
 
@@ -885,7 +890,7 @@ function MobileControls({ mobileMoveRef, mobileLookRef, mobileShootRef }) {
       <div
         onTouchStart={(e) => { e.preventDefault(); mobileShootRef.current = true }}
         style={{
-          ...baseStyle, right: '35px', bottom: '205px', width: '70px', height: '70px',
+          ...baseStyle, right: '35px', bottom: '300px', width: '70px', height: '70px',
           background: 'rgba(255,60,60,0.3)', border: '2px solid rgba(255,60,60,0.5)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 75, fontSize: '24px', color: 'rgba(255,255,255,0.8)',
@@ -898,7 +903,7 @@ function MobileControls({ mobileMoveRef, mobileLookRef, mobileShootRef }) {
       <div
         onTouchStart={(e) => { e.preventDefault(); window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' })) }}
         style={{
-          ...baseStyle, right: '120px', bottom: '205px', width: '55px', height: '55px',
+          ...baseStyle, right: '120px', bottom: '300px', width: '55px', height: '55px',
           background: 'rgba(100,200,255,0.25)', border: '2px solid rgba(100,200,255,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 75, fontSize: '16px', color: 'rgba(255,255,255,0.7)',
@@ -1015,7 +1020,7 @@ export default function GamePixelStrike() {
       </Canvas>
 
       {/* Weapon overlay — separate Canvas for FPS gun */}
-      <WeaponOverlay shootFlash={shootFlash} visible={started && !gameOver} />
+      <WeaponOverlay shootFlash={shootFlash} visible={started && !gameOver} isMobile={isMobile} />
 
       {/* Crosshair */}
       {started && !gameOver && (locked || isMobile) && (
