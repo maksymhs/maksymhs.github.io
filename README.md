@@ -151,7 +151,7 @@ npm run preview  # Preview production build
 
 ## 📄 License
 
-MIT © 2026 [Maksym Herasymenko](https://github.com/maksymhs)
+MIT © 2026 [Maksym](https://github.com/maksymhs)
 
 ---
 

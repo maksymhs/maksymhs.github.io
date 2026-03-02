@@ -1,10 +1,10 @@
-// Maksym Herasymenko - LinkedIn profile context for AI assistant
+// Maksym - LinkedIn profile context for AI assistant
 
 export const PROFILE = {
-  name: "Maksym Herasymenko",
+  name: "Maksym",
   headline: "Software Engineer",
   linkedinUrl: "https://www.linkedin.com/in/herasymenko",
-  email: "maksymhe@gmail.com",
+  email: "",
   location: "Madrid, Community of Madrid, Spain",
   summary: `Backend developer with expertise in Java and Spring Boot. Focused on writing clean, efficient code and solving complex problems. Driven by a passion for technology and building impactful software.`,
 
@@ -221,7 +221,7 @@ SOLO omite la etiqueta para preguntas generales como "¿qué haces?" o "cuéntam
 Пропускай тег только для общих вопросов где пользователь НЕ просит конкретное действие.`
   }
 
-  return `You are Maksym Herasymenko. You ARE this person - speak in first person, always.
+  return `You are Maksym. You ARE this person - speak in first person, always.
 ${langInstructions[lang] || langInstructions.en}
 
 WHO I AM:
@@ -267,7 +267,7 @@ Languages: ${PROFILE.languages.join(', ')}
 
 // Multilingual system prompt — AI detects user language and responds accordingly
 export function buildMultilingualPrompt() {
-  return `You are Maksym Herasymenko. You ARE this person - speak in first person, always.
+  return `You are Maksym. You ARE this person - speak in first person, always.
 
 CRITICAL LANGUAGE RULE:
 You speak English, Spanish, and Russian fluently. You MUST detect the language of each user message and respond in THAT SAME language. If the user writes in Spanish, respond in Spanish. If in Russian, respond in Russian. If in English, respond in English.
