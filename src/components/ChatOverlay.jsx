@@ -37,9 +37,10 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
     })
   }, [])
 
-  // Typewriter effect
+  // Typewriter effect (skipped when streaming — tokens already revealed progressively)
   useEffect(() => {
     if (!bubbleText) { setDisplayText(''); return }
+    if (streamingRef.current) { streamingRef.current = false; return }
     let i = 0
     setDisplayText('')
     clearInterval(typewriterRef.current)
@@ -52,6 +53,7 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
   }, [bubbleText])
 
 
+  const streamingRef = useRef(false)
   const inputModeRef = useRef('voice')
   const directMessageRef = useRef(false)
 
@@ -98,7 +100,10 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
     }
 
     try {
-      const reply = await askAI(conversationRef.current, userMessage, mode, curLang)
+      const onChunk = (accumulated) => {
+        setDisplayText(stripAction(stripLang(accumulated)))
+      }
+      const reply = await askAI(conversationRef.current, userMessage, mode, curLang, onChunk)
       // Add assistant reply to history
       conversationRef.current.push({ role: 'assistant', content: reply })
 
@@ -116,6 +121,7 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
       let cleanReply = stripAction(reply)
       cleanReply = stripLang(cleanReply)
 
+      streamingRef.current = true
       setBubbleText(cleanReply)
       setState('speaking')
       stateRef.current = 'speaking'

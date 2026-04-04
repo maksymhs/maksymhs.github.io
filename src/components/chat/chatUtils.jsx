@@ -5,7 +5,7 @@ export const SESSION_ID = Math.random().toString(36).slice(2, 8).toUpperCase()
 
 const WORKER_URL = import.meta.env.DEV ? "/api-proxy" : "https://api.maksym.site/chat"
 
-export async function askAI(conversationHistory, question, mode, lang) {
+export async function askAI(conversationHistory, question, mode, lang, onChunk) {
   const res = await fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -17,14 +17,35 @@ export async function askAI(conversationHistory, question, mode, lang) {
       question,
       mode,
       lang,
-      session: SESSION_ID
+      session: SESSION_ID,
+      stream: true
     })
   });
 
   if (!res.ok) throw new Error("API error");
 
-  const data = await res.json();
-  return data.answer;
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let fullText = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+    for (const line of chunk.split('\n')) {
+      if (line.startsWith('data: ') && !line.includes('[DONE]')) {
+        try {
+          const token = JSON.parse(line.slice(6)).choices?.[0]?.delta?.content || '';
+          if (token) {
+            fullText += token;
+            onChunk?.(fullText);
+          }
+        } catch {}
+      }
+    }
+  }
+
+  return fullText;
 }
 
 export async function sendToTelegram(question, answer, mode) {
@@ -35,7 +56,8 @@ export async function sendToTelegram(question, answer, mode) {
       body: JSON.stringify({
         messages: [{ role: "user", content: question }],
         question: `[DM] ${question}`,
-        mode
+        mode,
+        stream: false
       })
     });
   } catch (e) {
