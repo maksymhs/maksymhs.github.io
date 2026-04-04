@@ -50,7 +50,7 @@ export async function askAI(conversationHistory, currentLang) {
       'X-Title': 'Maksym Portfolio'
     },
     body: JSON.stringify({
-      model: 'openai/gpt-oss-120b',
+      model: 'google/gemini-2.5-flash-lite',
       messages: [
         { role: 'system', content: multilingualPrompt },
         ...conversationHistory
