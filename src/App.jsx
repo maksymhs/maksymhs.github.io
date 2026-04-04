@@ -7,7 +7,8 @@ import { lang as initialLang } from './i18n'
 import Character from './components/Character.jsx'
 import ChatOverlay from './components/ChatOverlay.jsx'
 import OpenBook from './components/room/bookshelf/OpenBook.jsx'
-import FloatingScrolls, { FloatingScrollsOverlay } from './components/room/bookshelf/FloatingScrolls.jsx'
+import FloatingScrolls from './components/room/bookshelf/FloatingScrolls.jsx'
+import BookshelfOverlay from './components/room/bookshelf/BookshelfOverlay.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
 
 const DEFAULT_CAM = { position: [0, 2.5, 2.8], target: [0, 1.2, -0.5] }
@@ -240,7 +241,6 @@ export default function App() {
 
   const [chestOpen, setChestOpen] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
-  const [cardSelected, setCardSelected] = useState(false)
   const catRef = useRef()
   const playerRef = useRef()
   const isMobile = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
@@ -396,7 +396,7 @@ export default function App() {
           <CameraAnimator view={view} controlsRef={controlsRef} catRef={catRef} playerRef={playerRef} isMobile={isMobile} />
 
           <OpenBook book={selectedBook} onClose={handleCloseBook} />
-          <FloatingScrolls open={chestOpen} view={view} onCardSelect={setCardSelected} currentLang={currentLang} />
+          <FloatingScrolls open={chestOpen} view={view} onCardClick={setSelectedBook} currentLang={currentLang} />
 
           <OrbitControls
             ref={controlsRef}
@@ -418,7 +418,7 @@ export default function App() {
 
       {view !== 'default' && (
         <button
-          onClick={handleBack}
+          onClick={() => { if (selectedBook) { setSelectedBook(null) } else { handleBack() } }}
           style={{
             position: 'fixed',
             top: '16px',
@@ -447,8 +447,7 @@ export default function App() {
           ← {currentLang === 'es' ? 'Salir' : currentLang === 'ru' ? 'Выход' : 'Exit'}
         </button>
       )}
-      <FloatingScrollsOverlay show={cardSelected} onClose={() => FloatingScrolls.deselect?.()} />
-      <FloatingScrollsOverlay show={!!selectedBook} onClose={handleCloseBook} />
+      <BookshelfOverlay book={selectedBook} onClose={handleCloseBook} />
       {(view === 'github' || view === 'linkedin') && (
         <div
           onClick={() => {

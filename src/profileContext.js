@@ -2,44 +2,47 @@
 
 export const PROFILE = {
   name: "Maksym",
-  headline: "Software Engineer",
+  headline: "Software Engineer | Java · Spring Boot · Microservices | Banking & Telco | Clean Architecture · Observability",
   linkedinUrl: "https://www.linkedin.com/in/herasymenko",
   email: "",
-  location: "Madrid, Community of Madrid, Spain",
-  summary: `Backend developer with expertise in Java and Spring Boot. Focused on writing clean, efficient code and solving complex problems. Driven by a passion for technology and building impactful software.`,
+  location: "Madrid, Spain",
+  summary: `Software engineer with 8+ years building enterprise Java systems in banking and telecommunications. Production-hardened expertise across the Spring ecosystem — Boot, MVC, Security, Data, AOP — with a track record of migrating architectures, optimizing performance at scale, and embedding quality into CI/CD pipelines. Passionate about developer tooling and designing software that other engineers can extend and maintain with confidence.`,
 
   experience: [
     {
       title: "Software Engineer",
-      company: "Openbank",
+      company: "Openbank (Grupo Santander)",
       period: "June 2025 - Present",
-      description: "Software Engineer at Openbank (Santander Group digital bank)."
+      description: "Building backend services in Java and Spring Boot for the Germany market launch, adapting the platform's domain model and configuration to meet new regulatory requirements. Implementing event-driven communication via AWS SQS, decoupling service dependencies and enabling asynchronous processing across the banking platform."
     },
     {
       title: "Software Engineer",
-      company: "Paradigma Digital",
+      company: "Paradigma Digital (client: Simyo / telecommunications)",
       period: "October 2021 - May 2025 (3 years 8 months)",
-      description: "Development, analysis, and issue resolution. Technologies: Java, Spring Boot, PostgreSQL and Redis databases, SOAP and REST services, JUnit testing, Jenkins and Sonar, Kibana, Google Cloud."
+      description: "Key contributor to the full revamping of Simyo's mobile app backend — the highest-rated telco app in Spain (4.8 Play Store / 4.7 App Store). Designed optimized aggregation endpoints that cut redundant CRM API calls, achieving 2x faster response times. Led the migration from MVC to hexagonal architecture, decoupling domain logic from infrastructure. Built AOP-based instrumentation for cross-cutting logging and security monitoring feeding real-time anomaly detection through Kibana. Created Grafana observability dashboards and alerting pipelines from scratch."
     },
     {
-      title: "Backend Developer",
-      company: "Experis España",
+      title: "Software Engineer",
+      company: "Experis (ManpowerGroup)",
       period: "November 2019 - October 2021 (2 years)",
-      description: "Backend service development. Technologies: Java, Spring Boot, DB2 and Oracle databases, SOAP and REST services, Unit testing with JUnit, Jenkins, Sonar, and OpenShift."
+      description: "Banco Santander: Developed microservices bridging modern Spring Boot services with legacy COBOL (TRX) mainframe components, implementing circuit breaker patterns for fault tolerance under high-concurrency workloads. Designed and integrated automated functional test suites (Selenium-based) into the Jenkins CI/CD pipeline — one of the first teams to adopt this practice in the project. Fira Barcelona (MWC): Built COVID access control services for Mobile World Congress, integrating third-party health verification APIs using a multi-module Gradle build."
     },
     {
-      title: "Backend Developer",
-      company: "everis (now NTT Data)",
+      title: "Software Engineer",
+      company: "everis (NTT Data) — client: Telefónica",
       period: "June 2016 - September 2019 (3 years 4 months)",
-      description: "Backend service development in Murcia, Spain. Technologies: Java, Spring Boot, DB2 and Oracle databases, SOAP and REST services, Unit testing with JUnit, Jenkins, Sonar, and OpenShift."
+      description: "Built backend services for Telefónica using Java and Spring Boot, contributing to systems powering critical telecommunications infrastructure. Established testing and static analysis practices with JUnit and SonarQube that reduced defect rates and became standard across the team."
     }
   ],
 
   skills: [
-    "Java", "Spring Boot", "PostgreSQL", "Redis", "DB2", "Oracle",
-    "REST APIs", "SOAP Services", "Microservices",
-    "JUnit", "Jenkins", "SonarQube", "OpenShift",
-    "Google Cloud", "Kibana", "GitLab", "Git", "CI/CD"
+    "Java", "Spring Boot", "Spring MVC", "Spring Security", "Spring Data", "Spring AOP", "Hibernate",
+    "Microservices", "Hexagonal Architecture", "Event-Driven Architecture", "Clean Architecture", "RESTful API Design",
+    "Maven", "Gradle", "Jenkins", "SonarQube", "GitLab", "CI/CD",
+    "PostgreSQL", "Redis", "Oracle", "DB2",
+    "AWS SQS", "AWS CloudWatch", "Google Cloud Platform", "OpenShift", "Docker",
+    "Grafana", "Kibana", "Spring Boot Actuator", "AOP-based instrumentation",
+    "JUnit", "Selenium"
   ],
 
   education: [
@@ -58,13 +61,15 @@ export const PROFILE = {
   ],
 
   languages: [
-    "Russian (Native or Bilingual)",
-    "English (Full Professional)",
-    "Ukrainian (Native or Bilingual)",
-    "Spanish (Native or Bilingual)"
+    "Spanish (Native)",
+    "Russian (Native)",
+    "Ukrainian (Native)",
+    "English (Professional working proficiency)"
   ],
 
-  yearsOfExperience: "8+ years (since 2016)"
+  yearsOfExperience: "9+ years (since 2016)",
+
+  aiTools: "Windsurf (daily coding), Devin (automated PR review)"
 }
 
 // Build the system prompt for the AI
@@ -116,8 +121,8 @@ IMPORTANT: You MUST be very proactive triggering actions. If the user mentions A
 - User: "baila" / "dance" / "let's dance" / "groove" → {{ACTION:dance}}
 - User: "duerme" / "sleep" / "goodnight" / "a dormir" → {{ACTION:sleep}}
 - User: "sal" / "walk" / "let's go" / "vámonos" → {{ACTION:walk}}
-- User: "qué sabes" / "skills" / "what do you know" / "technologies" → {{ACTION:bookshelf}}
-- User: "experiencia" / "work" / "career" / "cv" / "where did you work" → {{ACTION:chest}}
+- User: "bookshelf" / "estantería" / "estante" / "shelf" → {{ACTION:bookshelf}}
+- User: "cofre" / "baúl" / "chest" / "treasure chest" → {{ACTION:chest}}
 - User: "reunión" / "meeting" / "schedule" / "cita" / "agenda" → {{ACTION:clock}}
 - User: "jugar" / "game" / "play" → {{ACTION:controller}}
 - User: "github" / "code" / "projects" → {{ACTION:github}}
@@ -165,8 +170,8 @@ IMPORTANTE: DEBES ser muy proactivo activando acciones. Si el usuario menciona C
 - Usuario: "baila" / "bailemos" / "música" / "mueve" → {{ACTION:dance}}
 - Usuario: "duerme" / "a dormir" / "buenas noches" / "echarse" → {{ACTION:sleep}}
 - Usuario: "sal" / "vamos" / "vámonos" / "pasear" → {{ACTION:walk}}
-- Usuario: "qué sabes" / "skills" / "tecnologías" / "cuéntame" → {{ACTION:bookshelf}}
-- Usuario: "experiencia" / "trabajo" / "cv" / "empresas" / "trayectoria" → {{ACTION:chest}}
+- Usuario: "estantería" / "estante" / "bookshelf" / "abre la estantería" → {{ACTION:bookshelf}}
+- Usuario: "cofre" / "baúl" / "abre el cofre" / "chest" → {{ACTION:chest}}
 - Usuario: "reunión" / "reu" / "agendar" / "cita" / "quedar" / "quedamos" → {{ACTION:clock}}
 - Usuario: "jugar" / "juego" / "arcade" → {{ACTION:controller}}
 - Usuario: "github" / "código" / "proyectos" → {{ACTION:github}}
@@ -213,8 +218,8 @@ SOLO omite la etiqueta para preguntas generales como "¿qué haces?" o "cuéntam
 - Пользователь: "танцуй" / "потанцуем" / "музыка" → {{ACTION:dance}}
 - Пользователь: "спать" / "ложись" / "спокойной ночи" → {{ACTION:sleep}}
 - Пользователь: "гулять" / "выйти" / "пойдём" → {{ACTION:walk}}
-- Пользователь: "что умеешь" / "навыки" / "технологии" → {{ACTION:bookshelf}}
-- Пользователь: "опыт" / "работа" / "карьера" / "резюме" → {{ACTION:chest}}
+- Пользователь: "полка" / "книжная полка" / "bookshelf" → {{ACTION:bookshelf}}
+- Пользователь: "сундук" / "клад" / "chest" → {{ACTION:chest}}
 - Пользователь: "встреча" / "назначить" / "календарь" / "звонок" → {{ACTION:clock}}
 - Пользователь: "играть" / "поиграем" → {{ACTION:controller}}
 - Пользователь: "вернуться" / "назад" → {{ACTION:default}}
@@ -254,6 +259,8 @@ Career:
 ${PROFILE.experience.map(e => `- ${e.title} at ${e.company} (${e.period}): ${e.description}`).join('\n')}
 
 Skills: ${PROFILE.skills.join(', ')}
+
+AI-Assisted Dev Tools: ${PROFILE.aiTools}
 
 Education:
 ${PROFILE.education.map(e => `- ${e.degree} at ${e.institution} (${e.period})`).join('\n')}
@@ -317,8 +324,8 @@ IMPORTANT: Be very proactive triggering actions. If the user mentions ANYTHING r
 - "baila" / "dance" / "groove" → {{ACTION:dance}}
 - "duerme" / "sleep" / "goodnight" → {{ACTION:sleep}}
 - "sal" / "walk" / "let's go" / "vámonos" → {{ACTION:walk}}
-- "skills" / "qué sabes" / "what do you know" → {{ACTION:bookshelf}}
-- "experiencia" / "work" / "cv" / "career" → {{ACTION:chest}}
+- "bookshelf" / "estantería" / "shelf" → {{ACTION:bookshelf}}
+- "cofre" / "baúl" / "chest" / "treasure chest" → {{ACTION:chest}}
 - "reunión" / "meeting" / "schedule" / "cita" / "reu" → {{ACTION:clock}}
 - "jugar" / "game" / "play" → {{ACTION:controller}}
 - "github" / "code" → {{ACTION:github}}
@@ -350,6 +357,8 @@ Career:
 ${PROFILE.experience.map(e => `- ${e.title} at ${e.company} (${e.period}): ${e.description}`).join('\n')}
 
 Skills: ${PROFILE.skills.join(', ')}
+
+AI-Assisted Dev Tools: ${PROFILE.aiTools}
 
 Education:
 ${PROFILE.education.map(e => `- ${e.degree} at ${e.institution} (${e.period})`).join('\n')}

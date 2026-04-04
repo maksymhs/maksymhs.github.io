@@ -12,9 +12,9 @@ const BOOK_I18N = {
     ru: { title: 'Java', subtitle: '8+ лет опыта', details: 'Основной язык во всех профессиональных проектах с 2016.\n\nJava 8–21, Streams, Generics, многопоточность, настройка JVM.\n\nИспользовал в everis, Experis, Paradigma Digital и Openbank.' },
   },
   spring: {
-    en: { title: 'Spring Boot', subtitle: 'Primary framework', details: 'Building microservices and REST APIs with Spring Boot.\n\nSpring Data, Spring Security, WebFlux, dependency injection.\n\nUsed across all projects for scalable, production-ready backend services.' },
-    es: { title: 'Spring Boot', subtitle: 'Framework principal', details: 'Construcción de microservicios y APIs REST con Spring Boot.\n\nSpring Data, Spring Security, WebFlux, inyección de dependencias.\n\nUsado en todos los proyectos para servicios backend escalables y listos para producción.' },
-    ru: { title: 'Spring Boot', subtitle: 'Основной фреймворк', details: 'Разработка микросервисов и REST API на Spring Boot.\n\nSpring Data, Spring Security, WebFlux, внедрение зависимостей.\n\nИспользовал во всех проектах для масштабируемых backend-сервисов.' },
+    en: { title: 'Spring Boot', subtitle: 'Full Spring ecosystem', details: 'Spring Boot, Spring MVC, Spring Security, Spring Data, Spring AOP.\n\nProxy-based AOP instrumentation for cross-cutting logging and security monitoring.\n\nDependency injection, auto-configuration, and production-ready patterns.\n\nUsed across all 4 companies since 2016.' },
+    es: { title: 'Spring Boot', subtitle: 'Ecosistema Spring completo', details: 'Spring Boot, Spring MVC, Spring Security, Spring Data, Spring AOP.\n\nInstrumentación AOP basada en proxies para logging y monitorización de seguridad.\n\nInyección de dependencias, autoconfiguración y patrones listos para producción.\n\nUsado en las 4 empresas desde 2016.' },
+    ru: { title: 'Spring Boot', subtitle: 'Полная экосистема Spring', details: 'Spring Boot, Spring MVC, Spring Security, Spring Data, Spring AOP.\n\nAOP-инструментация через прокси для логирования и security-мониторинга.\n\nВнедрение зависимостей, автоконфигурация и production-ready паттерны.\n\nИспользовал во всех 4 компаниях с 2016 года.' },
   },
   databases: {
     en: { title: 'Databases', subtitle: 'PostgreSQL · Redis · DB2 · Oracle', details: 'Schema design, complex queries, performance tuning and migrations.\n\nRedis for caching strategies.\nPostgreSQL at Paradigma Digital.\nDB2 & Oracle at everis and Experis.' },
@@ -27,24 +27,24 @@ const BOOK_I18N = {
     ru: { title: 'REST и SOAP API', subtitle: 'Проектирование и интеграция', details: 'Проектирование и потребление REST-сервисов.\n\nИнтеграция SOAP/WSDL для legacy-систем.\n\nДокументация через Swagger/OpenAPI.\n\nСтратегии версионирования и contract-first подход.' },
   },
   devops: {
-    en: { title: 'DevOps & CI/CD', subtitle: 'Jenkins · SonarQube · OpenShift', details: 'CI/CD pipelines with Jenkins.\n\nCode quality gates with SonarQube.\n\nContainerized deployments on OpenShift and Docker.\n\nAutomatic builds, tests, and deployments.' },
-    es: { title: 'DevOps & CI/CD', subtitle: 'Jenkins · SonarQube · OpenShift', details: 'Pipelines CI/CD con Jenkins.\n\nControl de calidad con SonarQube.\n\nDespliegues en contenedores con OpenShift y Docker.\n\nBuilds, tests y despliegues automatizados.' },
-    ru: { title: 'DevOps и CI/CD', subtitle: 'Jenkins · SonarQube · OpenShift', details: 'CI/CD пайплайны с Jenkins.\n\nКонтроль качества через SonarQube.\n\nКонтейнерные деплои на OpenShift и Docker.\n\nАвтоматические сборки, тесты и деплои.' },
+    en: { title: 'DevOps & CI/CD', subtitle: 'Jenkins · Maven · Gradle · Sonar', details: 'CI/CD pipelines with Jenkins — including Selenium E2E quality gates.\n\nBuild tooling with Maven and Gradle (multi-module projects at MWC/Experis).\n\nCode quality enforcement with SonarQube across all projects.\n\nContainerized deployments on OpenShift and Docker.\n\nGitLab CI pipelines and merge strategies.' },
+    es: { title: 'DevOps & CI/CD', subtitle: 'Jenkins · Maven · Gradle · Sonar', details: 'Pipelines CI/CD con Jenkins — incluyendo tests E2E Selenium como quality gates.\n\nBuild con Maven y Gradle (proyectos multi-módulo en MWC/Experis).\n\nControl de calidad con SonarQube en todos los proyectos.\n\nDespliegues en contenedores con OpenShift y Docker.\n\nPipelines GitLab CI y estrategias de merge.' },
+    ru: { title: 'DevOps и CI/CD', subtitle: 'Jenkins · Maven · Gradle · Sonar', details: 'CI/CD пайплайны с Jenkins — включая Selenium E2E quality gates.\n\nСборка с Maven и Gradle (мультимодульные проекты на МВК/Experis).\n\nКонтроль качества через SonarQube во всех проектах.\n\nКонтейнерные деплои на OpenShift и Docker.\n\nGitLab CI пайплайны и стратегии мержа.' },
   },
   cloud: {
-    en: { title: 'Google Cloud', subtitle: 'Cloud infrastructure', details: 'GCP services for deploying and scaling microservices.\n\nMonitoring and observability with Kibana.\n\nCloud-native architectures and serverless patterns.\n\nUsed at Paradigma Digital.' },
-    es: { title: 'Google Cloud', subtitle: 'Infraestructura cloud', details: 'Servicios GCP para despliegue y escalado de microservicios.\n\nMonitorización y observabilidad con Kibana.\n\nArquitecturas cloud-native y patrones serverless.\n\nUsado en Paradigma Digital.' },
-    ru: { title: 'Google Cloud', subtitle: 'Облачная инфраструктура', details: 'Сервисы GCP для деплоя и масштабирования микросервисов.\n\nМониторинг с Kibana.\n\nCloud-native архитектуры и serverless.\n\nИспользовал в Paradigma Digital.' },
+    en: { title: 'Cloud & Infra', subtitle: 'GCP · AWS · OpenShift · Docker', details: 'AWS SQS for event-driven architecture at Openbank. AWS CloudWatch for monitoring.\n\nGoogle Cloud Platform for microservices deployment at Paradigma Digital.\n\nOpenShift container orchestration at Experis and everis.\n\nDocker for containerized deployments.' },
+    es: { title: 'Cloud & Infra', subtitle: 'GCP · AWS · OpenShift · Docker', details: 'AWS SQS para arquitectura event-driven en Openbank. AWS CloudWatch para monitorización.\n\nGoogle Cloud Platform para despliegue de microservicios en Paradigma Digital.\n\nOrquestación de contenedores OpenShift en Experis y everis.\n\nDocker para despliegues contenerizados.' },
+    ru: { title: 'Облако и Инфра', subtitle: 'GCP · AWS · OpenShift · Docker', details: 'AWS SQS для event-driven архитектуры в Openbank. AWS CloudWatch для мониторинга.\n\nGoogle Cloud Platform для деплоя микросервисов в Paradigma Digital.\n\nOpenShift оркестрация контейнеров в Experis и everis.\n\nDocker для контейнерных деплоев.' },
   },
   testing: {
-    en: { title: 'Testing', subtitle: 'JUnit · Mockito · TDD', details: 'Unit testing with JUnit 5 and Mockito.\n\nIntegration and end-to-end testing.\n\nTDD practices for reliable code.\n\nHigh code coverage across all projects.' },
-    es: { title: 'Testing', subtitle: 'JUnit · Mockito · TDD', details: 'Tests unitarios con JUnit 5 y Mockito.\n\nTests de integración y end-to-end.\n\nPrácticas TDD para código fiable.\n\nAlta cobertura de código en todos los proyectos.' },
-    ru: { title: 'Тестирование', subtitle: 'JUnit · Mockito · TDD', details: 'Юнит-тесты с JUnit 5 и Mockito.\n\nИнтеграционные и E2E тесты.\n\nПрактики TDD для надёжного кода.\n\nВысокое покрытие тестами во всех проектах.' },
+    en: { title: 'Testing', subtitle: 'JUnit · Selenium · Mockito', details: 'Unit testing with JUnit 5 and Mockito across all projects.\n\nSelenium-based E2E functional test suites integrated into Jenkins CI/CD at Experis — one of the first teams to adopt this in the project.\n\nCode coverage and quality enforcement via SonarQube.' },
+    es: { title: 'Testing', subtitle: 'JUnit · Selenium · Mockito', details: 'Testing unitario con JUnit 5 y Mockito en todos los proyectos.\n\nSuites de tests funcionales E2E con Selenium integrados en Jenkins CI/CD en Experis — uno de los primeros equipos del proyecto en adoptarlo.\n\nCobertura y calidad de código con SonarQube.' },
+    ru: { title: 'Тестирование', subtitle: 'JUnit · Selenium · Mockito', details: 'Юнит-тесты с JUnit 5 и Mockito во всех проектах.\n\nSelenium E2E функциональные тесты в Jenkins CI/CD в Experis — одна из первых команд в проекте.\n\nПокрытие и качество кода через SonarQube.' },
   },
   tools: {
-    en: { title: 'Tools & VCS', subtitle: 'Git · GitLab · Kibana', details: 'Git workflows: GitFlow, trunk-based development.\n\nGitLab CI pipelines and merge strategies.\n\nLog analysis and monitoring with Kibana/ELK stack.\n\nCode review and collaboration best practices.' },
-    es: { title: 'Herramientas y VCS', subtitle: 'Git · GitLab · Kibana', details: 'Flujos Git: GitFlow, trunk-based development.\n\nPipelines en GitLab CI y estrategias de merge.\n\nAnálisis de logs y monitorización con Kibana/ELK.\n\nBuenas prácticas de code review y colaboración.' },
-    ru: { title: 'Инструменты и VCS', subtitle: 'Git · GitLab · Kibana', details: 'Git-процессы: GitFlow, trunk-based development.\n\nGitLab CI пайплайны и стратегии мержа.\n\nАнализ логов и мониторинг с Kibana/ELK.\n\nЛучшие практики код-ревью.' },
+    en: { title: 'Observability', subtitle: 'Grafana · Kibana · AOP', details: 'Grafana dashboards and alerting pipelines built from scratch at Paradigma Digital — reduced mean time to detection for production incidents.\n\nKibana for real-time anomaly detection fed by AOP-based instrumentation.\n\nSpring Boot Actuator for health and metrics endpoints.\n\nGit workflows: GitFlow, GitLab CI pipelines.' },
+    es: { title: 'Observabilidad', subtitle: 'Grafana · Kibana · AOP', details: 'Dashboards Grafana y pipelines de alertas construidos desde cero en Paradigma Digital — reducción del tiempo de detección de incidentes en producción.\n\nKibana para detección de anomalías en tiempo real alimentado por instrumentación AOP.\n\nSpring Boot Actuator para endpoints de salud y métricas.\n\nFlujos Git: GitFlow, pipelines GitLab CI.' },
+    ru: { title: 'Наблюдаемость', subtitle: 'Grafana · Kibana · AOP', details: 'Grafana дашборды и алертинг-пайплайны с нуля в Paradigma Digital — сокращение времени обнаружения production-инцидентов.\n\nKibana для обнаружения аномалий в реальном времени через AOP-инструментацию.\n\nSpring Boot Actuator для health и метрик-эндпоинтов.\n\nGit-процессы: GitFlow, GitLab CI пайплайны.' },
   },
   languages: {
     en: { title: 'Languages', subtitle: '4 languages spoken', details: '🇪🇸 Spanish — Native\n🇬🇧 English — Full Professional\n🇷🇺 Russian — Native\n🇺🇦 Ukrainian — Native' },
@@ -60,6 +60,11 @@ const BOOK_I18N = {
     en: { title: 'Publication', subtitle: 'University Conference 2019', details: '"Hay Sitio: A collaborative application for managing student workspaces in computer science"\n\nProceedings of the Conference on University Teaching of CS, Vol 4 (2019).' },
     es: { title: 'Publicación', subtitle: 'Congreso Universitario 2019', details: '"Hay Sitio: Aplicación colaborativa para la gestión de espacios de trabajo de estudiantes de informática"\n\nActas de las Jornadas sobre la Enseñanza Universitaria de la Informática, Vol 4 (2019).' },
     ru: { title: 'Публикация', subtitle: 'Университетская конференция 2019', details: '«Hay Sitio: Совместное приложение для управления рабочими пространствами студентов информатики»\n\nМатериалы конференции по университетскому преподаванию информатики, Том 4 (2019).' },
+  },
+  architecture: {
+    en: { title: 'Architecture', subtitle: 'Hexagonal · Microservices · EDA', details: 'Led MVC to hexagonal architecture migration at Simyo — domain logic decoupled from infrastructure, teams evolve subsystems independently without breaking contracts.\n\nEvent-Driven Architecture with AWS SQS at Openbank.\n\nCircuit breaker patterns (Hystrix) bridging Spring Boot and COBOL mainframe at Banco Santander.\n\nClean Architecture and RESTful API design across all projects.' },
+    es: { title: 'Arquitectura', subtitle: 'Hexagonal · Microservicios · EDA', details: 'Migración de MVC a arquitectura hexagonal en Simyo — lógica de dominio desacoplada de infraestructura, equipos evolucionan subsistemas sin romper contratos.\n\nArquitectura Event-Driven con AWS SQS en Openbank.\n\nPatrones circuit breaker (Hystrix) entre Spring Boot y mainframe COBOL en Banco Santander.\n\nClean Architecture y diseño RESTful API en todos los proyectos.' },
+    ru: { title: 'Архитектура', subtitle: 'Гексагональная · Микросервисы · EDA', details: 'Миграция с MVC на гексагональную архитектуру в Simyo — доменная логика отделена от инфраструктуры, команды независимо развивают подсистемы.\n\nEvent-Driven архитектура с AWS SQS в Openbank.\n\nCircuit breaker паттерны (Hystrix) между Spring Boot и COBOL мейнфреймом в Banco Santander.\n\nClean Architecture и RESTful API дизайн во всех проектах.' },
   },
 }
 
@@ -77,6 +82,7 @@ function getBookData(currentLang) {
     { id: 'languages', label: 'Langs', color: '#d06080', height: 0.36, shelf: 3, col: 0 },
     { id: 'education', label: 'Degree', color: '#40a0a0', height: 0.36, shelf: 3, col: 1 },
     { id: 'publication', label: 'Paper', color: '#a080d0', height: 0.36, shelf: 3, col: 2 },
+    { id: 'architecture', label: 'Arch', color: '#5060d0', height: 0.40, shelf: 3, col: 3 },
   ]
   return base.map(b => ({ ...b, ...(BOOK_I18N[b.id]?.[l] || BOOK_I18N[b.id]?.en) }))
 }

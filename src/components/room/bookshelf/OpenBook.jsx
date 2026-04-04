@@ -19,8 +19,8 @@ function useIsMobile() {
 
 export default function OpenBook({ book, onClose }) {
   const isMobile = useIsMobile()
-  const scale = isMobile ? 0.45 : 1
-  const camDist = isMobile ? 0.6 : 0.65
+  const scale = isMobile ? 0.9 : 1
+  const camDist = isMobile ? 0.85 : 0.65
   const groupRef = useRef()
   const leftHalf = useRef()
   const rightHalf = useRef()
@@ -54,7 +54,7 @@ export default function OpenBook({ book, onClose }) {
 
     // Phase 1: Fly with arc
     if (anim.current.fly < 1) {
-      anim.current.fly = Math.min(anim.current.fly + 0.025, 1)
+      anim.current.fly = Math.min(anim.current.fly + 0.06, 1)
     }
     const ft = anim.current.fly
     const fE = 1 - Math.pow(1 - ft, 3)
@@ -94,120 +94,93 @@ export default function OpenBook({ book, onClose }) {
         <meshBasicMaterial transparent opacity={0} side={THREE.DoubleSide} />
       </mesh>
 
-      {/* Spine (center ridge) */}
-      <mesh>
-        <boxGeometry args={[BT, BH + 0.005, BT * 2]} />
-        <meshLambertMaterial color={darkColor} flatShading />
-      </mesh>
+      {/* Spine (center ridge) — hidden on mobile */}
+      {!isMobile && (
+        <mesh>
+          <boxGeometry args={[BT, BH + 0.005, BT * 2]} />
+          <meshLambertMaterial color={darkColor} flatShading />
+        </mesh>
+      )}
 
-      {/* === LEFT HALF (pivots from spine) === */}
-      <group ref={leftHalf}>
-        {/* Cover */}
-        <mesh position={[-BW / 2, 0, 0]}>
-          <boxGeometry args={[BW, BH, BT]} />
-          <meshLambertMaterial color={color} flatShading />
-        </mesh>
-        {/* Page */}
-        <mesh position={[-BW / 2, 0, BT / 2 + 0.001]}>
-          <planeGeometry args={[BW * 0.92, BH * 0.92]} />
-          <meshBasicMaterial color="#f5f0e2" />
-        </mesh>
-        {/* Border decoration */}
-        {[
-          [0, BH * 0.92 / 2 - 0.004, BW * 0.88, 0.003],
-          [0, -BH * 0.92 / 2 + 0.004, BW * 0.88, 0.003],
-          [-BW * 0.92 / 2 + 0.004, 0, 0.003, BH * 0.88],
-          [BW * 0.92 / 2 - 0.004, 0, 0.003, BH * 0.88],
-        ].map(([x, y, w, h], i) => (
-          <mesh key={`lb${i}`} position={[-BW / 2 + x, y, BT / 2 + 0.002]}>
-            <planeGeometry args={[w, h]} />
-            <meshBasicMaterial color={color} opacity={0.25} transparent />
+      {/* === LEFT HALF — hidden on mobile === */}
+      {!isMobile && (
+        <group ref={leftHalf}>
+          <mesh position={[-BW / 2, 0, 0]}>
+            <boxGeometry args={[BW, BH, BT]} />
+            <meshLambertMaterial color={color} flatShading />
           </mesh>
-        ))}
-        {/* Left page content */}
-        {showContent && (
-          <group position={[-BW / 2, 0, BT / 2 + 0.003]}>
-            <Text
-              position={[0, 0.12, 0]}
-              fontSize={0.02}
-              color={color}
-              anchorX="center"
-              anchorY="middle"
-              maxWidth={BW * 0.8}
-              textAlign="center"
-              lineHeight={1.6}
-              font="/fonts/PressStart2P-Regular.ttf"
-            >
-              {book.title}
-            </Text>
-            <Text
-              position={[0, 0.06, 0]}
-              fontSize={0.012}
-              color={color}
-              anchorX="center"
-              anchorY="middle"
-              fillOpacity={0.35}
-              font="/fonts/PressStart2P-Regular.ttf"
-            >
-              {'~ * ~'}
-            </Text>
-            <Text
-              position={[0, -0.02, 0]}
-              fontSize={0.011}
-              color="#706858"
-              anchorX="center"
-              anchorY="middle"
-              maxWidth={BW * 0.8}
-              textAlign="center"
-              lineHeight={1.8}
-              font="/fonts/PressStart2P-Regular.ttf"
-            >
-              {book.subtitle}
-            </Text>
-            <mesh position={[0, -0.1, 0]}>
-              <planeGeometry args={[BW * 0.45, 0.002]} />
-              <meshBasicMaterial color={color} opacity={0.3} transparent />
+          <mesh position={[-BW / 2, 0, BT / 2 + 0.001]}>
+            <planeGeometry args={[BW * 0.92, BH * 0.92]} />
+            <meshBasicMaterial color="#f5f0e2" />
+          </mesh>
+          {[
+            [0, BH * 0.92 / 2 - 0.004, BW * 0.88, 0.003],
+            [0, -BH * 0.92 / 2 + 0.004, BW * 0.88, 0.003],
+            [-BW * 0.92 / 2 + 0.004, 0, 0.003, BH * 0.88],
+            [BW * 0.92 / 2 - 0.004, 0, 0.003, BH * 0.88],
+          ].map(([x, y, w, h], i) => (
+            <mesh key={`lb${i}`} position={[-BW / 2 + x, y, BT / 2 + 0.002]}>
+              <planeGeometry args={[w, h]} />
+              <meshBasicMaterial color={color} opacity={0.25} transparent />
             </mesh>
-          </group>
-        )}
-      </group>
+          ))}
+          {showContent && (
+            <group position={[-BW / 2, 0, BT / 2 + 0.003]}>
+              <Text position={[0, 0.12, 0]} fontSize={0.02} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 0.8} textAlign="center" lineHeight={1.6} font="/fonts/PressStart2P-Regular.ttf">
+                {book.title}
+              </Text>
+              <Text position={[0, 0.06, 0]} fontSize={0.012} color={color} anchorX="center" anchorY="middle" fillOpacity={0.35} font="/fonts/PressStart2P-Regular.ttf">
+                {'~ * ~'}
+              </Text>
+              <Text position={[0, -0.02, 0]} fontSize={0.011} color="#706858" anchorX="center" anchorY="middle" maxWidth={BW * 0.8} textAlign="center" lineHeight={1.8} font="/fonts/PressStart2P-Regular.ttf">
+                {book.subtitle}
+              </Text>
+              <mesh position={[0, -0.1, 0]}>
+                <planeGeometry args={[BW * 0.45, 0.002]} />
+                <meshBasicMaterial color={color} opacity={0.3} transparent />
+              </mesh>
+            </group>
+          )}
+        </group>
+      )}
 
-      {/* === RIGHT HALF (pivots from spine) === */}
+      {/* === RIGHT HALF — centered on mobile, offset on desktop === */}
       <group ref={rightHalf}>
-        {/* Cover */}
-        <mesh position={[BW / 2, 0, 0]}>
-          <boxGeometry args={[BW, BH, BT]} />
+        <mesh position={[isMobile ? 0 : BW / 2, 0, 0]}>
+          <boxGeometry args={[isMobile ? BW * 1.8 : BW, BH, BT]} />
           <meshLambertMaterial color={color} flatShading />
         </mesh>
-        {/* Page */}
-        <mesh position={[BW / 2, 0, BT / 2 + 0.001]}>
-          <planeGeometry args={[BW * 0.92, BH * 0.92]} />
+        <mesh position={[isMobile ? 0 : BW / 2, 0, BT / 2 + 0.001]}>
+          <planeGeometry args={[isMobile ? BW * 1.8 * 0.92 : BW * 0.92, BH * 0.92]} />
           <meshBasicMaterial color="#f8f4e8" />
         </mesh>
-        {/* Border decoration */}
         {[
-          [0, BH * 0.92 / 2 - 0.004, BW * 0.88, 0.003],
-          [0, -BH * 0.92 / 2 + 0.004, BW * 0.88, 0.003],
-          [-BW * 0.92 / 2 + 0.004, 0, 0.003, BH * 0.88],
-          [BW * 0.92 / 2 - 0.004, 0, 0.003, BH * 0.88],
+          [0, BH * 0.92 / 2 - 0.004, (isMobile ? BW * 1.8 : BW) * 0.88, 0.003],
+          [0, -BH * 0.92 / 2 + 0.004, (isMobile ? BW * 1.8 : BW) * 0.88, 0.003],
+          [-(isMobile ? BW * 1.8 : BW) * 0.92 / 2 + 0.004, 0, 0.003, BH * 0.88],
+          [(isMobile ? BW * 1.8 : BW) * 0.92 / 2 - 0.004, 0, 0.003, BH * 0.88],
         ].map(([x, y, w, h], i) => (
-          <mesh key={`rb${i}`} position={[BW / 2 + x, y, BT / 2 + 0.002]}>
+          <mesh key={`rb${i}`} position={[(isMobile ? 0 : BW / 2) + x, y, BT / 2 + 0.002]}>
             <planeGeometry args={[w, h]} />
             <meshBasicMaterial color={color} opacity={0.25} transparent />
           </mesh>
         ))}
-        {/* Right page content */}
         {showContent && (
-          <group position={[BW / 2, 0, BT / 2 + 0.003]}>
+          <group position={[isMobile ? 0 : BW / 2, 0, BT / 2 + 0.003]}>
+            {isMobile && (
+              <Text position={[0, BH * 0.32, 0]} fontSize={0.015} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 1.3} textAlign="center" font="/fonts/PressStart2P-Regular.ttf">
+                {book.title}
+              </Text>
+            )}
             <Text
-              position={[0, 0.05, 0]}
-              fontSize={0.009}
+              position={[0, isMobile ? -0.04 : 0.05, 0]}
+              fontSize={isMobile ? 0.013 : 0.009}
               color="#3a3828"
               anchorX="center"
               anchorY="middle"
-              maxWidth={BW * 0.8}
+              maxWidth={isMobile ? BW * 1.3 : BW * 0.8}
               textAlign="center"
-              lineHeight={2.2}
+              lineHeight={1.9}
               font="/fonts/PressStart2P-Regular.ttf"
             >
               {book.details.replace(/\n\n/g, '\n')}
