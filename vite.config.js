@@ -10,7 +10,7 @@ export default defineConfig({
       '/api-proxy': {
         target: 'https://api.maksym.site',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api-proxy/, ''),
+        rewrite: (path) => path.replace(/^\/api-proxy/, '/chat'),
         headers: { origin: 'https://maksym.site' }
       }
     }
