@@ -5,7 +5,7 @@ export const SESSION_ID = Math.random().toString(36).slice(2, 8).toUpperCase()
 
 const WORKER_URL = import.meta.env.DEV ? "/api-proxy" : "https://api.maksym.site"
 
-export async function askAI(conversationHistory, question, mode) {
+export async function askAI(conversationHistory, question, mode, lang) {
   const res = await fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -15,7 +15,9 @@ export async function askAI(conversationHistory, question, mode) {
         ...conversationHistory
       ],
       question,
-      mode
+      mode,
+      lang,
+      session: SESSION_ID
     })
   });
 

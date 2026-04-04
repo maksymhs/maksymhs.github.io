@@ -98,7 +98,7 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
     }
 
     try {
-      const reply = await askAI(conversationRef.current, userMessage, mode)
+      const reply = await askAI(conversationRef.current, userMessage, mode, curLang)
       // Add assistant reply to history
       conversationRef.current.push({ role: 'assistant', content: reply })
 
