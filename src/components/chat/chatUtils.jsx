@@ -1,68 +1,45 @@
 import { i18n, SPEECH_LANGS, multilingualPrompt } from './chatI18n'
 
-const OPENROUTER_KEY = import.meta.env.VITE_OPENROUTER_API_KEY
-const TG_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
-const TG_CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID
-
 // Generate unique session ID per page load
 export const SESSION_ID = Math.random().toString(36).slice(2, 8).toUpperCase()
 
-// Send interaction data to Telegram
-export function sendToTelegram(question, answer, mode) {
-  if (!TG_BOT_TOKEN || !TG_CHAT_ID) return Promise.reject(new Error('No Telegram config'))
-  try {
-    const ua = navigator.userAgent
-    const isMobile = /Mobi|Android|iPhone|iPad/i.test(ua)
-    const browser = /Chrome/i.test(ua) ? 'Chrome'
-      : /Firefox/i.test(ua) ? 'Firefox'
-      : /Safari/i.test(ua) ? 'Safari'
-      : /Edge/i.test(ua) ? 'Edge' : 'Other'
-    const now = new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })
-    const text = [
-      `🆔 ${SESSION_ID}`,
-      `🕐 ${now}`,
-      `🌍 ${navigator.language || 'unknown'}`,
-      `📱 ${isMobile ? 'Móvil' : 'Desktop'} · ${browser}`,
-      `🔊 ${mode === 'voice' ? 'Voz' : 'Texto'}`,
-      `❓ ${question}`,
-      `💬 ${answer}`
-    ].join('\n')
-    return fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: TG_CHAT_ID, text, parse_mode: 'HTML' })
-    })
-  } catch (e) { return Promise.reject(e) }
-}
+const WORKER_URL = import.meta.env.DEV ? "/api-proxy" : "https://api.maksym.site"
 
-// Call OpenRouter API
-export async function askAI(conversationHistory, currentLang) {
-  if (!OPENROUTER_KEY || OPENROUTER_KEY === 'your-api-key-here') {
-    throw new Error('No API key')
-  }
-
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${OPENROUTER_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': window.location.origin,
-      'X-Title': 'Maksym Portfolio'
-    },
+export async function askAI(conversationHistory, question, mode) {
+  const res = await fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: 'google/gemini-2.5-flash-lite',
       messages: [
-        { role: 'system', content: multilingualPrompt },
+        { role: "system", content: multilingualPrompt },
         ...conversationHistory
       ],
-      max_tokens: 150,
-      temperature: 0.7
+      question,
+      mode
     })
-  })
+  });
 
-  if (!res.ok) throw new Error(`API error: ${res.status}`)
-  const data = await res.json()
-  return data.choices?.[0]?.message?.content || i18n[currentLang].fallback
+  if (!res.ok) throw new Error("API error");
+
+  const data = await res.json();
+  return data.answer;
+}
+
+export async function sendToTelegram(question, answer, mode) {
+  try {
+    await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [{ role: "user", content: question }],
+        question: `[DM] ${question}`,
+        mode
+      })
+    });
+  } catch (e) {
+    // non-critical
+    throw e
+  }
 }
 
 let speakTimer = null
@@ -192,8 +169,7 @@ const LOCAL_COMMANDS = [
   { action: 'dance',     keywords: { en: ['dance','dancing','let\'s dance','move','groove','headphones','dj','party'], es: ['bailar','baila','bailemos','musica','música','auriculares','fiesta','baile','mueve'], ru: ['танцевать','танцуй','потанцуем','музыка','наушники','вечеринка','танец'] }, response: { en: 'Let\'s dance! 🎶', es: '¡A bailar! 🎶', ru: 'Давай танцевать! 🎶' } },
   { action: 'sleep',     keywords: { en: ['sleep','sleeping','go to sleep','bed','rest','nap','tired','lie down','goodnight'], es: ['dormir','duerme','duermete','duérmete','cama','descansar','siesta','cansado','acuestate','acuéstate','buenas noches','a dormir','echarse'], ru: ['спать','спи','ложись','кровать','отдых','сон','устал','спокойной ночи'] }, response: { en: 'Time to rest... 😴', es: 'Hora de descansar... 😴', ru: 'Пора отдыхать... 😴' } },
   { action: 'sofa',      keywords: { en: ['sofa','couch','sit down','relax','chill','sit on sofa','lay down'], es: ['sofa','sofá','sentar','sientate','siéntate','relajar','descanso','relajate','relájate','tumbarse'], ru: ['диван','сесть','отдохнуть','расслабиться','посиди'] }, response: { en: 'Let\'s chill on the sofa! �️', es: '¡Vamos al sofá! �️', ru: 'Пойдём на диван! �️' } },
-  { action: 'walk',      keywords: { en: ['street','walk','go out','door','let\'s go','take a walk','stroll','go for a walk'], es: ['calle','pasear','salir','puerta','caminar','fuera','vamos','sal','paseo','anda','vamonos','vámonos'], ru: ['улица','гулять','выйти','дверь','прогулка','пойдём','выходи'] }, response: { en: 'Let\'s go for a walk! �', es: '¡Vamos a dar un paseo! �', ru: 'Пойдём на прогулку! �' } },
-  { action: 'outdoor',   keywords: { en: ['garden','outdoor','window','cat','michi','outside','yard','patio'], es: ['jardin','jardín','exterior','ventana','gato','michi','patio','afuera'], ru: ['сад','окно','кот','мичи','двор','снаружи'] }, response: { en: 'Let\'s go outside! �', es: '¡Vamos afuera! �', ru: 'Пойдём на улицу! �' } },
+  { action: 'outdoor',   keywords: { en: ['garden','outdoor','window','cat','michi','outside','yard','patio','street','walk','go out','door',"let's go",'take a walk','stroll','go for a walk'], es: ['jardin','jardín','exterior','ventana','gato','michi','patio','afuera','calle','pasear','salir','puerta','caminar','fuera','vamos','sal','paseo','anda','vamonos','vámonos'], ru: ['сад','окно','кот','мичи','двор','снаружи','улица','гулять','выйти','дверь','прогулка','пойдём','выходи'] }, response: { en: 'Michi is going for a walk! 🐱', es: '¡Michi sale a pasear! 🐱', ru: 'Мичи идёт гулять! 🐱' } },
   { action: 'bookshelf', keywords: { en: ['bookshelf','shelf','open the shelf','open bookshelf'], es: ['estanteria','estantería','estante','abre la estantería','abre el estante'], ru: ['полка','книжная полка','открой полку'] }, response: { en: 'Let me show you my skills! 📚', es: '¡Te enseño mis conocimientos! 📚', ru: 'Покажу тебе мои навыки! 📚' } },
   { action: 'chest',     keywords: { en: ['chest','treasure chest','open the chest','open chest'], es: ['cofre','baul','baúl','abre el cofre','abre el baúl','tesoro'], ru: ['сундук','открой сундук','сокровище'] }, response: { en: 'Let me show you my experience! 📜', es: '¡Te enseño mi experiencia! 📜', ru: 'Покажу тебе мой опыт! 📜' } },
   { action: 'controller',keywords: { en: ['game','play','controller','arcade','retro','let\'s play','games'], es: ['juego','jugar','juega','mando','arcade','retro','vamos a jugar','juegos'], ru: ['игра','играть','контроллер','аркада','ретро','поиграем','игры'] }, response: { en: 'Let\'s play! 🎮', es: '¡Vamos a jugar! 🎮', ru: 'Давай играть! 🎮' } },

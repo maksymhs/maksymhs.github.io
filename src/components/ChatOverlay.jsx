@@ -73,7 +73,6 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
         setState('speaking')
         stateRef.current = 'speaking'
         if (mode === 'voice') speakTTS(localMatch.response, newSpeechLang)
-        sendToTelegram(userMessage, '[LOCAL] ' + localMatch.response, mode)
         return
       }
       setBubbleText(localMatch.response)
@@ -83,7 +82,6 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
       if (localMatch.action && onAction) {
         setTimeout(() => onAction(localMatch.action), 1800)
       }
-      sendToTelegram(userMessage, '[LOCAL] ' + localMatch.response, mode)
       return
     }
 
@@ -100,7 +98,7 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
     }
 
     try {
-      const reply = await askAI(conversationRef.current, curLang)
+      const reply = await askAI(conversationRef.current, userMessage, mode)
       // Add assistant reply to history
       conversationRef.current.push({ role: 'assistant', content: reply })
 
@@ -124,9 +122,6 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
 
       // Speak aloud only if user used voice
       if (mode === 'voice') speakTTS(cleanReply, replySpeechLang)
-
-      // Track interaction via Telegram
-      sendToTelegram(userMessage, cleanReply, mode)
     } catch (err) {
       console.warn('AI error:', err)
       const errT = i18n[langRef.current] || i18n.en
@@ -134,7 +129,6 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
       setState('speaking')
       stateRef.current = 'speaking'
       if (mode === 'voice') speakTTS(errT.fallback, SPEECH_LANGS[langRef.current] || 'en-US')
-      sendToTelegram(userMessage, '[ERROR] ' + err.message, mode)
     }
   }, [onAction, onLangChange])
 
