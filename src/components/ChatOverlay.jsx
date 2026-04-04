@@ -3,7 +3,7 @@ import { lang as initialLang } from '../i18n'
 import { i18n, SPEECH_LANGS } from './chat/chatI18n'
 import {
   sendToTelegram, askAI, speak, stopSpeaking, warmupTTS, speakTTS,
-  renderTextWithLinks, extractAction, stripAction, extractLang, stripLang, tryLocalCommand
+  renderTextWithLinks, stripAction, extractLang, stripLang, tryLocalCommand
 } from './chat/chatUtils'
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -114,8 +114,7 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
       const replyLang = detectedLang || curLang
       const replySpeechLang = SPEECH_LANGS[replyLang] || 'en-US'
 
-      // Extract and execute action command if present
-      const action = extractAction(reply)
+      // Strip any action/lang tags from AI reply (actions only fire from user input, not AI response)
       let cleanReply = stripAction(reply)
       cleanReply = stripLang(cleanReply)
 
@@ -125,11 +124,6 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
 
       // Speak aloud only if user used voice
       if (mode === 'voice') speakTTS(cleanReply, replySpeechLang)
-
-      // Trigger the action after a short delay so user reads the response
-      if (action && onAction) {
-        setTimeout(() => onAction(action), 1800)
-      }
 
       // Track interaction via Telegram
       sendToTelegram(userMessage, cleanReply, mode)
