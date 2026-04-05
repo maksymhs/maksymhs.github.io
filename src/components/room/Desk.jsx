@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
+import * as THREE from 'three'
 import Vox from '../common/Vox'
 
 const LOG_LINES = [
@@ -23,8 +24,8 @@ const LOG_LINES = [
 ]
 
 const PROJECTS = [
-  { name: 'Algorithm Lab', color: '#60d0a0', url: 'https://algorithm.maksym.site' },
-  { name: 'System Design', color: '#80b0ff', url: 'https://design.maksym.site' },
+  { name: 'Algorithm Lab', color: '#34d399', url: 'https://algorithm.maksym.site' },
+  { name: 'System Design', color: '#a78bfa', url: 'https://design.maksym.site' },
 ]
 
 export function Desk() {
@@ -71,10 +72,223 @@ export function Desk() {
   )
 }
 
+// Rainbow bar colors for sorting viz
+const BAR_COLORS  = ['#f87171','#fb923c','#fbbf24','#34d399','#22d3ee','#818cf8','#e879f9']
+const BAR_PHASES  = [0, 1.1, 2.3, 0.5, 1.8, 0.9, 2.7]
+const BAR_SPEEDS  = [0.9, 1.3, 0.7, 1.5, 1.0, 1.2, 0.8]
+
+// System design pipeline nodes: [x, y, label]
+const SD_NODES = [
+  [0,      0.21,  'CLIENT'],
+  [0,      0.11,  'API'],
+  [-0.12,  0.01,  'DB'],
+  [0.12,   0.01,  'CACHE'],
+]
+const SD_EDGES = [[0,1],[1,2],[1,3]]
+
+const CARD_H = 0.575
+const CARD_W = 0.435
+
+function Card({ color, children }) {
+  return (
+    <group>
+      <mesh position={[0, 0, -0.004]}>
+        <planeGeometry args={[CARD_W, CARD_H]} />
+        <meshBasicMaterial color="#000000" opacity={0.4} transparent />
+      </mesh>
+      <mesh position={[0, 0, -0.003]}>
+        <planeGeometry args={[CARD_W - 0.004, CARD_H - 0.004]} />
+        <meshBasicMaterial color={color} opacity={0.07} transparent />
+      </mesh>
+      <mesh position={[0,  CARD_H/2 - 0.001, -0.002]}><planeGeometry args={[CARD_W, 0.004]} /><meshBasicMaterial color={color} opacity={0.95} transparent /></mesh>
+      <mesh position={[0, -CARD_H/2 + 0.001, -0.002]}><planeGeometry args={[CARD_W, 0.004]} /><meshBasicMaterial color={color} opacity={0.35} transparent /></mesh>
+      <mesh position={[-CARD_W/2 + 0.001, 0, -0.002]}><planeGeometry args={[0.004, CARD_H]} /><meshBasicMaterial color={color} opacity={0.35} transparent /></mesh>
+      <mesh position={[ CARD_W/2 - 0.001, 0, -0.002]}><planeGeometry args={[0.004, CARD_H]} /><meshBasicMaterial color={color} opacity={0.35} transparent /></mesh>
+      {children}
+    </group>
+  )
+}
+
+function AlgoCard({ hovered }) {
+  const barsRef = useRef([])
+  const scanRef = useRef()
+  const color = '#34d399'
+  const BASE_Y = 0.06
+
+  useFrame(({ clock }) => {
+    const t = clock.elapsedTime
+    barsRef.current.forEach((bar, i) => {
+      if (!bar) return
+      const h = 0.016 + Math.abs(
+        Math.sin(t * BAR_SPEEDS[i] + BAR_PHASES[i]) * 0.10 +
+        Math.sin(t * BAR_SPEEDS[i] * 0.4 + i) * 0.04
+      )
+      bar.scale.y = h / 0.016
+      bar.position.y = BASE_Y + h / 2
+      bar.material.opacity = hovered ? 1.0 : 0.8
+    })
+    if (scanRef.current) {
+      const sweep = (t % 2.5) / 2.5
+      scanRef.current.position.x = -0.155 + sweep * 0.31
+      scanRef.current.material.opacity = hovered
+        ? 0.6 - Math.abs(sweep - 0.5)
+        : 0.3 - Math.abs(sweep - 0.5) * 0.5
+    }
+  })
+
+  return (
+    <Card color={color}>
+      {/* baseline */}
+      <mesh position={[0, BASE_Y, 0.001]}><planeGeometry args={[0.38, 0.002]} /><meshBasicMaterial color={color} opacity={0.3} transparent /></mesh>
+      {/* bars */}
+      {BAR_COLORS.map((c, i) => (
+        <mesh key={i} ref={el => barsRef.current[i] = el} position={[-0.126 + i * 0.042, BASE_Y, 0.001]}>
+          <planeGeometry args={[0.030, 0.016]} />
+          <meshBasicMaterial color={c} transparent opacity={0.8} />
+        </mesh>
+      ))}
+      {/* scan highlight */}
+      <mesh ref={scanRef} position={[0, BASE_Y + 0.07, 0.002]}>
+        <planeGeometry args={[0.004, 0.18]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.3} />
+      </mesh>
+      {/* separator */}
+      <mesh position={[0, -0.04, 0.001]}><planeGeometry args={[0.38, 0.0015]} /><meshBasicMaterial color={color} opacity={0.2} transparent /></mesh>
+      {/* title */}
+      <Text position={[0, -0.13, 0.001]} fontSize={0.036} color={color} anchorX="center" anchorY="middle" font="/fonts/PressStart2P-Regular.ttf" maxWidth={0.4} lineHeight={1.5}>
+        {'ALGORITHM\nLAB'}
+      </Text>
+      {/* cta */}
+      <Text position={[0, -0.245, 0.001]} fontSize={0.014} color={hovered ? color : '#ffffff'} anchorX="center" anchorY="middle" font="/fonts/PressStart2P-Regular.ttf" fillOpacity={hovered ? 1 : 0.3}>
+        {hovered ? '[ OPEN → ]' : '· · ·'}
+      </Text>
+    </Card>
+  )
+}
+
+function DesignCard({ hovered }) {
+  const nodesRef  = useRef([])
+  const edgesRef  = useRef([])
+  const dot1Ref   = useRef()
+  const dot2Ref   = useRef()
+  const color = '#a78bfa'
+  // cycle: 0-0.9 CLIENT→API, 0.9-1.8 API→DB+CACHE, 1.8-2.5 pause
+  const CYCLE = 2.5
+
+  useFrame(({ clock }) => {
+    const t    = clock.elapsedTime
+    const c    = t % CYCLE
+    const [cx0,cy0] = SD_NODES[0]
+    const [cx1,cy1] = SD_NODES[1]
+    const [cx2,cy2] = SD_NODES[2]
+    const [cx3,cy3] = SD_NODES[3]
+
+    // --- dot1: CLIENT→API then API→DB ---
+    if (dot1Ref.current) {
+      if (c < 0.9) {
+        const p = c / 0.9
+        dot1Ref.current.position.set(cx0+(cx1-cx0)*p, cy0+(cy1-cy0)*p, 0.002)
+        dot1Ref.current.visible = true
+      } else if (c < 1.8) {
+        const p = (c-0.9)/0.9
+        dot1Ref.current.position.set(cx1+(cx2-cx1)*p, cy1+(cy2-cy1)*p, 0.002)
+        dot1Ref.current.visible = true
+      } else {
+        dot1Ref.current.visible = false
+      }
+    }
+    // --- dot2: API→CACHE (starts when dot1 reaches API) ---
+    if (dot2Ref.current) {
+      if (c >= 0.9 && c < 1.8) {
+        const p = (c-0.9)/0.9
+        dot2Ref.current.position.set(cx1+(cx3-cx1)*p, cy1+(cy3-cy1)*p, 0.002)
+        dot2Ref.current.visible = true
+      } else {
+        dot2Ref.current.visible = false
+      }
+    }
+    // --- node glow: flashes when packet arrives ---
+    const arrivals = [0, 0.9, 1.8, 1.8] // CLIENT, API, DB, CACHE arrival times
+    nodesRef.current.forEach((mesh, i) => {
+      if (!mesh) return
+      const dist = Math.abs((c - arrivals[i] + CYCLE) % CYCLE)
+      const flash = Math.max(0, 1 - dist * 5)
+      mesh.material.opacity = (hovered ? 0.3 : 0.15) + flash * 0.6
+    })
+    // --- edge brightness follows packet ---
+    edgesRef.current.forEach((mesh, i) => {
+      if (!mesh) return
+      // edge 0: CLIENT→API active 0-0.9, edge 1: API→DB 0.9-1.8, edge 2: API→CACHE 0.9-1.8
+      const starts = [0, 0.9, 0.9]
+      const ends   = [0.9, 1.8, 1.8]
+      const active = c >= starts[i] && c < ends[i]
+        ? (c - starts[i]) / (ends[i] - starts[i])
+        : 0
+      mesh.material.opacity = (hovered ? 0.2 : 0.1) + active * 0.5
+    })
+  })
+
+  return (
+    <Card color={color}>
+      {/* edges */}
+      {SD_EDGES.map(([a, b], i) => {
+        const [ax, ay] = SD_NODES[a]
+        const [bx, by] = SD_NODES[b]
+        const len   = Math.sqrt((bx-ax)**2 + (by-ay)**2)
+        const angle = Math.atan2(by-ay, bx-ax)
+        return (
+          <mesh key={i} ref={el => edgesRef.current[i] = el}
+            position={[(ax+bx)/2, (ay+by)/2, 0.001]} rotation={[0,0,angle]}>
+            <planeGeometry args={[len - 0.035, 0.005]} />
+            <meshBasicMaterial color={color} opacity={0.15} transparent />
+          </mesh>
+        )
+      })}
+      {/* nodes */}
+      {SD_NODES.map(([nx, ny, label], i) => (
+        <group key={i} position={[nx, ny, 0.001]}>
+          <mesh position={[0, 0, -0.001]}>
+            <planeGeometry args={[0.115, 0.038]} />
+            <meshBasicMaterial color={color} transparent opacity={0.1} />
+          </mesh>
+          <mesh ref={el => nodesRef.current[i] = el}>
+            <planeGeometry args={[0.11, 0.034]} />
+            <meshBasicMaterial color={color} transparent opacity={0.18} />
+          </mesh>
+          <Text position={[0, 0, 0.002]} fontSize={0.013} color={color} anchorX="center" anchorY="middle" font="/fonts/PressStart2P-Regular.ttf">
+            {label}
+          </Text>
+        </group>
+      ))}
+      {/* traveling packets */}
+      <mesh ref={dot1Ref} position={[0, 0, 0.002]}>
+        <planeGeometry args={[0.018, 0.018]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.9} />
+      </mesh>
+      <mesh ref={dot2Ref} position={[0, 0, 0.002]}>
+        <planeGeometry args={[0.018, 0.018]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.9} />
+      </mesh>
+      {/* separator */}
+      <mesh position={[0, -0.04, 0.001]}><planeGeometry args={[0.38, 0.0015]} /><meshBasicMaterial color={color} opacity={0.2} transparent /></mesh>
+      {/* title */}
+      <Text position={[0, -0.13, 0.001]} fontSize={0.036} color={color} anchorX="center" anchorY="middle" font="/fonts/PressStart2P-Regular.ttf" maxWidth={0.4} lineHeight={1.5}>
+        {'SYSTEM\nDESIGN'}
+      </Text>
+      {/* cta */}
+      <Text position={[0, -0.245, 0.001]} fontSize={0.014} color={hovered ? color : '#ffffff'} anchorX="center" anchorY="middle" font="/fonts/PressStart2P-Regular.ttf" fillOpacity={hovered ? 1 : 0.3}>
+        {hovered ? '[ OPEN → ]' : '· · ·'}
+      </Text>
+    </Card>
+  )
+}
+
 export function Monitor({ onClick, view }) {
   const screenRef = useRef()
   const linesRef = useRef()
   const scrollRef = useRef(0)
+  const [hoverLeft, setHoverLeft] = useState(false)
+  const [hoverRight, setHoverRight] = useState(false)
   const LINE_H = 0.04
   const VISIBLE = 8
   const SCREEN_TOP = 0.57
@@ -84,7 +298,6 @@ export function Monitor({ onClick, view }) {
   useFrame((state, delta) => {
     if (screenRef.current) {
       const t = state.clock.elapsedTime
-      screenRef.current.material.emissive.set('#2040a0')
       screenRef.current.material.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.08
     }
     if (showMenu) return
@@ -119,7 +332,7 @@ export function Monitor({ onClick, view }) {
       {/* Screen background */}
       <mesh ref={screenRef} position={[0, 0.4, 0.16]}>
         <boxGeometry args={[0.95, 0.6, 0.02]} />
-        <meshLambertMaterial color="#1a1a30" emissive="#2040a0" emissiveIntensity={0.3} flatShading />
+        <meshLambertMaterial color="#080810" emissive="#1020a0" emissiveIntensity={0.2} flatShading />
       </mesh>
       {/* Scrolling log lines (hidden when menu active) */}
       <group ref={linesRef} visible={!showMenu}>
@@ -130,71 +343,50 @@ export function Monitor({ onClick, view }) {
           </mesh>
         ))}
       </group>
-      {/* Game selection menu on screen */}
+
+      {/* Project menu */}
       {showMenu && (
         <group position={[0, 0.4, 0.18]}>
-          {/* Title */}
-          <Text
-            position={[0, 0.22, 0]}
-            fontSize={0.038}
-            color="#60d0a0"
-            anchorX="center"
-            anchorY="middle"
-            font="/fonts/PressStart2P-Regular.ttf"
-          >
-            MY PROJECTS
-          </Text>
-          {/* Decorative line under title */}
-          <mesh position={[0, 0.17, 0]}>
-            <planeGeometry args={[0.7, 0.004]} />
-            <meshBasicMaterial color="#60d0a0" opacity={0.5} transparent />
-          </mesh>
-          {/* Project options */}
-          {PROJECTS.map((project, i) => (
-            <group
-              key={i}
-              position={[0, 0.08 - i * 0.14, 0]}
-              onClick={(e) => { e.stopPropagation(); window.open(project.url, '_blank') }}
-              onPointerOver={() => (document.body.style.cursor = 'pointer')}
-              onPointerOut={() => (document.body.style.cursor = 'auto')}
-            >
-              {/* Option background */}
-              <mesh position={[0, 0, -0.001]}>
-                <planeGeometry args={[0.76, 0.1]} />
-                <meshBasicMaterial color={project.color} opacity={0.15} transparent />
-              </mesh>
-              {/* Option border */}
-              <mesh position={[0, 0, -0.0005]}>
-                <planeGeometry args={[0.78, 0.102]} />
-                <meshBasicMaterial color={project.color} opacity={0.3} transparent />
-              </mesh>
-              {/* Color indicator */}
-              <mesh position={[-0.33, 0, 0]}>
-                <planeGeometry args={[0.03, 0.07]} />
-                <meshBasicMaterial color={project.color} />
-              </mesh>
-              {/* Project name */}
-              <Text
-                position={[0.02, 0, 0]}
-                fontSize={0.028}
-                color={project.color}
-                anchorX="center"
-                anchorY="middle"
-                font="/fonts/PressStart2P-Regular.ttf"
-              >
-                {project.name}
-              </Text>
-            </group>
-          ))}
-          {/* Scanline effect */}
-          {Array.from({ length: 12 }).map((_, i) => (
-            <mesh key={`sl${i}`} position={[0, 0.27 - i * 0.045, 0.001]}>
-              <planeGeometry args={[0.9, 0.002]} />
-              <meshBasicMaterial color="#000000" opacity={0.15} transparent />
+          {/* Scanlines */}
+          {Array.from({ length: 18 }).map((_, i) => (
+            <mesh key={`sl${i}`} position={[0, 0.29 - i * 0.034, 0.001]}>
+              <planeGeometry args={[0.93, 0.002]} />
+              <meshBasicMaterial color="#000000" opacity={0.10} transparent />
             </mesh>
           ))}
+
+          {/* Algorithm Lab card — left */}
+          <group
+            position={[-0.236, 0, 0]}
+            {...(showMenu && {
+              onClick: (e) => { e.stopPropagation(); window.open(PROJECTS[0].url, '_blank') },
+              onPointerOver: (e) => { e.stopPropagation(); setHoverLeft(true); document.body.style.cursor = 'pointer' },
+              onPointerOut: () => { setHoverLeft(false); document.body.style.cursor = 'auto' },
+            })}
+          >
+            <AlgoCard hovered={hoverLeft} />
+          </group>
+
+          {/* Divider */}
+          <mesh position={[0, 0, 0]}>
+            <planeGeometry args={[0.003, 0.575]} />
+            <meshBasicMaterial color="#ffffff" opacity={0.06} transparent />
+          </mesh>
+
+          {/* System Design card — right */}
+          <group
+            position={[0.236, 0, 0]}
+            {...(showMenu && {
+              onClick: (e) => { e.stopPropagation(); window.open(PROJECTS[1].url, '_blank') },
+              onPointerOver: (e) => { e.stopPropagation(); setHoverRight(true); document.body.style.cursor = 'pointer' },
+              onPointerOut: () => { setHoverRight(false); document.body.style.cursor = 'auto' },
+            })}
+          >
+            <DesignCard hovered={hoverRight} />
+          </group>
         </group>
       )}
+
       {/* Stand */}
       <Vox position={[0, 0.08, 0.05]} args={[0.2, 0.16, 0.2]} color="#404050" />
       {/* Base */}
