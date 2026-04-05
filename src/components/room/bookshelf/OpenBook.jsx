@@ -128,16 +128,16 @@ export default function OpenBook({ book, onClose }) {
           ))}
           {showContent && (
             <group position={[-BW / 2, 0, BT / 2 + 0.003]}>
-              <Text position={[0, 0.16, 0]} fontSize={0.028} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 0.85} textAlign="center" lineHeight={1.5} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, 0.14, 0]} fontSize={0.022} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 0.85} textAlign="center" lineHeight={1.5} font="/fonts/PressStart2P-Regular.ttf">
                 {book.title}
               </Text>
-              <Text position={[0, 0.06, 0]} fontSize={0.016} color={color} anchorX="center" anchorY="middle" fillOpacity={0.35} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, 0.05, 0]} fontSize={0.013} color={color} anchorX="center" anchorY="middle" fillOpacity={0.35} font="/fonts/PressStart2P-Regular.ttf">
                 {'~ * ~'}
               </Text>
-              <Text position={[0, -0.04, 0]} fontSize={0.014} color="#706858" anchorX="center" anchorY="middle" maxWidth={BW * 0.85} textAlign="center" lineHeight={1.8} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, -0.03, 0]} fontSize={0.012} color="#706858" anchorX="center" anchorY="middle" maxWidth={BW * 0.85} textAlign="center" lineHeight={1.8} font="/fonts/PressStart2P-Regular.ttf">
                 {book.subtitle}
               </Text>
-              <mesh position={[0, -0.16, 0]}>
+              <mesh position={[0, -0.13, 0]}>
                 <planeGeometry args={[BW * 0.45, 0.002]} />
                 <meshBasicMaterial color={color} opacity={0.3} transparent />
               </mesh>
@@ -175,8 +175,8 @@ export default function OpenBook({ book, onClose }) {
               </Text>
             )}
             <Text
-              position={[0, isMobile ? -0.05 : 0.06, 0]}
-              fontSize={isMobile ? 0.016 : 0.013}
+              position={[0, isMobile ? -0.05 : 0.05, 0]}
+              fontSize={isMobile ? 0.016 : 0.010}
               color="#3a3828"
               anchorX="center"
               anchorY="middle"
