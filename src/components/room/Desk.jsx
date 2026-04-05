@@ -285,38 +285,14 @@ function DesignCard({ hovered }) {
 
 export function Monitor({ onClick, view }) {
   const screenRef = useRef()
-  const linesRef = useRef()
-  const scrollRef = useRef(0)
   const [hoverLeft, setHoverLeft] = useState(false)
   const [hoverRight, setHoverRight] = useState(false)
-  const LINE_H = 0.04
-  const VISIBLE = 8
-  const SCREEN_TOP = 0.57
-  const SCREEN_BOT = 0.23
-  const showMenu = view === 'controller'
+  const isMonitorView = view === 'controller'
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (screenRef.current) {
       const t = state.clock.elapsedTime
       screenRef.current.material.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.08
-    }
-    if (showMenu) return
-    scrollRef.current += delta * 0.3
-    if (linesRef.current) {
-      const step = Math.floor(scrollRef.current / LINE_H)
-      const children = linesRef.current.children
-      for (let i = 0; i < children.length; i++) {
-        const lineIdx = (i + step) % LOG_LINES.length
-        const line = LOG_LINES[lineIdx]
-        const yBase = SCREEN_TOP - i * LINE_H
-        const frac = (scrollRef.current % LINE_H) / LINE_H
-        const y = yBase + frac * LINE_H
-        children[i].position.y = y
-        children[i].position.x = line.x
-        children[i].scale.x = line.width / 0.9
-        children[i].material.color.set(line.color)
-        children[i].visible = y >= SCREEN_BOT && y <= SCREEN_TOP + 0.01
-      }
     }
   })
 
@@ -334,19 +310,8 @@ export function Monitor({ onClick, view }) {
         <boxGeometry args={[0.95, 0.6, 0.02]} />
         <meshLambertMaterial color="#080810" emissive="#1020a0" emissiveIntensity={0.2} flatShading />
       </mesh>
-      {/* Scrolling log lines (hidden when menu active) */}
-      <group ref={linesRef} visible={!showMenu}>
-        {Array.from({ length: VISIBLE + 2 }).map((_, i) => (
-          <mesh key={i} position={[0, SCREEN_TOP - i * LINE_H, 0.175]}>
-            <boxGeometry args={[0.9, 0.02, 0.005]} />
-            <meshBasicMaterial color="#60d0a0" transparent opacity={0.6} depthWrite={false} />
-          </mesh>
-        ))}
-      </group>
-
-      {/* Project menu */}
-      {showMenu && (
-        <group position={[0, 0.4, 0.18]}>
+      {/* Project cards — always visible */}
+      <group position={[0, 0.4, 0.18]}>
           {/* Scanlines */}
           {Array.from({ length: 18 }).map((_, i) => (
             <mesh key={`sl${i}`} position={[0, 0.29 - i * 0.034, 0.001]}>
@@ -358,7 +323,7 @@ export function Monitor({ onClick, view }) {
           {/* Algorithm Lab card — left */}
           <group
             position={[-0.236, 0, 0]}
-            {...(showMenu && {
+            {...(isMonitorView && {
               onClick: (e) => { e.stopPropagation(); window.open(PROJECTS[0].url, '_blank') },
               onPointerOver: (e) => { e.stopPropagation(); setHoverLeft(true); document.body.style.cursor = 'pointer' },
               onPointerOut: () => { setHoverLeft(false); document.body.style.cursor = 'auto' },
@@ -376,7 +341,7 @@ export function Monitor({ onClick, view }) {
           {/* System Design card — right */}
           <group
             position={[0.236, 0, 0]}
-            {...(showMenu && {
+            {...(isMonitorView && {
               onClick: (e) => { e.stopPropagation(); window.open(PROJECTS[1].url, '_blank') },
               onPointerOver: (e) => { e.stopPropagation(); setHoverRight(true); document.body.style.cursor = 'pointer' },
               onPointerOut: () => { setHoverRight(false); document.body.style.cursor = 'auto' },
@@ -385,7 +350,6 @@ export function Monitor({ onClick, view }) {
             <DesignCard hovered={hoverRight} />
           </group>
         </group>
-      )}
 
       {/* Stand */}
       <Vox position={[0, 0.08, 0.05]} args={[0.2, 0.16, 0.2]} color="#404050" />
