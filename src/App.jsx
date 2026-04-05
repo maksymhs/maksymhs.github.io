@@ -13,7 +13,8 @@ import SplashScreen from './components/SplashScreen.jsx'
 
 const DEFAULT_CAM = { position: [0, 2.5, 2.8], target: [0, 1.2, -0.5] }
 const BOOKSHELF_CAM = { position: [2.8, 1.8, -1.5], target: [3.8, 1.4, -1.5] }
-const CHEST_CAM = { position: [-1.8, 1.8, -1.8], target: [-3.2, 0.8, -3.2] }
+const CHEST_CAM        = { position: [-1.8, 1.8, -1.8], target: [-3.2, 0.8, -3.2] }
+const CHEST_CAM_MOBILE = { position: [-2.4, 1.5, -2.4], target: [-3.2, 0.72, -3.2] }
 const GITHUB_CAM = { position: [2.5, 2.2, -2.5], target: [3, 2.2, -3.95] }
 const LINKEDIN_CAM = { position: [-2.5, 2.2, -2.5], target: [-3, 2.2, -3.95] }
 
@@ -70,7 +71,7 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef,
       prevView.current = view
       smoothHeading.current = null
 
-      const cam = CAM_MAP[view] || DEFAULT_CAM
+      const cam = (view === 'chest' && isMobile) ? CHEST_CAM_MOBILE : (CAM_MAP[view] || DEFAULT_CAM)
       if (view === 'default') {
         camera.position.set(...cam.position)
         if (controlsRef.current) {

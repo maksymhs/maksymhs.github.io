@@ -65,24 +65,28 @@ const EXP = {
 
 const COLORS = ['#4080e0', '#e04040', '#40c060', '#a050d0']
 
-// Books peek out from inside the chest — x spread across chest interior, y = peek height above chest rim
-// Group is anchored at chest top (y=0.5 world). Books slide from y=-0.5 (inside) to these positions.
+// Books peek out from inside the chest, fanned like a hand of cards
+// Group anchored at chest top (world y=0.5). Books slide from y=-0.5 (inside) to peek positions.
 const TARGETS_DESKTOP = [
-  [-0.25,  0.02,  0.04],
-  [-0.08,  0.06, -0.04],
-  [ 0.09,  0.02,  0.04],
-  [ 0.27,  0.06, -0.04],
+  [-0.26, 0.30,  0.07],
+  [-0.09, 0.34, -0.01],
+  [ 0.09, 0.34, -0.01],
+  [ 0.26, 0.30,  0.07],
 ]
 
 const TARGETS_MOBILE = [
-  [-0.22,  0.02,  0.04],
-  [-0.07,  0.06, -0.04],
-  [ 0.08,  0.02,  0.04],
-  [ 0.23,  0.06, -0.04],
+  [-0.23, 0.28,  0.06],
+  [-0.08, 0.32, -0.01],
+  [ 0.08, 0.32, -0.01],
+  [ 0.23, 0.28,  0.06],
 ]
 
-// Static lean angles for each book (radians around Z) — gives "books in a box" look
-const BOOK_LEAN = [-0.08, 0.05, -0.04, 0.09]
+// Fan rotation around Y: outer books angle outward like playing cards
+const FAN_Y_DESKTOP = [-0.30, -0.10, 0.10, 0.30]
+const FAN_Y_MOBILE  = [-0.22, -0.07, 0.07, 0.22]
+
+// Slight Z-lean (around spine) for organic look
+const BOOK_LEAN = [-0.06, 0.04, -0.04, 0.07]
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(() => window.innerWidth < 768)
@@ -98,7 +102,7 @@ const BW = 0.14
 const BH = 0.42
 const BD = 0.24
 
-function FloatingBook({ data, color, targetPos, delay, open, onSelect, bookScale = 1, lean = 0 }) {
+function FloatingBook({ data, color, targetPos, delay, open, onSelect, bookScale = 1, lean = 0, fanY = 0 }) {
   const groupRef = useRef()
   const anim = useRef({ rise: 0 })
   const [hovered, setHovered] = useState(false)
@@ -125,8 +129,9 @@ function FloatingBook({ data, color, targetPos, delay, open, onSelect, bookScale
     groupRef.current.position.y = THREE.MathUtils.lerp(-0.48, targetPos[1], rE)
     groupRef.current.position.z = targetPos[2]
 
-    // Lean angle + very subtle breathing
+    // Fan Y rotation (opens as rE increases), spine lean + subtle breathe
     const breathe = Math.sin(t * 0.5 + delay * 1.8) * 0.012
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(0, fanY, rE)
     groupRef.current.rotation.z = lean + breathe
     // Tilt forward slightly when hovered (like you're pulling it out)
     groupRef.current.rotation.x = THREE.MathUtils.lerp(
@@ -211,7 +216,8 @@ export function FloatingScrollsOverlay({ show, onClose }) {
 export default function FloatingScrolls({ open, view, onCardClick, currentLang }) {
   const isMobile = useIsMobile()
   const targets = isMobile ? TARGETS_MOBILE : TARGETS_DESKTOP
-  const cardScale = isMobile ? 0.72 : 0.88
+  const fanY    = isMobile ? FAN_Y_MOBILE  : FAN_Y_DESKTOP
+  const cardScale = isMobile ? 0.78 : 0.88
   const isChestView = view === 'chest'
 
   const experiences = useMemo(() => {
@@ -230,6 +236,7 @@ export default function FloatingScrolls({ open, view, onCardClick, currentLang }
           delay={i}
           open={open && isChestView}
           lean={BOOK_LEAN[i]}
+          fanY={fanY[i]}
           onSelect={(worldPos) => onCardClick?.({ ...exp, id: exp.company, title: exp.company, subtitle: exp.role + ' · ' + exp.period, worldPos })}
           bookScale={cardScale}
         />
