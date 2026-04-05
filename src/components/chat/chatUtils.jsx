@@ -27,12 +27,15 @@ export async function askAI(conversationHistory, question, mode, lang, onChunk) 
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let fullText = '';
+  let buffer = '';
 
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
-    const chunk = decoder.decode(value, { stream: true });
-    for (const line of chunk.split('\n')) {
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop(); // guarda línea incompleta para el siguiente read()
+    for (const line of lines) {
       if (line.startsWith('data: ') && !line.includes('[DONE]')) {
         try {
           const token = JSON.parse(line.slice(6)).choices?.[0]?.delta?.content || '';
