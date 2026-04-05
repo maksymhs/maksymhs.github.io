@@ -53,11 +53,16 @@ export default function Cat({ onClick, catRef: externalRef, view }) {
       if (e.key === 'ArrowRight' || e.key === 'd') keysRef.current.right = false
       if (e.key === ' ') keysRef.current.space = false
     }
+    const onBlur = () => {
+      keysRef.current = { up: false, down: false, left: false, right: false, space: false }
+    }
     window.addEventListener('keydown', onKeyDown)
     window.addEventListener('keyup', onKeyUp)
+    window.addEventListener('blur', onBlur)
     return () => {
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('keyup', onKeyUp)
+      window.removeEventListener('blur', onBlur)
     }
   }, [])
 
@@ -284,6 +289,7 @@ export default function Cat({ onClick, catRef: externalRef, view }) {
       jumpRef.current.phase = null
       catVelRef.current = { y: 0, fx: 0, fz: 0, grounded: true }
       catSpeedRef.current = 0
+      keysRef.current = { up: false, down: false, left: false, right: false, space: false }
       catRef.current.position.set(1.5, 0, 1)
     }
 
