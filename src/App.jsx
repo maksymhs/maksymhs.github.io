@@ -40,10 +40,24 @@ function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef,
   const prevView = useRef(view)
   const smoothHeading = useRef(null)
   const idleDir = useRef(1) // 1 = right, -1 = left
+  const userInteracting = useRef(false)
+
+  useEffect(() => {
+    const controls = controlsRef.current
+    if (!controls) return
+    const onStart = () => { userInteracting.current = true }
+    const onEnd = () => { userInteracting.current = false }
+    controls.addEventListener('start', onStart)
+    controls.addEventListener('end', onEnd)
+    return () => {
+      controls.removeEventListener('start', onStart)
+      controls.removeEventListener('end', onEnd)
+    }
+  }, [controlsRef])
 
   useFrame(({ camera }) => {
     // Idle ping-pong rotation in default view
-    if (view === 'default' && !animating.current && controlsRef.current) {
+    if (view === 'default' && !animating.current && !userInteracting.current && controlsRef.current) {
       const controls = controlsRef.current
       const az = controls.getAzimuthalAngle()
       if (az >= IDLE_AZIMUTH_LIMIT) idleDir.current = -1
