@@ -100,9 +100,11 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
     }
 
     try {
+      let rafId = null
       const onChunk = (accumulated) => {
-        // Strip complete and partial {{ tags (action/lang always appear at end)
-        setDisplayText(accumulated.replace(/\{\{.*$/s, '').trim())
+        const cleaned = accumulated.replace(/\{\{.*$/s, '').trim()
+        if (rafId) cancelAnimationFrame(rafId)
+        rafId = requestAnimationFrame(() => { setDisplayText(cleaned); rafId = null })
       }
       const reply = await askAI(conversationRef.current, userMessage, mode, curLang, onChunk)
       // Add assistant reply to history
