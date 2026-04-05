@@ -73,21 +73,18 @@ export function logToTelegram(question, answer, mode, lang) {
 }
 
 export async function sendToTelegram(question, answer, mode) {
-  try {
-    await fetch(WORKER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: [{ role: "user", content: question }],
-        question: `[DM] ${question}`,
-        mode,
-        stream: false
-      })
-    });
-  } catch (e) {
-    // non-critical
-    throw e
-  }
+  await fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      question,
+      answer,
+      mode,
+      session: SESSION_ID,
+      log_only: true,
+      is_dm: true
+    })
+  });
 }
 
 let speakTimer = null

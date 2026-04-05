@@ -263,7 +263,7 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
       stateRef.current = 'speaking'
       const curT = i18n[langRef.current] || i18n.en
       setBubbleText(curT.thinking)
-      sendToTelegram(msg, '[DIRECT MESSAGE]', 'text')
+      sendToTelegram(msg, msg, 'dm')
         .then(() => {
           setBubbleText(curT.dmSent)
         })
