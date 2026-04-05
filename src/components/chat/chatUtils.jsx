@@ -18,11 +18,19 @@ export async function askAI(conversationHistory, question, mode, lang, onChunk) 
       mode,
       lang,
       session: SESSION_ID,
-      stream: true
+      stream: !import.meta.env.DEV
     })
   });
 
   if (!res.ok) throw new Error("API error");
+
+  // En dev usamos non-streaming para evitar problemas con el proxy de Vite
+  if (import.meta.env.DEV) {
+    const data = await res.json();
+    const answer = data.answer || '';
+    onChunk?.(answer);
+    return answer;
+  }
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -34,7 +42,7 @@ export async function askAI(conversationHistory, question, mode, lang, onChunk) 
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split('\n');
-    buffer = lines.pop(); // guarda línea incompleta para el siguiente read()
+    buffer = lines.pop();
     for (const line of lines) {
       if (line.startsWith('data: ') && !line.includes('[DONE]')) {
         try {

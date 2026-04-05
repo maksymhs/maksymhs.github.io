@@ -11,7 +11,11 @@ export default defineConfig({
         target: 'https://api.maksym.site',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api-proxy/, '/chat'),
-        headers: { origin: 'https://maksym.site' }
+        headers: { origin: 'https://maksym.site' },
+        ws: false,
+        selfHandleResponse: false,
+        proxyTimeout: 60000,
+        timeout: 60000
       }
     }
   }
