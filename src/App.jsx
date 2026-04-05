@@ -300,7 +300,7 @@ export default function App() {
   }, [])
 
   const handleDoorClick = useCallback(() => {
-    setView('walk')
+    setView('outdoor')
   }, [])
 
   const handleLangChange = useCallback((newLang) => {
@@ -310,7 +310,7 @@ export default function App() {
   const handleChatAction = useCallback((action) => {
     const actionMap = {
       outdoor: () => setView('outdoor'),
-      walk: () => setView('walk'),
+      walk: () => setView('outdoor'),
       cat: () => setView('outdoor'),
       bookshelf: () => setView('bookshelf'),
       chest: () => { setView('chest'); setChestOpen(true) },
@@ -405,10 +405,11 @@ export default function App() {
             maxPolarAngle={(view === 'outdoor' || view === 'walk') ? Math.PI / 2.1 : Math.PI / 2.2}
             minDistance={(view === 'outdoor' || view === 'walk') ? 2 : 2}
             maxDistance={(view === 'outdoor' || view === 'walk') ? 12 : 4.5}
-            minAzimuthAngle={(view === 'outdoor' || view === 'walk') ? -Infinity : -Math.PI / 1.2}
-            maxAzimuthAngle={(view === 'outdoor' || view === 'walk') ? Infinity : Math.PI / 1.2}
+            minAzimuthAngle={(view === 'outdoor' || view === 'walk') ? -Infinity : -Math.PI / 3}
+            maxAzimuthAngle={(view === 'outdoor' || view === 'walk') ? Infinity : Math.PI / 3}
             enablePan={false}
-            autoRotate={false}
+            autoRotate={view === 'default'}
+            autoRotateSpeed={0.4}
             target={[0, 1.2, -0.5]}
             enableRotate={view === 'default'}
             enableZoom={view === 'default' || view === 'outdoor' || view === 'walk'}
