@@ -128,16 +128,16 @@ export default function OpenBook({ book, onClose }) {
           ))}
           {showContent && (
             <group position={[-BW / 2, 0, BT / 2 + 0.003]}>
-              <Text position={[0, 0.12, 0]} fontSize={0.02} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 0.8} textAlign="center" lineHeight={1.6} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, 0.16, 0]} fontSize={0.028} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 0.85} textAlign="center" lineHeight={1.5} font="/fonts/PressStart2P-Regular.ttf">
                 {book.title}
               </Text>
-              <Text position={[0, 0.06, 0]} fontSize={0.012} color={color} anchorX="center" anchorY="middle" fillOpacity={0.35} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, 0.06, 0]} fontSize={0.016} color={color} anchorX="center" anchorY="middle" fillOpacity={0.35} font="/fonts/PressStart2P-Regular.ttf">
                 {'~ * ~'}
               </Text>
-              <Text position={[0, -0.02, 0]} fontSize={0.011} color="#706858" anchorX="center" anchorY="middle" maxWidth={BW * 0.8} textAlign="center" lineHeight={1.8} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, -0.04, 0]} fontSize={0.014} color="#706858" anchorX="center" anchorY="middle" maxWidth={BW * 0.85} textAlign="center" lineHeight={1.8} font="/fonts/PressStart2P-Regular.ttf">
                 {book.subtitle}
               </Text>
-              <mesh position={[0, -0.1, 0]}>
+              <mesh position={[0, -0.16, 0]}>
                 <planeGeometry args={[BW * 0.45, 0.002]} />
                 <meshBasicMaterial color={color} opacity={0.3} transparent />
               </mesh>
@@ -170,17 +170,17 @@ export default function OpenBook({ book, onClose }) {
         {showContent && (
           <group position={[isMobile ? 0 : BW / 2, 0, BT / 2 + 0.003]}>
             {isMobile && (
-              <Text position={[0, BH * 0.22, 0]} fontSize={0.015} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 1.3} textAlign="center" font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, BH * 0.30, 0]} fontSize={0.022} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 1.5} textAlign="center" font="/fonts/PressStart2P-Regular.ttf">
                 {book.title}
               </Text>
             )}
             <Text
-              position={[0, isMobile ? 0.01 : 0.06, 0]}
-              fontSize={isMobile ? 0.013 : 0.009}
+              position={[0, isMobile ? -0.05 : 0.06, 0]}
+              fontSize={isMobile ? 0.016 : 0.013}
               color="#3a3828"
               anchorX="center"
               anchorY="middle"
-              maxWidth={isMobile ? BW * 1.3 : BW * 0.8}
+              maxWidth={isMobile ? BW * 1.5 : BW * 0.85}
               textAlign="center"
               lineHeight={1.9}
               font="/fonts/PressStart2P-Regular.ttf"
