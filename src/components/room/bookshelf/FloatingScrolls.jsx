@@ -65,19 +65,24 @@ const EXP = {
 
 const COLORS = ['#4080e0', '#e04040', '#40c060', '#a050d0']
 
+// Books peek out from inside the chest — x spread across chest interior, y = peek height above chest rim
+// Group is anchored at chest top (y=0.5 world). Books slide from y=-0.5 (inside) to these positions.
 const TARGETS_DESKTOP = [
-  [-0.45, 0.75, 0.3],
-  [-0.15, 0.95, 0.25],
-  [0.15, 0.9, 0.3],
-  [0.45, 0.7, 0.25],
+  [-0.25,  0.02,  0.04],
+  [-0.08,  0.06, -0.04],
+  [ 0.09,  0.02,  0.04],
+  [ 0.27,  0.06, -0.04],
 ]
 
 const TARGETS_MOBILE = [
-  [-0.28, 0.5, 0.15],
-  [0.28, 0.5, 0.15],
-  [-0.28, 0.95, 0.15],
-  [0.28, 0.95, 0.15],
+  [-0.22,  0.02,  0.04],
+  [-0.07,  0.06, -0.04],
+  [ 0.08,  0.02,  0.04],
+  [ 0.23,  0.06, -0.04],
 ]
+
+// Static lean angles for each book (radians around Z) — gives "books in a box" look
+const BOOK_LEAN = [-0.08, 0.05, -0.04, 0.09]
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(() => window.innerWidth < 768)
@@ -93,7 +98,7 @@ const BW = 0.14
 const BH = 0.42
 const BD = 0.24
 
-function FloatingBook({ data, color, targetPos, delay, open, onSelect, bookScale = 1 }) {
+function FloatingBook({ data, color, targetPos, delay, open, onSelect, bookScale = 1, lean = 0 }) {
   const groupRef = useRef()
   const anim = useRef({ rise: 0 })
   const [hovered, setHovered] = useState(false)
@@ -107,25 +112,30 @@ function FloatingBook({ data, color, targetPos, delay, open, onSelect, bookScale
     const t = clock.elapsedTime
 
     if (open) {
-      anim.current.rise = Math.min(anim.current.rise + 0.02, 1)
+      anim.current.rise = Math.min(anim.current.rise + 0.025, 1)
     } else {
-      anim.current.rise = Math.max(anim.current.rise - 0.04, 0)
+      anim.current.rise = Math.max(anim.current.rise - 0.06, 0)
     }
-    const d = Math.max(0, (anim.current.rise - delay * 0.12) / (1 - delay * 0.12))
+
+    const d = Math.max(0, (anim.current.rise - delay * 0.14) / (1 - delay * 0.14))
     const rE = 1 - Math.pow(1 - Math.min(d, 1), 3)
 
-    groupRef.current.position.x = THREE.MathUtils.lerp(0, targetPos[0], rE)
-    groupRef.current.position.y = THREE.MathUtils.lerp(-0.3, targetPos[1] + Math.sin(t * 1.1 + delay * 2.2) * 0.022, rE)
-    groupRef.current.position.z = THREE.MathUtils.lerp(0, targetPos[2], rE)
+    // Slide straight up from inside chest
+    groupRef.current.position.x = targetPos[0]
+    groupRef.current.position.y = THREE.MathUtils.lerp(-0.48, targetPos[1], rE)
+    groupRef.current.position.z = targetPos[2]
 
-    if (rE > 0.9) {
-      groupRef.current.rotation.x = Math.sin(t * 0.6 + delay * 1.4) * 0.05
-      groupRef.current.rotation.z = Math.sin(t * 0.8 + delay * 2.8) * 0.04
-      groupRef.current.rotation.y = hovered ? Math.sin(t * 2) * 0.08 : 0
-    }
+    // Lean angle + very subtle breathing
+    const breathe = Math.sin(t * 0.5 + delay * 1.8) * 0.012
+    groupRef.current.rotation.z = lean + breathe
+    // Tilt forward slightly when hovered (like you're pulling it out)
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(
+      groupRef.current.rotation.x,
+      hovered ? -0.22 : 0,
+      0.1
+    )
 
-    const s = rE * bookScale
-    groupRef.current.scale.set(s, s, s)
+    groupRef.current.scale.setScalar(rE * bookScale)
     groupRef.current.visible = rE > 0.01
   })
 
@@ -133,7 +143,6 @@ function FloatingBook({ data, color, targetPos, delay, open, onSelect, bookScale
 
   return (
     <group ref={groupRef} visible={false}>
-      {/* Book body */}
       <mesh
         onClick={(e) => {
           e.stopPropagation()
@@ -200,10 +209,9 @@ export function FloatingScrollsOverlay({ show, onClose }) {
 }
 
 export default function FloatingScrolls({ open, view, onCardClick, currentLang }) {
-  const parentRef = useRef()
   const isMobile = useIsMobile()
   const targets = isMobile ? TARGETS_MOBILE : TARGETS_DESKTOP
-  const cardScale = isMobile ? 0.6 : 0.82
+  const cardScale = isMobile ? 0.72 : 0.88
   const isChestView = view === 'chest'
 
   const experiences = useMemo(() => {
@@ -212,7 +220,7 @@ export default function FloatingScrolls({ open, view, onCardClick, currentLang }
   }, [currentLang])
 
   return (
-    <group ref={parentRef} position={[-3.2, 0.5, -3.2]} rotation={[0, Math.PI / 4, 0]}>
+    <group position={[-3.2, 0.5, -3.2]} rotation={[0, Math.PI / 4, 0]}>
       {experiences.map((exp, i) => (
         <FloatingBook
           key={i}
@@ -221,6 +229,7 @@ export default function FloatingScrolls({ open, view, onCardClick, currentLang }
           targetPos={targets[i]}
           delay={i}
           open={open && isChestView}
+          lean={BOOK_LEAN[i]}
           onSelect={(worldPos) => onCardClick?.({ ...exp, id: exp.company, title: exp.company, subtitle: exp.role + ' · ' + exp.period, worldPos })}
           bookScale={cardScale}
         />
