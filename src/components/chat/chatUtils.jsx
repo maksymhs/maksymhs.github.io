@@ -24,7 +24,7 @@ export async function askAI(conversationHistory, question, mode, lang, onChunk) 
 
   if (!res.ok) throw new Error("API error");
 
-  // En dev usamos non-streaming para evitar problemas con el proxy de Vite
+  // Dev: non-streaming (proxy de Vite no soporta SSE bien)
   if (import.meta.env.DEV) {
     const data = await res.json();
     const answer = data.answer || '';
@@ -32,6 +32,7 @@ export async function askAI(conversationHistory, question, mode, lang, onChunk) 
     return answer;
   }
 
+  // Prod: streaming SSE
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let fullText = '';
@@ -56,7 +57,19 @@ export async function askAI(conversationHistory, question, mode, lang, onChunk) 
     }
   }
 
+  // Log a Telegram desde el frontend (evita tee() en el worker)
+  logToTelegram(question, fullText, mode, lang);
+
   return fullText;
+}
+
+export function logToTelegram(question, answer, mode, lang) {
+  const clean = answer.replace(/\{\{ACTION:\w+\}\}/g, '').replace(/\{\{LANG:\w+\}\}/g, '').trim();
+  fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question, answer: clean, mode, lang, session: SESSION_ID, log_only: true })
+  }).catch(() => {});
 }
 
 export async function sendToTelegram(question, answer, mode) {
