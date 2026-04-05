@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { lang as initialLang } from '../i18n'
 import { i18n, SPEECH_LANGS } from './chat/chatI18n'
 import {
-  sendToTelegram, askAI, speak, stopSpeaking, warmupTTS, speakTTS,
+  sendToTelegram, askAI, logToTelegram, speak, stopSpeaking, warmupTTS, speakTTS,
   renderTextWithLinks, stripAction, extractLang, stripLang, tryLocalCommand
 } from './chat/chatUtils'
 
@@ -101,7 +101,8 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
 
     try {
       const onChunk = (accumulated) => {
-        setDisplayText(stripAction(stripLang(accumulated)))
+        // Strip complete and partial {{ tags (action/lang always appear at end)
+        setDisplayText(accumulated.replace(/\{\{.*$/s, '').trim())
       }
       const reply = await askAI(conversationRef.current, userMessage, mode, curLang, onChunk)
       // Add assistant reply to history
@@ -128,6 +129,9 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
 
       // Speak aloud only if user used voice
       if (mode === 'voice') speakTTS(cleanReply, replySpeechLang)
+
+      // Log to Telegram async after full response received
+      logToTelegram(userMessage, cleanReply, mode, curLang)
     } catch (err) {
       console.warn('AI error:', err)
       const errT = i18n[langRef.current] || i18n.en

@@ -48,6 +48,14 @@ export async function askAI(conversationHistory, question, mode, lang, onChunk) 
   return fullText;
 }
 
+export function logToTelegram(question, answer, mode, lang) {
+  fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question, answer, mode, lang, session: SESSION_ID, log_only: true })
+  }).catch(() => {})
+}
+
 export async function sendToTelegram(question, answer, mode) {
   try {
     await fetch(WORKER_URL, {
