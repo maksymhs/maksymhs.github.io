@@ -67,18 +67,19 @@ const COLORS = ['#4080e0', '#e04040', '#40c060', '#a050d0']
 
 // Books peek out from inside the chest, fanned like a hand of cards
 // Group anchored at chest top (world y=0.5). Books slide from y=-0.5 (inside) to peek positions.
+// Books peek ~60% above chest rim, ~40% inside
 const TARGETS_DESKTOP = [
-  [-0.26, 0.30,  0.07],
-  [-0.09, 0.34, -0.01],
-  [ 0.09, 0.34, -0.01],
-  [ 0.26, 0.30,  0.07],
+  [-0.26, 0.06,  0.07],
+  [-0.09, 0.09, -0.01],
+  [ 0.09, 0.09, -0.01],
+  [ 0.26, 0.06,  0.07],
 ]
 
 const TARGETS_MOBILE = [
-  [-0.23, 0.28,  0.06],
-  [-0.08, 0.32, -0.01],
-  [ 0.08, 0.32, -0.01],
-  [ 0.23, 0.28,  0.06],
+  [-0.23, 0.05,  0.06],
+  [-0.08, 0.08, -0.01],
+  [ 0.08, 0.08, -0.01],
+  [ 0.23, 0.05,  0.06],
 ]
 
 // Fan rotation around Y: outer books angle outward like playing cards
@@ -111,9 +112,8 @@ function FloatingBook({ data, color, targetPos, delay, open, onSelect, bookScale
     anim.current = { rise: 0 }
   }, [open])
 
-  useFrame(({ clock }) => {
+  useFrame(() => {
     if (!groupRef.current) return
-    const t = clock.elapsedTime
 
     if (open) {
       anim.current.rise = Math.min(anim.current.rise + 0.025, 1)
@@ -129,10 +129,9 @@ function FloatingBook({ data, color, targetPos, delay, open, onSelect, bookScale
     groupRef.current.position.y = THREE.MathUtils.lerp(-0.48, targetPos[1], rE)
     groupRef.current.position.z = targetPos[2]
 
-    // Fan Y rotation (opens as rE increases), spine lean + subtle breathe
-    const breathe = Math.sin(t * 0.5 + delay * 1.8) * 0.012
+    // Fan Y rotation, static lean — no continuous float
     groupRef.current.rotation.y = THREE.MathUtils.lerp(0, fanY, rE)
-    groupRef.current.rotation.z = lean + breathe
+    groupRef.current.rotation.z = lean
     // Tilt forward slightly when hovered (like you're pulling it out)
     groupRef.current.rotation.x = THREE.MathUtils.lerp(
       groupRef.current.rotation.x,

@@ -24,7 +24,7 @@
 | **Voxel Character** | Animated character with multiple states: idle, dancing, sleeping, walking, seated |
 | **AI Chat** | Multilingual chat (EN/ES/RU) powered by Claude with voice & text input |
 | **Skills Bookshelf** | Click books to explore tech skills with detailed descriptions |
-| **Experience Chest** | Treasure chest with floating scrolls showing work experience |
+| **Experience Chest** | Treasure chest with books peeking out — click to open a full-screen book with work experience details |
 | **Outdoor World** | Walk through a neighborhood with NPCs, animals, and buildings |
 | **Algorithm Lab** | Monitor card linking to [algorithm.maksym.site](https://algorithm.maksym.site) — sorting viz & patterns |
 | **System Design Studio** | Monitor card linking to [design.maksym.site](https://design.maksym.site) — scalable system blueprints |

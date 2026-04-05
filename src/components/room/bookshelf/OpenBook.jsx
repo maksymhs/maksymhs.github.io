@@ -1,13 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Text } from '@react-three/drei'
+import { Text, Html } from '@react-three/drei'
 import * as THREE from 'three'
 
-// Desktop: two-page spread. Mobile: single full-screen page.
+// Desktop: two-page spread.
 const BW         = 0.56   // half-page width
 const BT         = 0.018
-const BH_DESKTOP = 0.88   // fills ~85% of desktop screen height
-const BH_MOBILE  = 1.20   // fills ~90% of portrait screen height
+const BH_DESKTOP = 0.88
+
+const CAM_DIST_DESKTOP = 0.95
+const CAM_DIST_MOBILE  = 1.0   // mobile: page sized to fill viewport at this distance
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(() => window.innerWidth < 768)
@@ -19,60 +21,39 @@ function useIsMobile() {
   return mobile
 }
 
-// Renders detail paragraphs (split on \n\n) with a thin separator line between each.
-// startY=null → auto-center the block at y=0.
-function ParagraphContent({ details, color, fontSize, maxWidth, startY = null, lineHeight = 1.9 }) {
-  const paragraphs = details.split('\n\n').filter(Boolean)
-  const charW   = fontSize * 0.76   // PressStart2P is wide — conservative estimate
-  const cpLine  = Math.max(1, Math.floor(maxWidth / charW))
-  const lineH   = fontSize * lineHeight
-  const SEP_GAP = fontSize * 3.8    // generous gap so overlaps never happen
-
-  const heights = paragraphs.map(p =>
-    p.split('\n').reduce((acc, seg) => acc + Math.max(1, Math.ceil(seg.length / cpLine)), 0) * lineH
-  )
-
-  const totalH = heights.reduce((s, h) => s + h, 0) + SEP_GAP * (paragraphs.length - 1)
-  const topY   = startY !== null ? startY : totalH / 2   // center block at y=0 by default
-
-  const positions = []
-  let y = topY
-  heights.forEach(h => { positions.push(y - h / 2); y -= h + SEP_GAP })
-
+// Left-aligned flowing text block anchored top-left, natural \n\n paragraph spacing.
+function PageText({ details, fontSize, maxWidth, topX, topY, lineHeight = 1.85 }) {
   return (
-    <>
-      {paragraphs.map((para, i) => (
-        <React.Fragment key={i}>
-          <Text
-            position={[0, positions[i], 0]}
-            fontSize={fontSize}
-            color="#3a3828"
-            anchorX="center"
-            anchorY="middle"
-            maxWidth={maxWidth}
-            textAlign="center"
-            lineHeight={lineHeight}
-            font="/fonts/PressStart2P-Regular.ttf"
-          >
-            {para}
-          </Text>
-          {i < paragraphs.length - 1 && (
-            <mesh position={[0, positions[i] - heights[i] / 2 - SEP_GAP * 0.45, 0]}>
-              <planeGeometry args={[maxWidth * 0.72, 0.003]} />
-              <meshBasicMaterial color={color} opacity={0.35} transparent />
-            </mesh>
-          )}
-        </React.Fragment>
-      ))}
-    </>
+    <Text
+      position={[topX, topY, 0]}
+      fontSize={fontSize}
+      color="#3a3828"
+      anchorX="left"
+      anchorY="top"
+      maxWidth={maxWidth}
+      textAlign="left"
+      lineHeight={lineHeight}
+      font="/fonts/PressStart2P-Regular.ttf"
+    >
+      {details}
+    </Text>
   )
 }
 
 export default function OpenBook({ book, onClose }) {
   const isMobile = useIsMobile()
-  const BH      = isMobile ? BH_MOBILE : BH_DESKTOP
-  const scale   = isMobile ? 0.95 : 1
-  const camDist = isMobile ? 0.68 : 0.72
+  const { camera, size } = useThree()
+
+  // Mobile: compute page dimensions to fill the viewport exactly at CAM_DIST_MOBILE
+  const fovRad  = (camera.fov * Math.PI) / 180
+  const aspect  = size.width / size.height
+  const visH    = 2 * CAM_DIST_MOBILE * Math.tan(fovRad / 2)
+  const visW    = visH * aspect
+  const mobPageH = visH * 0.96
+  const mobPageW = visW * 0.96
+
+  const camDist = isMobile ? CAM_DIST_MOBILE : CAM_DIST_DESKTOP
+  const BH      = isMobile ? mobPageH : BH_DESKTOP
 
   const groupRef  = useRef()
   const leftHalf  = useRef()
@@ -80,7 +61,6 @@ export default function OpenBook({ book, onClose }) {
   const anim      = useRef({ fly: 0, done: false })
   const origin    = useRef(new THREE.Vector3())
   const [showContent, setShowContent] = useState(false)
-  const { camera } = useThree()
 
   const bookId = book?.id
   useEffect(() => {
@@ -108,14 +88,20 @@ export default function OpenBook({ book, onClose }) {
     const fE = 1 - Math.pow(1 - ft, 3)
 
     const pos = new THREE.Vector3().lerpVectors(origin.current, dest, fE)
-    pos.y += Math.sin(ft * Math.PI) * 0.3
+    if (!isMobile) pos.y += Math.sin(ft * Math.PI) * 0.3   // arc only on desktop
     groupRef.current.position.copy(pos)
     groupRef.current.quaternion.slerpQuaternions(new THREE.Quaternion(), destQ, fE)
 
-    const oE = 1 - Math.pow(1 - Math.max(0, (ft - 0.15) / 0.85), 2)
-    const vAngle = (-Math.PI / 2) + oE * (Math.PI / 2 - Math.PI / 18)
-    if (leftHalf.current)  leftHalf.current.rotation.y  = -vAngle
-    if (rightHalf.current) rightHalf.current.rotation.y =  vAngle
+    if (isMobile) {
+      // Mobile: no spread — stays flat, facing camera
+      if (rightHalf.current) rightHalf.current.rotation.y = 0
+    } else {
+      // Desktop: open like a book
+      const oE     = 1 - Math.pow(1 - Math.max(0, (ft - 0.15) / 0.85), 2)
+      const vAngle = (-Math.PI / 2) + oE * (Math.PI / 2 - Math.PI / 18)
+      if (leftHalf.current)  leftHalf.current.rotation.y  = -vAngle
+      if (rightHalf.current) rightHalf.current.rotation.y =  vAngle
+    }
 
     if (ft >= 1 && !anim.current.done) { anim.current.done = true; setShowContent(true) }
   })
@@ -124,19 +110,8 @@ export default function OpenBook({ book, onClose }) {
   const color     = book.color || '#e04040'
   const darkColor = new THREE.Color(color).multiplyScalar(0.6)
 
-  // Desktop right page — paragraphs auto-centered (startY=null)
-
-  // Mobile — title sits near top, paragraphs start just below subtitle
-  const mobileTitleY    = BH * 0.34
-  const mobileSubtitleY = BH * 0.20
-  const mobileSepLineY  = BH * 0.10
-  const mobileContentY  = BH * 0.04
-
-  // Page widths
-  const mobilePageW = BW * 2.0
-
   return (
-    <group ref={groupRef} scale={[scale, scale, scale]}>
+    <group ref={groupRef}>
       {/* Click-away plane */}
       <mesh position={[0, 0, -0.4]} onClick={(e) => { e.stopPropagation(); onClose() }}>
         <planeGeometry args={[12, 12]} />
@@ -162,7 +137,6 @@ export default function OpenBook({ book, onClose }) {
               <planeGeometry args={[BW * 0.92, BH * 0.92]} />
               <meshBasicMaterial color="#f5f0e2" />
             </mesh>
-            {/* Border lines */}
             {[
               [0,  BH * 0.46 - 0.004, BW * 0.88, 0.003],
               [0, -BH * 0.46 + 0.004, BW * 0.88, 0.003],
@@ -193,7 +167,7 @@ export default function OpenBook({ book, onClose }) {
             )}
           </group>
 
-          {/* RIGHT PAGE — paragraph details */}
+          {/* RIGHT PAGE — details */}
           <group ref={rightHalf}>
             <mesh position={[BW / 2, 0, 0]}>
               <boxGeometry args={[BW, BH, BT]} />
@@ -216,12 +190,12 @@ export default function OpenBook({ book, onClose }) {
             ))}
             {showContent && (
               <group position={[BW / 2, 0, BT / 2 + 0.003]}>
-                <ParagraphContent
+                <PageText
                   details={book.details}
-                  color={color}
                   fontSize={0.013}
                   maxWidth={BW * 0.85}
-                  startY={null}
+                  topX={-BW * 0.42}
+                  topY={0.18}
                 />
               </group>
             )}
@@ -229,23 +203,22 @@ export default function OpenBook({ book, onClose }) {
         </>
       )}
 
-      {/* ── MOBILE ONLY — single full-screen page ────────── */}
+      {/* ── MOBILE ONLY — flat full-screen page, no spread animation ── */}
       {isMobile && (
         <group ref={rightHalf}>
-          <mesh position={[0, 0, 0]}>
-            <boxGeometry args={[mobilePageW, BH, BT]} />
+          <mesh>
+            <boxGeometry args={[mobPageW, mobPageH, BT]} />
             <meshLambertMaterial color={color} flatShading />
           </mesh>
           <mesh position={[0, 0, BT / 2 + 0.001]}>
-            <planeGeometry args={[mobilePageW * 0.94, BH * 0.96]} />
+            <planeGeometry args={[mobPageW * 0.96, mobPageH * 0.96]} />
             <meshBasicMaterial color="#f8f4e8" />
           </mesh>
-          {/* Border lines */}
           {[
-            [0,  BH * 0.48 - 0.004, mobilePageW * 0.90, 0.003],
-            [0, -BH * 0.48 + 0.004, mobilePageW * 0.90, 0.003],
-            [-mobilePageW * 0.47 + 0.004, 0, 0.003, BH * 0.92],
-            [ mobilePageW * 0.47 - 0.004, 0, 0.003, BH * 0.92],
+            [0,  mobPageH * 0.48 - 0.003, mobPageW * 0.92, 0.002],
+            [0, -mobPageH * 0.48 + 0.003, mobPageW * 0.92, 0.002],
+            [-mobPageW * 0.48 + 0.003, 0, 0.002, mobPageH * 0.92],
+            [ mobPageW * 0.48 - 0.003, 0, 0.002, mobPageH * 0.92],
           ].map(([x, y, w, h], i) => (
             <mesh key={`mb${i}`} position={[x, y, BT / 2 + 0.002]}>
               <planeGeometry args={[w, h]} />
@@ -254,26 +227,20 @@ export default function OpenBook({ book, onClose }) {
           ))}
           {showContent && (
             <group position={[0, 0, BT / 2 + 0.003]}>
-              {/* Title */}
-              <Text position={[0, mobileTitleY, 0]} fontSize={0.028} color={color} anchorX="center" anchorY="middle" maxWidth={mobilePageW * 0.85} textAlign="center" lineHeight={1.4} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, mobPageH * 0.38, 0]} fontSize={mobPageH * 0.028} color={color} anchorX="center" anchorY="middle" maxWidth={mobPageW * 0.88} textAlign="center" lineHeight={1.4} font="/fonts/PressStart2P-Regular.ttf">
                 {book.title}
               </Text>
-              {/* Subtitle */}
-              <Text position={[0, mobileSubtitleY, 0]} fontSize={0.015} color="#706858" anchorX="center" anchorY="middle" maxWidth={mobilePageW * 0.85} textAlign="center" lineHeight={1.7} font="/fonts/PressStart2P-Regular.ttf">
-                {book.subtitle}
-              </Text>
-              {/* Separator */}
-              <mesh position={[0, mobileSepLineY, 0]}>
-                <planeGeometry args={[mobilePageW * 0.55, 0.002]} />
+              <mesh position={[0, mobPageH * 0.31, 0]}>
+                <planeGeometry args={[mobPageW * 0.6, 0.002]} />
                 <meshBasicMaterial color={color} opacity={0.35} transparent />
               </mesh>
-              {/* Paragraphs with separators */}
-              <ParagraphContent
+              <PageText
                 details={book.details}
-                color={color}
-                fontSize={0.018}
-                maxWidth={mobilePageW * 0.85}
-                startY={mobileContentY}
+                fontSize={mobPageH * 0.015}
+                maxWidth={mobPageW * 0.88}
+                topX={-mobPageW * 0.44}
+                topY={mobPageH * 0.28}
+                lineHeight={1.9}
               />
             </group>
           )}
