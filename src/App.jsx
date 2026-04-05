@@ -30,14 +30,28 @@ const WALK_CAM = { position: [0, 2.5, 7], target: [0, 1, 4.5] }
 
 const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, clock: CLOCK_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM, sleep: SLEEP_CAM, sofa: SOFA_CAM, walk: WALK_CAM }
 
+const IDLE_AZIMUTH_LIMIT = Math.PI / 3
+const IDLE_ROTATE_SPEED = 0.0012
+
 function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef, isMobile }) {
   const animating = useRef(false)
   const targetPos = useRef(new THREE.Vector3())
   const targetLook = useRef(new THREE.Vector3())
   const prevView = useRef(view)
   const smoothHeading = useRef(null)
+  const idleDir = useRef(1) // 1 = right, -1 = left
 
   useFrame(({ camera }) => {
+    // Idle ping-pong rotation in default view
+    if (view === 'default' && !animating.current && controlsRef.current) {
+      const controls = controlsRef.current
+      const az = controls.getAzimuthalAngle()
+      if (az >= IDLE_AZIMUTH_LIMIT) idleDir.current = -1
+      if (az <= -IDLE_AZIMUTH_LIMIT) idleDir.current = 1
+      controls.setAzimuthalAngle(az + IDLE_ROTATE_SPEED * idleDir.current)
+      controls.update()
+    }
+
     if (prevView.current !== view) {
       prevView.current = view
       smoothHeading.current = null
@@ -408,8 +422,7 @@ export default function App() {
             minAzimuthAngle={(view === 'outdoor' || view === 'walk') ? -Infinity : -Math.PI / 3}
             maxAzimuthAngle={(view === 'outdoor' || view === 'walk') ? Infinity : Math.PI / 3}
             enablePan={false}
-            autoRotate={view === 'default'}
-            autoRotateSpeed={0.4}
+            autoRotate={false}
             target={[0, 1.2, -0.5]}
             enableRotate={view === 'default'}
             enableZoom={view === 'default' || view === 'outdoor' || view === 'walk'}
