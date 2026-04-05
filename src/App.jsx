@@ -31,7 +31,7 @@ const WALK_CAM = { position: [0, 2.5, 7], target: [0, 1, 4.5] }
 const CAM_MAP = { default: DEFAULT_CAM, bookshelf: BOOKSHELF_CAM, chest: CHEST_CAM, github: GITHUB_CAM, linkedin: LINKEDIN_CAM, clock: CLOCK_CAM, controller: CONTROLLER_CAM, dance: DANCE_CAM, outdoor: OUTDOOR_CAM, sleep: SLEEP_CAM, sofa: SOFA_CAM, walk: WALK_CAM }
 
 const IDLE_AZIMUTH_LIMIT = Math.PI / 3
-const IDLE_ROTATE_SPEED = 0.0012
+const IDLE_ROTATE_SPEED = 0.003
 
 function CameraAnimator({ view, controlsRef, onTransitionEnd, catRef, playerRef, isMobile }) {
   const animating = useRef(false)
