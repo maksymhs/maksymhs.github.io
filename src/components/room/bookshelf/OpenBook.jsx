@@ -3,7 +3,8 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
 import * as THREE from 'three'
 
-const BH = 0.68
+const BH_DESKTOP = 0.52
+const BH_MOBILE  = 0.68
 const BW = 0.34
 const BT = 0.018
 
@@ -19,6 +20,7 @@ function useIsMobile() {
 
 export default function OpenBook({ book, onClose }) {
   const isMobile = useIsMobile()
+  const BH = isMobile ? BH_MOBILE : BH_DESKTOP
   const scale = isMobile ? 0.9 : 1
   const camDist = isMobile ? 1.05 : 0.82
   const groupRef = useRef()
@@ -126,16 +128,16 @@ export default function OpenBook({ book, onClose }) {
           ))}
           {showContent && (
             <group position={[-BW / 2, 0, BT / 2 + 0.003]}>
-              <Text position={[0, 0.18, 0]} fontSize={0.02} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 0.8} textAlign="center" lineHeight={1.6} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, 0.12, 0]} fontSize={0.02} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 0.8} textAlign="center" lineHeight={1.6} font="/fonts/PressStart2P-Regular.ttf">
                 {book.title}
               </Text>
-              <Text position={[0, 0.10, 0]} fontSize={0.012} color={color} anchorX="center" anchorY="middle" fillOpacity={0.35} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, 0.06, 0]} fontSize={0.012} color={color} anchorX="center" anchorY="middle" fillOpacity={0.35} font="/fonts/PressStart2P-Regular.ttf">
                 {'~ * ~'}
               </Text>
-              <Text position={[0, 0.02, 0]} fontSize={0.011} color="#706858" anchorX="center" anchorY="middle" maxWidth={BW * 0.8} textAlign="center" lineHeight={1.8} font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, -0.02, 0]} fontSize={0.011} color="#706858" anchorX="center" anchorY="middle" maxWidth={BW * 0.8} textAlign="center" lineHeight={1.8} font="/fonts/PressStart2P-Regular.ttf">
                 {book.subtitle}
               </Text>
-              <mesh position={[0, -0.13, 0]}>
+              <mesh position={[0, -0.1, 0]}>
                 <planeGeometry args={[BW * 0.45, 0.002]} />
                 <meshBasicMaterial color={color} opacity={0.3} transparent />
               </mesh>
@@ -168,12 +170,12 @@ export default function OpenBook({ book, onClose }) {
         {showContent && (
           <group position={[isMobile ? 0 : BW / 2, 0, BT / 2 + 0.003]}>
             {isMobile && (
-              <Text position={[0, BH * 0.32, 0]} fontSize={0.015} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 1.3} textAlign="center" font="/fonts/PressStart2P-Regular.ttf">
+              <Text position={[0, BH * 0.22, 0]} fontSize={0.015} color={color} anchorX="center" anchorY="middle" maxWidth={BW * 1.3} textAlign="center" font="/fonts/PressStart2P-Regular.ttf">
                 {book.title}
               </Text>
             )}
             <Text
-              position={[0, isMobile ? -0.06 : 0.06, 0]}
+              position={[0, isMobile ? 0.01 : 0.06, 0]}
               fontSize={isMobile ? 0.013 : 0.009}
               color="#3a3828"
               anchorX="center"
