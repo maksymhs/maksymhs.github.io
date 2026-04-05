@@ -102,7 +102,10 @@ export default function ChatOverlay({ visible = true, onAction, onLangChange }) 
     try {
       let rafId = null
       const onChunk = (accumulated) => {
-        const cleaned = accumulated.replace(/\{\{.*$/s, '').trim()
+        const cleaned = accumulated
+          .replace(/\{\{ACTION:\w+\}\}/g, '')
+          .replace(/\{\{LANG:\w*\}?\}?.*$/s, '')
+          .trim()
         if (rafId) cancelAnimationFrame(rafId)
         rafId = requestAnimationFrame(() => { setDisplayText(cleaned); rafId = null })
       }
