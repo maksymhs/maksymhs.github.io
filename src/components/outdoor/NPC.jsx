@@ -8,7 +8,7 @@ import { lang } from '../../i18n'
 const NPC_DIALOGUES = {
   en: [
     "Hey there! Have you checked out the bookshelf inside? Each book is a different project!",
-    "There's a game console on the desk — try Cat Runner, Pixel Strike or 3D Jumper!",
+    "Click the monitor on the desk — I'm building Algorithm Lab and System Design Studio!",
     "Click the headphones on the desk... you won't regret it!",
     "Michi knocked my coffee off the table this morning. Again.",
     "That cat once sat on the keyboard and deleted an entire file. True story.",
@@ -22,7 +22,7 @@ const NPC_DIALOGUES = {
   ],
   es: [
     "¡Ey! ¿Has mirado la estantería dentro? ¡Cada libro es un proyecto diferente!",
-    "Hay una consola de juegos en el escritorio — ¡prueba Cat Runner, Pixel Strike o 3D Jumper!",
+    "Haz clic en el monitor del escritorio — ¡estoy construyendo Algorithm Lab y System Design Studio!",
     "Haz clic en los auriculares del escritorio... ¡no te arrepentirás!",
     "Michi me ha tirado el café de la mesa esta mañana. Otra vez.",
     "Ese gato una vez se sentó en el teclado y borró un archivo entero. Historia real.",
@@ -36,7 +36,7 @@ const NPC_DIALOGUES = {
   ],
   ru: [
     "Привет! Ты видел книжную полку внутри? Каждая книга — это отдельный проект!",
-    "На столе есть игровая приставка — попробуй Cat Runner, Pixel Strike или 3D Jumper!",
+    "Кликни на монитор на столе — я строю Algorithm Lab и System Design Studio!",
     "Кликни на наушники на столе... не пожалеешь!",
     "Мичи опрокинул мне кофе со стола сегодня утром. Опять.",
     "Этот кот однажды сел на клавиатуру и удалил целый файл. Реальная история.",

@@ -22,10 +22,9 @@ const LOG_LINES = [
   { width: 0.68, color: '#80b0ff', x: -0.11 },
 ]
 
-const GAMES = [
-  { name: 'Cat Runner', color: '#f0a860', url: '/game_catrunner' },
-  { name: 'Pixel Strike', color: '#ff4040', url: '/game_pixelstrike' },
-  { name: '3D Jumper', color: '#40c040', url: '/game_platformer' },
+const PROJECTS = [
+  { name: 'Algorithm Lab', color: '#60d0a0', url: 'https://algorithm.maksym.site' },
+  { name: 'System Design', color: '#80b0ff', url: 'https://design.maksym.site' },
 ]
 
 export function Desk() {
@@ -137,53 +136,53 @@ export function Monitor({ onClick, view }) {
           {/* Title */}
           <Text
             position={[0, 0.22, 0]}
-            fontSize={0.045}
+            fontSize={0.038}
             color="#60d0a0"
             anchorX="center"
             anchorY="middle"
             font="/fonts/PressStart2P-Regular.ttf"
           >
-            SELECT GAME
+            MY PROJECTS
           </Text>
           {/* Decorative line under title */}
           <mesh position={[0, 0.17, 0]}>
             <planeGeometry args={[0.7, 0.004]} />
             <meshBasicMaterial color="#60d0a0" opacity={0.5} transparent />
           </mesh>
-          {/* Game options */}
-          {GAMES.map((game, i) => (
+          {/* Project options */}
+          {PROJECTS.map((project, i) => (
             <group
               key={i}
-              position={[0, 0.08 - i * 0.12, 0]}
-              onClick={(e) => { e.stopPropagation(); window.location.href = game.url }}
+              position={[0, 0.08 - i * 0.14, 0]}
+              onClick={(e) => { e.stopPropagation(); window.open(project.url, '_blank') }}
               onPointerOver={() => (document.body.style.cursor = 'pointer')}
               onPointerOut={() => (document.body.style.cursor = 'auto')}
             >
               {/* Option background */}
               <mesh position={[0, 0, -0.001]}>
-                <planeGeometry args={[0.7, 0.09]} />
-                <meshBasicMaterial color={game.color} opacity={0.15} transparent />
+                <planeGeometry args={[0.76, 0.1]} />
+                <meshBasicMaterial color={project.color} opacity={0.15} transparent />
               </mesh>
               {/* Option border */}
               <mesh position={[0, 0, -0.0005]}>
-                <planeGeometry args={[0.72, 0.092]} />
-                <meshBasicMaterial color={game.color} opacity={0.3} transparent />
+                <planeGeometry args={[0.78, 0.102]} />
+                <meshBasicMaterial color={project.color} opacity={0.3} transparent />
               </mesh>
               {/* Color indicator */}
-              <mesh position={[-0.3, 0, 0]}>
-                <planeGeometry args={[0.03, 0.06]} />
-                <meshBasicMaterial color={game.color} />
+              <mesh position={[-0.33, 0, 0]}>
+                <planeGeometry args={[0.03, 0.07]} />
+                <meshBasicMaterial color={project.color} />
               </mesh>
-              {/* Game name */}
+              {/* Project name */}
               <Text
-                position={[0, 0, 0]}
-                fontSize={0.03}
-                color={game.color}
+                position={[0.02, 0, 0]}
+                fontSize={0.028}
+                color={project.color}
                 anchorX="center"
                 anchorY="middle"
                 font="/fonts/PressStart2P-Regular.ttf"
               >
-                {game.name}
+                {project.name}
               </Text>
             </group>
           ))}
