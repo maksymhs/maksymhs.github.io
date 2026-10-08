@@ -166,25 +166,30 @@
           <button type="button" data-jd>Paste a job description</button>
         </div>
         <div class="mcp" id="mcp">
-          <p class="kicker">MCP server</p>
-          <h3>Or ask your own AI about me</h3>
-          <p class="muted">My profile is a public MCP server. Connect it to Claude, Cursor, Windsurf or VS Code and your assistant can read my experience and my daily radar, check my fit against a job description and even send me a message. It also adds ready-made prompts: <code>/ask_my_cv</code>, <code>/evaluate_fit</code> and <code>/interview_plan</code>. No sign-up, no API key.</p>
+          <p class="kicker">Ask your own AI</p>
+          <h3>Or use your own assistant</h3>
+          <p class="muted">No sign-up and no setup: open your assistant with my profile already linked, and it will summarize my experience and assess my fit for your role.</p>
+          <div class="mcp-quick">
+            <a class="btn primary" href="https://claude.ai/new?q=Read%20https%3A%2F%2Fmaksym.site%2Fllms-full.txt%20and%20summarize%20Maksym%27s%20experience%20in%203%20lines.%20Then%20ask%20me%20for%20the%20job%20description%20of%20the%20role%20I%27m%20hiring%20for%20and%20assess%20his%20fit%3A%20matches%2C%20gaps%20and%20a%20recommendation." target="_blank" rel="noopener">Open in Claude</a>
+            <a class="btn" href="https://chatgpt.com/?q=Read%20https%3A%2F%2Fmaksym.site%2Fllms-full.txt%20and%20summarize%20Maksym%27s%20experience%20in%203%20lines.%20Then%20ask%20me%20for%20the%20job%20description%20of%20the%20role%20I%27m%20hiring%20for%20and%20assess%20his%20fit%3A%20matches%2C%20gaps%20and%20a%20recommendation." target="_blank" rel="noopener">Open in ChatGPT</a>
+          </div>
+          <p class="mcp-note">It opens a new chat with a ready-made message that points to <a href="/llms-full.txt">my profile in plain text</a>. Works with any assistant that can read web pages.</p>
+
+          <h4 class="mcp-sub">Connect it once (MCP server)</h4>
+          <p class="muted">If you already use connectors, add my profile as a public MCP server. Your assistant can then read my experience and my daily radar, check my fit against a job description and even send me a message. It also adds ready-made prompts: <code>/ask_my_cv</code>, <code>/evaluate_fit</code> and <code>/interview_plan</code>. No sign-up, no API key.</p>
           <div class="copy-row">
             <code>https://api.maksym.site/mcp</code>
             <button class="copy" type="button" data-copy="https://api.maksym.site/mcp">Copy</button>
           </div>
           <div class="tabs" role="tablist" aria-label="Setup instructions">
-            <button type="button" role="tab" id="tab-cc" aria-controls="panel-cc" aria-selected="true">Claude Code</button>
-            <button type="button" role="tab" id="tab-cd" aria-controls="panel-cd" aria-selected="false" tabindex="-1">Claude Desktop</button>
+            <button type="button" role="tab" id="tab-cd" aria-controls="panel-cd" aria-selected="true">Claude</button>
             <button type="button" role="tab" id="tab-cu" aria-controls="panel-cu" aria-selected="false" tabindex="-1">Cursor</button>
             <button type="button" role="tab" id="tab-ws" aria-controls="panel-ws" aria-selected="false" tabindex="-1">Windsurf</button>
             <button type="button" role="tab" id="tab-vs" aria-controls="panel-vs" aria-selected="false" tabindex="-1">VS Code</button>
+            <button type="button" role="tab" id="tab-cc" aria-controls="panel-cc" aria-selected="false" tabindex="-1">Claude Code</button>
           </div>
-          <div class="panel" role="tabpanel" id="panel-cc" aria-labelledby="tab-cc">
-            <pre><code>claude mcp add --transport http maksym https://api.maksym.site/mcp</code></pre>
-          </div>
-          <div class="panel" role="tabpanel" id="panel-cd" aria-labelledby="tab-cd" hidden>
-            <p>Settings → Connectors → <strong>Add custom connector</strong>, then paste the URL above.</p>
+          <div class="panel" role="tabpanel" id="panel-cd" aria-labelledby="tab-cd">
+            <p>In Claude (web or desktop): Settings → Connectors → <strong>Add custom connector</strong>, then paste the URL above. Availability of custom connectors depends on your plan.</p>
           </div>
           <div class="panel" role="tabpanel" id="panel-cu" aria-labelledby="tab-cu" hidden>
             <p class="file">~/.cursor/mcp.json</p>
@@ -209,6 +214,10 @@
     "maksym": { "type": "http", "url": "https://api.maksym.site/mcp" }
   }
 }</code></pre>
+          </div>
+          <div class="panel" role="tabpanel" id="panel-cc" aria-labelledby="tab-cc" hidden>
+            <p>Run this in a terminal with Claude Code installed:</p>
+            <pre><code>claude mcp add --transport http maksym https://api.maksym.site/mcp</code></pre>
           </div>
           <p class="mcp-try">Then try: <em>“Here's our job description. Is Maksym a good fit, and what would you ask him in an interview?”</em></p>
         </div>
