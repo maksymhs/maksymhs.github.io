@@ -21,7 +21,7 @@ jobs:
         run: |
           files=$(gh pr diff ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --name-only)
           echo "$files"
-          bad=$(echo "$files" | grep -vE '^(site/radar/|site/sitemap\.xml$|site/llms\.txt$)' || true)
+          bad=$(echo "$files" | grep -vE '^(site/radar/|site/sitemap\.xml$|site/llms\.txt$|site/index\.html$)' || true)
           if [ -n "$bad" ]; then
             echo "::error::PR touches files outside the radar:"
             echo "$bad"

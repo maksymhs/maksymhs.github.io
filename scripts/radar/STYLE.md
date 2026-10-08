@@ -16,7 +16,7 @@ One post per day: a **main pick** with a real take, plus up to 3 short **more** 
 
 ## Post file
 
-Write a JSON file (outside the repo, e.g. `/tmp/post.json`) and publish it with `node scripts/radar/generate.mjs --publish /tmp/post.json`. The script validates it, checks that links are not dead, writes `site/radar/<date>/index.html` and rebuilds the index, RSS, sitemap and `llms.txt`.
+Write a JSON file (outside the repo, e.g. `/tmp/post.json`) and publish it with `node scripts/radar/generate.mjs --publish /tmp/post.json`. The script validates it, checks that links are not dead, writes `site/radar/<date>/index.html` and rebuilds the index, RSS, sitemap, `llms.txt` and the homepage block.
 
 ```json
 {
@@ -48,7 +48,7 @@ Write a JSON file (outside the repo, e.g. `/tmp/post.json`) and publish it with 
 ## Publishing
 
 1. `git checkout -b radar/<date>` from the latest `main`.
-2. Run the publish command and check `git status`: only `site/radar/**`, `site/sitemap.xml` and `site/llms.txt` may change.
+2. Run the publish command and check `git status`: only `site/radar/**`, `site/sitemap.xml`, `site/llms.txt` and `site/index.html` (the "Latest from the radar" block) may change.
 3. Commit as `radar: <date> <short title>`, push, open a PR to `main` titled `Radar <date>`.
 4. The `Radar auto-merge` workflow merges it and triggers the deploy. Do not merge it yourself.
 5. If nothing worth publishing exists today, publish nothing and say so. Never pad a post.

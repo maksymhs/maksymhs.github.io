@@ -271,6 +271,19 @@ async function updateLlms(issues) {
   await writeFile(file, current.replace(/<!-- radar:start -->[\s\S]*?<!-- radar:end -->/, block));
 }
 
+async function updateHome(issues) {
+  const file = new URL('index.html', SITE);
+  const current = await readFile(file, 'utf8').catch(() => null);
+  if (!current || !current.includes('<!-- radar-home:start -->')) return;
+  const items = issues.slice(0, 3).map((i) => `            <li>
+              <p class="radar-src">${i.kind === 'daily' ? fmtDate(i.date) : `Week ${i.week}, ${i.year}`}</p>
+              <h3><a href="/radar/${i.slug}/">${esc(i.title)}</a></h3>
+              <p>${esc(i.intro)}</p>
+            </li>`).join('\n');
+  const block = `<!-- radar-home:start -->\n${items ? `        <ol class="radar-items issues">\n${items}\n        </ol>\n` : ''}        <!-- radar-home:end -->`;
+  await writeFile(file, current.replace(/<!-- radar-home:start -->[\s\S]*?<!-- radar-home:end -->/, block));
+}
+
 async function renderShared(issues) {
   await mkdir(RADAR, { recursive: true });
   await writeFile(ISSUES, `${JSON.stringify(issues, null, 2)}\n`);
@@ -278,6 +291,7 @@ async function renderShared(issues) {
   await writeFile(new URL('feed.xml', RADAR), feedXml(issues));
   await writeFile(new URL('sitemap.xml', SITE), await sitemapXml(issues));
   await updateLlms(issues);
+  await updateHome(issues);
 }
 
 const UA = 'maksym.site radar (+https://maksym.site/radar/)';

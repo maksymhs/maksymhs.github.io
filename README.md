@@ -48,7 +48,7 @@ A scheduled Claude routine writes `/tmp/post.json` following `scripts/radar/STYL
 
 ```bash
 node scripts/radar/generate.mjs --dry-run --json            # candidate articles from feeds.json (last DAYS days)
-node scripts/radar/generate.mjs --publish post.json         # validate, check links, write the post, rebuild index/RSS/sitemap/llms.txt
+node scripts/radar/generate.mjs --publish post.json         # validate, check links, write the post, rebuild index/RSS/sitemap/llms.txt/homepage block
 node scripts/radar/generate.mjs --render-only               # rebuild radar index, RSS and sitemap
 ```
 
