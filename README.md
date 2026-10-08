@@ -52,7 +52,7 @@ node scripts/radar/generate.mjs --publish post.json         # validate, check li
 node scripts/radar/generate.mjs --render-only               # rebuild radar index, RSS and sitemap
 ```
 
-Setup: enable *Settings → General → Allow auto-merge* is not needed, but the repo must allow Actions to merge (no required reviews on `main`). The old weekly generator (no `--publish`) still works with `LLM_API_KEY` but no longer runs on a schedule.
+Setup: the repo must allow Actions to merge PRs into `main` (no required reviews or status checks on it). The old weekly generator (run without `--publish`) still works with `LLM_API_KEY` but no longer runs on a schedule.
 
 ## Worker
 
