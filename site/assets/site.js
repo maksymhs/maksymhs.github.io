@@ -141,6 +141,7 @@
   const history = [];
   let busy = false;
   let answers = 0;
+  let leadOffered = false;
 
   const grow = () => { input.style.height = 'auto'; input.style.height = `${Math.min(input.scrollHeight + 2, 240)}px`; };
   const toBottom = () => { log.scrollTop = log.scrollHeight; };
@@ -155,7 +156,8 @@
 
   function offerLead() {
     const tpl = $('leadTpl');
-    if (!tpl) return;
+    if (!tpl || leadOffered) return;
+    leadOffered = true;
     const node = tpl.content.firstElementChild.cloneNode(true);
     node.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -203,7 +205,8 @@
       const answer = full.trim();
       if (!answer) throw new Error('empty');
       history.push({ role: 'assistant', content: answer });
-      if (++answers === 2) offerLead();
+      answers++;
+      if (question.length >= 400 || answers === 2) offerLead();
     } catch {
       history.pop();
       out.classList.add('err');
