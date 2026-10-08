@@ -153,7 +153,36 @@ async function chat(body, env, ctx, cors) {
   const profile = await getProfile(env);
   if (!profile) return json({ error: 'profile_unavailable' }, 503, cors);
 
-  const upstream = await fetch(env.LLM_URL, {
+  const prompt = [{ role: 'system', content: system(profile) }, ...messages];
+  const stream = (await workersAi(env, prompt)) || (await openRouter(env, prompt));
+  if (!stream) return json({ error: 'upstream_error' }, 502, cors);
+
+  const [toClient, toLog] = stream.tee();
+  ctx.waitUntil(logChat(toLog, messages.at(-1).content, body, env));
+  return new Response(toClient, {
+    headers: { ...cors, 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store' },
+  });
+}
+
+async function workersAi(env, messages) {
+  if (!env.AI) return null;
+  try {
+    const out = await env.AI.run(env.CF_MODEL || '@cf/meta/llama-3.1-8b-instruct-fp8', {
+      messages,
+      stream: true,
+      temperature: 0.3,
+      max_tokens: 600,
+    });
+    return out.pipeThrough(openAiChunks());
+  } catch (e) {
+    console.log(JSON.stringify({ workers_ai_error: String(e).slice(0, 300) }));
+    return null;
+  }
+}
+
+async function openRouter(env, messages) {
+  if (!env.LLM_API_KEY) return null;
+  const res = await fetch(env.LLM_URL, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${env.LLM_API_KEY}`,
@@ -161,23 +190,38 @@ async function chat(body, env, ctx, cors) {
       'HTTP-Referer': 'https://maksym.site',
       'X-Title': 'maksym.site',
     },
-    body: JSON.stringify({
-      model: env.LLM_MODEL,
-      stream: true,
-      temperature: 0.3,
-      max_tokens: 700,
-      messages: [{ role: 'system', content: system(profile) }, ...messages],
-    }),
+    body: JSON.stringify({ model: env.LLM_MODEL, stream: true, temperature: 0.3, max_tokens: 700, messages }),
   });
-  if (!upstream.ok || !upstream.body) {
-    console.log(JSON.stringify({ upstream_status: upstream.status, upstream_body: (await upstream.text()).slice(0, 500) }));
-    return json({ error: 'upstream_error' }, 502, cors);
-  }
+  if (res.ok && res.body) return res.body;
+  console.log(JSON.stringify({ upstream_status: res.status, upstream_body: (await res.text()).slice(0, 500) }));
+  return null;
+}
 
-  const [toClient, toLog] = upstream.body.tee();
-  ctx.waitUntil(logChat(toLog, messages.at(-1).content, body, env));
-  return new Response(toClient, {
-    headers: { ...cors, 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store' },
+// Workers AI streams `data: {"response":"tok"}`; the site and logChat expect OpenAI-style chunks.
+function openAiChunks() {
+  const dec = new TextDecoder();
+  const enc = new TextEncoder();
+  let buf = '';
+  const emit = (ctl, line) => {
+    if (!line.startsWith('data:')) return;
+    const data = line.slice(5).trim();
+    if (data === '[DONE]') return ctl.enqueue(enc.encode('data: [DONE]\n\n'));
+    try {
+      const j = JSON.parse(data);
+      if (j.choices) ctl.enqueue(enc.encode(`data: ${data}\n\n`));
+      else if (typeof j.response === 'string' && j.response) {
+        ctl.enqueue(enc.encode(`data: ${JSON.stringify({ choices: [{ delta: { content: j.response } }] })}\n\n`));
+      }
+    } catch { }
+  };
+  return new TransformStream({
+    transform(chunk, ctl) {
+      buf += dec.decode(chunk, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const l of lines) emit(ctl, l);
+    },
+    flush(ctl) { if (buf) emit(ctl, buf); },
   });
 }
 

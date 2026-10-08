@@ -7,9 +7,13 @@ routes = [{ pattern = "api.maksym.site", custom_domain = true }]
 [vars]
 ALLOWED_ORIGINS = "https://maksym.site"
 PROFILE_URL = "https://maksym.site/llms-full.txt"
+CF_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8"
 LLM_URL = "https://openrouter.ai/api/v1/chat/completions"
 LLM_MODEL = "nvidia/nemotron-3-super-120b-a12b:free"
 NOTIFY_CHAT = "false"
+
+[ai]
+binding = "AI"
 
 [[ratelimits]]
 name = "RATE_LIMITER"
