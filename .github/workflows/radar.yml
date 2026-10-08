@@ -1,0 +1,38 @@
+name: Weekly radar draft
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - id: gen
+        run: node scripts/radar/generate.mjs
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_MODEL: ${{ vars.LLM_MODEL || 'openai/gpt-4o-mini' }}
+
+      - if: steps.gen.outputs.slug != ''
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: radar/${{ steps.gen.outputs.slug }}
+          commit-message: "radar: ${{ steps.gen.outputs.slug }} draft"
+          title: "Radar ${{ steps.gen.outputs.slug }} (draft)"
+          body: |
+            AI-generated draft of this week's radar.
+
+            Before merging, edit the commentary in `site/radar/${{ steps.gen.outputs.slug }}/index.html` so it sounds like you: remove picks you don't care about, sharpen the takes, fix anything inaccurate. Merging publishes it.
+          delete-branch: true

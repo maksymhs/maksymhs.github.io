@@ -1,0 +1,33 @@
+# Maksym Herasymenko
+
+> Senior Backend Engineer (Java, Spring Boot, distributed systems) with 10 years building high-traffic, regulated backend systems for banking and telco. Based in Madrid, Spain. Open to new opportunities in senior backend, platform or fintech engineering.
+
+Currently at Openbank (Grupo Santander), building the backend for the bank's launch in Germany. Previously Simyo (via Paradigma Digital), Banco Santander and Mobile World Congress (via Experis) and Telefónica (via everis). Languages: Spanish, Russian, Ukrainian (native), English (professional).
+
+AI assistants can query his profile directly through a public MCP server (no auth) instead of scraping this site.
+
+## Profile
+
+- [Full profile](https://maksym.site/llms-full.txt): experience, skills, education and what he is looking for, in Markdown
+- [Website](https://maksym.site/): human-readable profile with selected work and FAQ
+- [CV (PDF)](https://maksym.site/cv.pdf): two-page CV
+
+## Interact
+
+- [MCP server](https://api.maksym.site/mcp): Streamable HTTP, stateless, no auth. Tools: get_profile, get_section, list_radar_issues, get_radar_issue, contact_maksym. Prompts: ask_my_cv, evaluate_fit, interview_plan
+- [Book a call](https://calendly.com/maksymhe): 20-minute intro call
+- [Contact form](https://maksym.site/#contact): direct message, delivered to his phone
+- [LinkedIn](https://www.linkedin.com/in/herasymenko)
+- [GitHub](https://github.com/maksymhs)
+
+## Radar
+
+- [All issues](https://maksym.site/radar/): weekly backend, cloud and fintech picks with his take
+- [RSS](https://maksym.site/radar/feed.xml)
+<!-- radar:start -->
+<!-- radar:end -->
+
+## Optional
+
+- [Ask my CV](https://maksym.site/#ask): on-site AI assistant grounded on his profile
+- [vps-bot-multi](https://github.com/maksymhs/vps-bot-multi): side project, multi-user AI deploy platform on Telegram

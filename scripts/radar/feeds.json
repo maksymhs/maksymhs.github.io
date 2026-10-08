@@ -1,0 +1,11 @@
+[
+  { "name": "InfoQ", "url": "https://feed.infoq.com/" },
+  { "name": "Martin Fowler", "url": "https://martinfowler.com/feed.atom" },
+  { "name": "Spring", "url": "https://spring.io/blog.atom" },
+  { "name": "Inside Java", "url": "https://inside.java/feed.xml" },
+  { "name": "AWS Architecture", "url": "https://aws.amazon.com/blogs/architecture/feed/" },
+  { "name": "AWS News", "url": "https://aws.amazon.com/blogs/aws/feed/" },
+  { "name": "Netflix Tech Blog", "url": "https://netflixtechblog.com/feed" },
+  { "name": "Cloudflare", "url": "https://blog.cloudflare.com/rss/" },
+  { "name": "Hacker News", "url": "https://hnrss.org/frontpage?points=250" }
+]

@@ -1,0 +1,70 @@
+# Maksym Herasymenko
+
+> Senior Backend Engineer (Java, Spring Boot, distributed systems) with 10 years building high-traffic, regulated backend systems for banking and telco. Based in Madrid, Spain. Open to new opportunities.
+
+- Website: https://maksym.site
+- Book a call: https://calendly.com/maksymhe
+- Contact form: https://maksym.site/#contact
+- MCP server (Streamable HTTP, no auth): https://api.maksym.site/mcp
+- LinkedIn: https://www.linkedin.com/in/herasymenko
+- GitHub: https://github.com/maksymhs
+- Languages: Spanish, Russian, Ukrainian (native), English (professional)
+
+## What he is looking for
+
+- Senior backend, platform or fintech engineering roles.
+- Domains: banking, fintech and other regulated, high-traffic products.
+- Based in Madrid, Spain.
+
+## Experience
+
+### Openbank (Grupo Santander) - Software Engineer - Jun 2025 to present
+Digital bank, Germany market launch, Madrid.
+- Java and Spring Boot services for the launch of Openbank in Germany; adapted the domain model and configuration to German regulatory requirements.
+- Event-driven communication on AWS SQS, decoupling services and moving customer-onboarding work to asynchronous processing.
+- Works in a large multi-team codebase, keeping architectural consistency across service boundaries.
+- Built AI-assisted internal tooling (MCP server + agents) that lets engineers trace and diagnose onboarding flows end-to-end across microservices and logs.
+- Stack: Java, Spring Boot, AWS SQS, CloudWatch, microservices.
+
+### Paradigma Digital - Software Engineer - Oct 2021 to May 2025
+Client: Simyo, the highest-rated telco app in Spain (4.8 Play Store / 4.7 App Store).
+- Full revamp of the app backend, from architecture migration to performance optimization.
+- Aggregation endpoints that removed redundant CRM calls: 2x faster responses.
+- Led the migration from MVC to hexagonal architecture, so teams could evolve subsystems independently without breaking contracts.
+- Observability from scratch: AOP-based instrumentation (Spring proxies) for logging and security monitoring feeding real-time anomaly detection in Kibana, plus Grafana dashboards and alerting that reduced mean time to detection.
+- Stack: Java, Spring Boot, PostgreSQL, Redis, Google Cloud, Grafana, Kibana.
+
+### Experis (ManpowerGroup) - Software Engineer - Nov 2019 to Oct 2021
+Clients: Banco Santander, Fira Barcelona (Mobile World Congress).
+- Banco Santander: microservices bridging Spring Boot with legacy COBOL mainframe transactions, with circuit breakers (Hystrix) for fault tolerance under high concurrency.
+- One of the first teams in the project to run automated E2E test suites (Selenium) in Jenkins CI/CD on every build.
+- Mobile World Congress: COVID access-control services integrating third-party health-verification APIs under tight deadlines.
+- Stack: Java, Spring Boot, Hystrix, DB2, Oracle, OpenShift, Jenkins.
+
+### everis (NTT Data) - Software Engineer - Jun 2016 to Sep 2019
+Client: Telefónica.
+- Java and Spring Boot services for critical telecom infrastructure, in large codebases serving millions of users.
+- SOAP and REST services for cross-system integrations.
+- Introduced JUnit and SonarQube practices that reduced defect rates and became the team standard.
+- Stack: Java, Spring Boot, Oracle, SonarQube, Jenkins.
+
+## Skills
+
+- Languages and frameworks: Java, Spring Boot, Spring MVC, Spring Security, Spring Data, Spring AOP, Hibernate.
+- Architecture: microservices, event-driven, hexagonal / clean architecture, REST API design, resilience patterns.
+- Cloud and platforms: AWS (SQS, CloudWatch), Google Cloud, OpenShift, Docker.
+- Data: PostgreSQL, Redis, Oracle, DB2.
+- Observability: Grafana, Kibana, Spring Boot Actuator, AOP instrumentation.
+- Quality and delivery: JUnit, Selenium, SonarQube, Jenkins, GitLab CI, Maven, Gradle.
+- AI-assisted engineering: Windsurf, Devin, MCP servers, LLM agents for internal tooling.
+
+## Education
+
+- BSc Computer Science Engineering, UCAM (Universidad Católica San Antonio de Murcia), 2015-2019.
+- Publication: "Hay Sitio: a collaborative application for managing student workspaces in computer science", JENUI Proceedings, Vol. 4 (2019).
+
+## Side projects
+
+- vps-bot-multi (https://github.com/maksymhs/vps-bot-multi): multi-user AI deploy platform; public Telegram bot with per-user isolation, auto-sleep and OpenRouter.
+- Ask my CV (https://maksym.site/#ask): the assistant on his site, an LLM grounded on this profile, served from a Cloudflare Worker with streaming.
+- Public MCP server (https://api.maksym.site/mcp): this profile exposed over the Model Context Protocol so any AI assistant can read it or send him a message.
