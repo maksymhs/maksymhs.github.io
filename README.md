@@ -40,6 +40,10 @@ python3 -m http.server 8000 -d site
 
 The chat and the forms call `https://api.maksym.site` (Cloudflare Worker), which only accepts requests from the origins in `ALLOWED_ORIGINS`.
 
+## CV
+
+`cv/cv.tex` is the LaTeX source of the public CV (no phone or email; contact goes through LinkedIn and the site). Compile it with pdflatex or xelatex (Overleaf: upload `cv.tex` and `perfil.jpg`), then replace `site/cv.pdf`. Facts must match `site/llms-full.txt`. Set `\photofalse` in `cv.tex` for ATS-only submissions.
+
 ## Radar
 
 A daily post at `/radar/<YYYY-MM-DD>/`: one main pick with a take plus up to three short ones, in Maksym's voice, drafted with AI assistance. Only titles, links and original commentary are published.

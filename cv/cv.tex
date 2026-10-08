@@ -1,0 +1,260 @@
+% =============================================================================
+% CV - Maksym Herasymenko - Senior Backend Engineer
+% General-purpose, public version (no phone or email: contact via LinkedIn or
+% https://maksym.site). ATS-friendly: plain-text contact line, real text for
+% every field, Unicode mapping for pdflatex. Compiles with pdflatex or xelatex
+% (Overleaf). Source of truth for the facts: site/llms-full.txt
+%
+% Photo: perfil.jpg next to this file, shown while \phototrue is set below. Switch to
+% \photofalse for ATS-only submissions: photos add nothing for parsers.
+% =============================================================================
+
+\documentclass[a4paper,10pt]{extarticle}
+
+% ---------------------------------------------------------------------------
+% PACKAGES
+% ---------------------------------------------------------------------------
+\usepackage{iftex}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[
+  top=1.0cm,
+  bottom=1.0cm,
+  left=1.4cm,
+  right=1.4cm
+]{geometry}
+\usepackage{lato}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{needspace}
+\usepackage[skip=0.3em plus 0.1em]{parskip}
+\usepackage{setspace}
+
+% Makes copy/paste and ATS text extraction map ligatures and accents correctly.
+\ifPDFTeX
+  \input{glyphtounicode}
+  \pdfgentounicode=1
+\fi
+
+\setstretch{1.0}
+
+% ---------------------------------------------------------------------------
+% OPTIONS
+% ---------------------------------------------------------------------------
+\newif\ifphoto
+\phototrue % \photofalse hides perfil.jpg
+
+% ---------------------------------------------------------------------------
+% COLORS
+% ---------------------------------------------------------------------------
+\definecolor{accent}{HTML}{1F4E79}
+\definecolor{gris}{HTML}{555555}
+\definecolor{grisclaro}{HTML}{CCCCCC}
+
+% ---------------------------------------------------------------------------
+% HYPERLINKS AND PDF METADATA
+% ---------------------------------------------------------------------------
+\hypersetup{
+  colorlinks  = true,
+  urlcolor    = accent,
+  linkcolor   = accent,
+  pdfauthor   = {Maksym Herasymenko},
+  pdftitle    = {CV - Maksym Herasymenko - Senior Backend Engineer},
+  pdfsubject  = {Senior Backend Engineer - Java, Spring Boot, distributed systems, banking and telco},
+  pdfkeywords = {Java, Spring Boot, Microservices, Event-Driven Architecture, Hexagonal Architecture, AWS, Observability, Banking, Fintech, Madrid, Remote}
+}
+
+% ---------------------------------------------------------------------------
+% SECTION FORMAT
+% ---------------------------------------------------------------------------
+\titleformat{\section}
+  {\normalsize\bfseries\color{accent}\MakeUppercase}
+  {}
+  {0em}
+  {}
+  [\vspace{0.15em}{\color{grisclaro}\hrule height 0.5pt}\vspace{0.10em}]
+
+\titlespacing*{\section}{0pt}{1.4em}{0.6em}
+
+% ---------------------------------------------------------------------------
+% COMMANDS
+% ---------------------------------------------------------------------------
+% \entrada{role}{company - place}{dates}{items}
+\newcommand{\entrada}[4]{%
+  \Needspace{7\baselineskip}%
+  \noindent
+  \textbf{#1} \hfill {\small\color{gris}#3}\\[0.05em]
+  {\color{gris}\textit{#2}}%
+  \begin{itemize}[
+    leftmargin=1.1em,
+    topsep=0.15em,
+    itemsep=0.05em,
+    parsep=0em,
+    partopsep=0em
+  ]
+    #4
+  \end{itemize}
+  \vspace{0.2em}
+}
+
+% Technology line at the end of an entry (inside the item list).
+\newcommand{\stack}[1]{\item[] {\footnotesize\color{gris}\textbf{Stack:} #1}}
+
+% \formacion{degree}{school}{dates}
+\newcommand{\formacion}[3]{%
+  \noindent
+  \textbf{#1} \hfill {\small\color{gris}#3}\\[0.05em]
+  {\color{gris}\textit{#2}}\par
+  \vspace{0.08em}
+}
+
+% ---------------------------------------------------------------------------
+\pagestyle{empty}
+\begin{document}
+
+% ---------------------------------------------------------------------------
+% HEADER
+% ---------------------------------------------------------------------------
+\newcommand{\headerblock}{%
+  {\Large\bfseries\color{accent} MAKSYM HERASYMENKO}\par
+  \vspace{0.15em}
+  {\normalsize\bfseries Senior Backend Engineer} {\normalsize $|$ Java \textperiodcentered\ Spring Boot \textperiodcentered\ Microservices $|$ Banking \& Telco $|$ Event-Driven \textperiodcentered\ Observability}\par
+  \vspace{0.35em}
+  {\small
+    LinkedIn: \href{https://www.linkedin.com/in/herasymenko}{linkedin.com/in/herasymenko}
+    \hspace{0.5em}$|$\hspace{0.5em}%
+    Web and contact form: \href{https://maksym.site}{maksym.site}
+    \hspace{0.5em}$|$\hspace{0.5em}%
+    GitHub: \href{https://github.com/maksymhs}{github.com/maksymhs}%
+  }\par
+  \vspace{0.15em}
+  {\small Madrid, Spain \hspace{0.5em}$|$\hspace{0.5em} Remote \hspace{0.5em}$|$\hspace{0.5em} Authorized to work in the EU \hspace{0.5em}$|$\hspace{0.5em} Spanish, Russian, Ukrainian (native), English (professional)}\par
+  \vspace{0.35em}
+  {\small\color{gris}%
+    Senior backend engineer with 10 years building high-traffic, regulated Java systems for banking and telecommunications. Deep experience with the Spring ecosystem (Boot, MVC, Security, Data, AOP), event-driven and hexagonal architectures, and observability. Track record of migrating architectures, making APIs 2x faster and embedding quality into CI/CD pipelines. Currently building the backend for Openbank's launch in Germany. Looking for remote senior backend, platform or fintech engineering roles.
+  }%
+}
+
+\noindent
+\ifphoto
+  \begin{minipage}[t]{3.0cm}
+    \vspace{0.15em}
+    \begin{tikzpicture}
+      \clip (1.5,1.5) circle (1.5cm);
+      \node[anchor=south west, inner sep=0pt] at (0,0) {\includegraphics[width=3.0cm]{perfil.jpg}};
+    \end{tikzpicture}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{14.3cm}
+    \vspace{0.25em}
+    \headerblock
+  \end{minipage}
+\else
+  \begin{minipage}[t]{\textwidth}
+    \headerblock
+  \end{minipage}
+\fi
+
+% ---------------------------------------------------------------------------
+% PROFESSIONAL EXPERIENCE
+% ---------------------------------------------------------------------------
+\section{Professional Experience}
+
+\entrada
+  {Software Engineer}
+  {Openbank (Grupo Santander) --- Madrid, Spain}
+  {Jun 2025 -- Present}
+  {
+    \item Building Java and Spring Boot services for the launch of Openbank in Germany, adapting the domain model and configuration to German regulatory requirements.
+    \item Implementing event-driven communication on AWS SQS, decoupling services and moving customer-onboarding work to asynchronous processing.
+    \item Working in a large multi-team codebase, keeping architectural consistency across service boundaries.
+    \item Built AI-assisted internal tooling (MCP server and agents) that lets engineers trace and diagnose onboarding flows end to end across microservices and logs.
+    \stack{Java, Spring Boot, AWS SQS, CloudWatch, microservices}
+  }
+
+\entrada
+  {Software Engineer}
+  {Paradigma Digital --- Madrid, Spain (client: Simyo, telecommunications)}
+  {Oct 2021 -- May 2025}
+  {
+    \item Key contributor to the full revamp of the Simyo app backend, from architecture migration to performance optimization. Simyo is the highest-rated telco app in Spain (4.8 Play Store / 4.7 App Store).
+    \item Designed aggregation endpoints that removed redundant CRM calls, making API responses 2x faster.
+    \item Led the migration from MVC to hexagonal architecture, decoupling domain logic from infrastructure so teams could evolve subsystems independently without breaking contracts.
+    \item Built AOP-based instrumentation (Spring proxies) for cross-cutting logging and security monitoring, feeding real-time anomaly detection in Kibana.
+    \item Created Grafana dashboards and alerting from scratch, reducing mean time to detection of production incidents.
+    \stack{Java, Spring Boot, PostgreSQL, Redis, Google Cloud, Grafana, Kibana}
+  }
+
+\entrada
+  {Software Engineer}
+  {Experis (ManpowerGroup) --- Madrid, Spain}
+  {Nov 2019 -- Oct 2021}
+  {
+    \item \textit{Banco Santander:} developed microservices bridging Spring Boot with legacy COBOL (TRX) mainframe transactions, using circuit breakers (Hystrix) for fault tolerance under high concurrency.
+    \item Integrated automated end-to-end test suites (Selenium) into Jenkins CI/CD, verifying full flows on every build; one of the first teams in the project to do so.
+    \item \textit{Fira Barcelona (Mobile World Congress):} built COVID access-control services integrating third-party health-verification APIs under tight deadlines, structured as a multi-module Gradle build.
+    \stack{Java, Spring Boot, Hystrix, DB2, Oracle, OpenShift, Jenkins, Gradle}
+  }
+
+\entrada
+  {Software Engineer}
+  {everis (NTT Data) --- Murcia, Spain (client: Telef\'onica)}
+  {Jun 2016 -- Sep 2019}
+  {
+    \item Built Java and Spring Boot services for critical telecom infrastructure, in large codebases serving millions of users.
+    \item Developed SOAP and REST services for cross-system integrations.
+    \item Introduced JUnit and SonarQube practices that reduced defect rates and became the team standard.
+    \stack{Java, Spring Boot, Oracle, SonarQube, Jenkins}
+  }
+
+% ---------------------------------------------------------------------------
+% TECHNICAL SKILLS
+% ---------------------------------------------------------------------------
+\section{Technical Skills}
+
+{\footnotesize
+\begin{tabularx}{\textwidth}{@{} >{\bfseries\color{accent}}l >{\raggedright\arraybackslash}X @{}}
+  Core                & Java (10 years), Spring Boot, Spring MVC, Spring Security, Spring Data, Spring AOP, Hibernate \\[0.1em]
+  Architecture        & Microservices, Event-Driven Architecture, Hexagonal / Clean Architecture, REST API design, resilience patterns (circuit breakers) \\[0.1em]
+  Cloud \& Platforms  & AWS (SQS, CloudWatch), Google Cloud, OpenShift, Docker \\[0.1em]
+  Databases           & PostgreSQL, Redis, Oracle, DB2 \\[0.1em]
+  Observability       & Grafana, Kibana, Spring Boot Actuator, AOP instrumentation \\[0.1em]
+  Quality \& Delivery & JUnit, Selenium, SonarQube, Jenkins, GitLab CI, Maven, Gradle \\[0.1em]
+  AI-Assisted Eng.    & MCP servers, LLM agents for internal tooling; Windsurf, Devin
+\end{tabularx}
+}
+
+% ---------------------------------------------------------------------------
+% SELECTED PROJECTS
+% ---------------------------------------------------------------------------
+\section{Side Projects}
+
+{\footnotesize
+\begin{itemize}[leftmargin=1.1em, topsep=0.1em, itemsep=0.1em, parsep=0em]
+  \item \textbf{Public MCP server} (\href{https://api.maksym.site/mcp}{api.maksym.site/mcp}): this profile exposed over the Model Context Protocol, so any AI assistant can read it, evaluate fit for a role or send a message.
+  \item \textbf{Ask my CV} (\href{https://maksym.site}{maksym.site}): assistant grounded on this profile, served from a Cloudflare Worker with streaming.
+  \item \textbf{vps-bot-multi} (\href{https://github.com/maksymhs/vps-bot-multi}{github.com/maksymhs/vps-bot-multi}): multi-user AI deploy platform; public Telegram bot with per-user isolation, auto-sleep and OpenRouter.
+\end{itemize}
+}
+
+% ---------------------------------------------------------------------------
+% EDUCATION
+% ---------------------------------------------------------------------------
+\section{Education}
+
+\formacion
+  {B.Sc. in Computer Science Engineering}
+  {UCAM --- Universidad Cat\'olica San Antonio de Murcia}
+  {2015 -- 2019}
+
+{\footnotesize
+\noindent \textbf{Publication:} ``Hay Sitio: a collaborative application for managing student workspaces in computer science'', \textit{Proceedings of JENUI (Conference on University Teaching of Computer Science)}, Vol.\ 4 (2019).
+}
+
+\end{document}
