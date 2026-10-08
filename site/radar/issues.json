@@ -1,1 +1,90 @@
-[]
+[
+  {
+    "slug": "2026-10-08",
+    "kind": "daily",
+    "year": 2026,
+    "week": 41,
+    "title": "Multi-agent systems need boundaries, tests and traces",
+    "intro": "Spotify's talk on production multi-agent systems reads like a distributed-systems lesson: ownership, guardrails in code and tracing before evaluation.",
+    "date": "2026-10-08T06:00:00.000Z",
+    "count": 3,
+    "links": [
+      "https://www.infoq.com/presentations/spotify-multi-agent-ai-architecture/",
+      "https://www.infoq.com/news/2026/10/clef-decision-models/",
+      "https://www.infoq.com/news/2026/10/survey-complex-codebases-agents/"
+    ]
+  },
+  {
+    "slug": "2026-10-07",
+    "kind": "daily",
+    "year": 2026,
+    "week": 41,
+    "title": "Grab halves p99 latency by redesigning its counter storage",
+    "intro": "A careful storage migration at about a billion requests a day: an abstraction layer, shadow traffic and a data model that needs fewer round trips.",
+    "date": "2026-10-07T06:00:00.000Z",
+    "count": 2,
+    "links": [
+      "https://www.infoq.com/news/2026/10/grab-counter-aerospike-migration/",
+      "https://www.infoq.com/news/2026/10/spanner-omni-deploy-anywhere-ga/"
+    ]
+  },
+  {
+    "slug": "2026-10-06",
+    "kind": "daily",
+    "year": 2026,
+    "week": 41,
+    "title": "OpenTelemetry's Kubernetes processor hits 1.0, with renames to plan for",
+    "intro": "A stable release is good news for observability pipelines. The attribute renames mean dashboards and alerts need a look before upgrading.",
+    "date": "2026-10-06T06:00:00.000Z",
+    "count": 2,
+    "links": [
+      "https://www.infoq.com/news/2026/10/opentelemetry-kubernetes-observ/",
+      "https://inside.java/2026/10/06/jep542-target-jdk28/"
+    ]
+  },
+  {
+    "slug": "2026-10-05",
+    "kind": "daily",
+    "year": 2026,
+    "week": 41,
+    "title": "AWS treats digital sovereignty as an architecture question",
+    "intro": "The new Well-Architected lens turns sovereignty into five design questions, a useful framing for regulated European workloads.",
+    "date": "2026-10-05T06:00:00.000Z",
+    "count": 2,
+    "links": [
+      "https://aws.amazon.com/blogs/architecture/announcing-the-aws-digital-sovereignty-well-architected-lens/",
+      "https://inside.java/2026/10/05/confined-pools/"
+    ]
+  },
+  {
+    "slug": "2026-10-02",
+    "kind": "daily",
+    "year": 2026,
+    "week": 40,
+    "title": "Cloudflare Traces puts the whole request path in one trace",
+    "intro": "Tracing that starts at the edge and continues into your origin over W3C and OpenTelemetry standards closes a common blind spot.",
+    "date": "2026-10-02T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://blog.cloudflare.com/cloudflare-tracing/",
+      "https://blog.cloudflare.com/one-observability-platform/",
+      "https://spring.io/blog/2026/10/02/spring-ai-modular-rag-typesafe-jev",
+      "https://inside.java/2026/10/02/jep549-target-jdk28/"
+    ]
+  },
+  {
+    "slug": "2026-09-30",
+    "kind": "daily",
+    "year": 2026,
+    "week": 40,
+    "title": "Prove your multi-AZ design with a 72-hour zone drill",
+    "intro": "Short failover tests miss time-dependent failures. AWS shows how to run a multi-day Availability Zone evacuation with ARC Zonal Shift.",
+    "date": "2026-09-30T06:00:00.000Z",
+    "count": 3,
+    "links": [
+      "https://aws.amazon.com/blogs/architecture/running-multi-day-az-evacuation-drills-with-arc-zonal-shift/",
+      "https://aws.amazon.com/blogs/aws/amazon-aurora-postgresql-now-supports-direct-querying-of-apache-iceberg-and-parquet-data-in-your-data-lake/",
+      "https://inside.java/2026/09/30/faster-post-quantum-cryptography-with-jdk-intrinsics/"
+    ]
+  }
+]

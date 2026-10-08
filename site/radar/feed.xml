@@ -3,8 +3,49 @@
   <channel>
     <title>Maksym Herasymenko · Radar</title>
     <link>https://maksym.site/radar/</link>
-    <description>Weekly backend, cloud and fintech engineering picks with commentary.</description>
+    <description>Daily backend, cloud and fintech engineering picks with commentary.</description>
     <language>en</language>
-
+    <item>
+      <title>Multi-agent systems need boundaries, tests and traces</title>
+      <link>https://maksym.site/radar/2026-10-08/</link>
+      <guid>https://maksym.site/radar/2026-10-08/</guid>
+      <pubDate>Thu, 08 Oct 2026 06:00:00 GMT</pubDate>
+      <description>Spotify&#39;s talk on production multi-agent systems reads like a distributed-systems lesson: ownership, guardrails in code and tracing before evaluation.</description>
+    </item>
+    <item>
+      <title>Grab halves p99 latency by redesigning its counter storage</title>
+      <link>https://maksym.site/radar/2026-10-07/</link>
+      <guid>https://maksym.site/radar/2026-10-07/</guid>
+      <pubDate>Wed, 07 Oct 2026 06:00:00 GMT</pubDate>
+      <description>A careful storage migration at about a billion requests a day: an abstraction layer, shadow traffic and a data model that needs fewer round trips.</description>
+    </item>
+    <item>
+      <title>OpenTelemetry&#39;s Kubernetes processor hits 1.0, with renames to plan for</title>
+      <link>https://maksym.site/radar/2026-10-06/</link>
+      <guid>https://maksym.site/radar/2026-10-06/</guid>
+      <pubDate>Tue, 06 Oct 2026 06:00:00 GMT</pubDate>
+      <description>A stable release is good news for observability pipelines. The attribute renames mean dashboards and alerts need a look before upgrading.</description>
+    </item>
+    <item>
+      <title>AWS treats digital sovereignty as an architecture question</title>
+      <link>https://maksym.site/radar/2026-10-05/</link>
+      <guid>https://maksym.site/radar/2026-10-05/</guid>
+      <pubDate>Mon, 05 Oct 2026 06:00:00 GMT</pubDate>
+      <description>The new Well-Architected lens turns sovereignty into five design questions, a useful framing for regulated European workloads.</description>
+    </item>
+    <item>
+      <title>Cloudflare Traces puts the whole request path in one trace</title>
+      <link>https://maksym.site/radar/2026-10-02/</link>
+      <guid>https://maksym.site/radar/2026-10-02/</guid>
+      <pubDate>Fri, 02 Oct 2026 06:00:00 GMT</pubDate>
+      <description>Tracing that starts at the edge and continues into your origin over W3C and OpenTelemetry standards closes a common blind spot.</description>
+    </item>
+    <item>
+      <title>Prove your multi-AZ design with a 72-hour zone drill</title>
+      <link>https://maksym.site/radar/2026-09-30/</link>
+      <guid>https://maksym.site/radar/2026-09-30/</guid>
+      <pubDate>Wed, 30 Sep 2026 06:00:00 GMT</pubDate>
+      <description>Short failover tests miss time-dependent failures. AWS shows how to run a multi-day Availability Zone evacuation with ARC Zonal Shift.</description>
+    </item>
   </channel>
 </rss>

@@ -153,7 +153,7 @@ function page({ title, description, path, body, jsonld }) {
     <main id="content">
 ${body}
       <footer class="foot">
-        <p>© ${new Date().getUTCFullYear()} Maksym Herasymenko · <a href="/radar/feed.xml">RSS</a> · Links point to the original sources; commentary is my own.</p>
+        <p>© ${new Date().getUTCFullYear()} Maksym Herasymenko · <a href="/radar/feed.xml">RSS</a> · Links point to the original sources. Commentary is drafted with AI assistance and published automatically.</p>
       </footer>
     </main>
   </div>
@@ -183,7 +183,7 @@ function issuePage(issue, items) {
       author: { '@type': 'Person', name: 'Maksym Herasymenko', url: ORIGIN },
     },
     body: `      <article class="post">
-        <p class="kicker"><a href="/radar/">Radar</a> · Week ${issue.week}, ${issue.year}</p>
+        <p class="kicker"><a href="/radar/">Radar</a> · ${issue.kind === 'daily' ? fmtDate(issue.date) : `Week ${issue.week}, ${issue.year}`}</p>
         <h1>${esc(issue.title)}</h1>
         <p class="post-meta">${fmtDate(issue.date)} · ${items.length} picks</p>
         <p class="post-intro">${esc(issue.intro)}</p>
@@ -198,20 +198,20 @@ ${list}
 function indexPage(issues) {
   const list = issues.length
     ? issues.map((i) => `          <li>
-            <p class="radar-src">Week ${i.week}, ${i.year} · ${fmtDate(i.date)}</p>
+            <p class="radar-src">${i.kind === 'daily' ? fmtDate(i.date) : `Week ${i.week}, ${i.year} · ${fmtDate(i.date)}`}</p>
             <h2><a href="/radar/${i.slug}/">${esc(i.title)}</a></h2>
             <p>${esc(i.intro)}</p>
           </li>`).join('\n')
     : '          <li><p class="muted">The first issue is on its way.</p></li>';
   return page({
     title: 'Radar · Backend, cloud and fintech picks · Maksym Herasymenko',
-    description: 'A weekly, hand-reviewed selection of backend, cloud and fintech engineering news, with my take on why it matters.',
+    description: 'A daily selection of backend, cloud and fintech engineering news, with a take on why it matters for teams building regulated, high-traffic systems.',
     path: '/radar/',
     jsonld: { '@context': 'https://schema.org', '@type': 'Blog', name: 'Radar', url: `${ORIGIN}/radar/`, author: { '@type': 'Person', name: 'Maksym Herasymenko', url: ORIGIN } },
     body: `      <article class="post">
         <p class="kicker">Radar</p>
-        <h1>What I'm reading this week<span class="dot-accent" aria-hidden="true">.</span></h1>
-        <p class="post-intro">A weekly, hand-reviewed selection of backend, cloud and fintech engineering news, with my take on why it matters. <a href="/radar/feed.xml">Subscribe via RSS</a>.</p>
+        <h1>What I'm reading<span class="dot-accent" aria-hidden="true">.</span></h1>
+        <p class="post-intro">A daily selection of backend, cloud and fintech engineering news, with a take on why it matters for teams building regulated, high-traffic systems. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a>.</p>
         <ol class="radar-items issues">
 ${list}
         </ol>
@@ -232,7 +232,7 @@ function feedXml(issues) {
   <channel>
     <title>Maksym Herasymenko · Radar</title>
     <link>${ORIGIN}/radar/</link>
-    <description>Weekly backend, cloud and fintech engineering picks with commentary.</description>
+    <description>Daily backend, cloud and fintech engineering picks with commentary.</description>
     <language>en</language>
 ${items}
   </channel>
@@ -247,7 +247,7 @@ async function sitemapXml(issues) {
   const latest = issues[0]?.date.slice(0, 10) || home;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/radar/`, latest, 'weekly', '0.7'), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
+${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
 </urlset>
 `;
 }
@@ -270,8 +270,77 @@ async function renderShared(issues) {
   await updateLlms(issues);
 }
 
+const UA = 'maksym.site radar (+https://maksym.site/radar/)';
+
+async function checkLink(url) {
+  let status;
+  try {
+    const res = await fetch(url, { headers: { 'User-Agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(15000) });
+    status = res.status;
+    await res.body?.cancel();
+  } catch (e) {
+    console.warn(`! could not reach ${url}: ${e.message}`);
+    return;
+  }
+  if (status === 404 || status === 410) throw new Error(`Dead link (${status}): ${url}`);
+  if (status >= 400) console.warn(`! ${url} answered ${status}; keeping it`);
+}
+
+const isoDay = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s));
+const text = (v, min, max, name) => {
+  const t = typeof v === 'string' ? v.trim() : '';
+  if (t.length < min || t.length > max) throw new Error(`${name} must be ${min}-${max} characters (got ${t.length})`);
+  return t;
+};
+
+// Publishes one daily post from a JSON file written by a human or an agent. See scripts/radar/STYLE.md.
+async function publish(file, issues) {
+  const post = JSON.parse(await readFile(file, 'utf8'));
+  if (!isoDay(post.date)) throw new Error('date must be YYYY-MM-DD');
+  const raw = [post.main, ...(Array.isArray(post.more) ? post.more : [])];
+  if (!post.main || raw.length > 4) throw new Error('need a "main" pick and at most 3 in "more"');
+  const items = raw.map((i, n) => {
+    const name = n ? `more[${n - 1}]` : 'main';
+    if (!/^https:\/\//.test(i.link || '')) throw new Error(`${name}.link must be an https URL`);
+    if (!isoDay(i.date)) throw new Error(`${name}.date must be YYYY-MM-DD (the article's publication date)`);
+    return {
+      title: text(i.title, 5, 200, `${name}.title`),
+      source: text(i.source, 2, 60, `${name}.source`),
+      link: i.link.trim(),
+      date: new Date(i.date),
+      take: text(i.take, 60, n ? 500 : 1200, `${name}.take`),
+    };
+  });
+  if (new Set(items.map((i) => i.link)).size !== items.length) throw new Error('duplicate links in post');
+  const known = new Set(issues.flatMap((i) => i.links || []));
+  const repeated = items.find((i) => known.has(i.link));
+  if (repeated) throw new Error(`Already published in an earlier post: ${repeated.link}`);
+  const title = text(post.title, 10, 90, 'title');
+  const intro = text(post.intro, 30, 400, 'intro');
+
+  const slug = post.date;
+  const dir = new URL(`${slug}/`, RADAR);
+  if (!process.env.FORCE && await access(dir).then(() => true, () => false)) throw new Error(`Post ${slug} already exists; set FORCE=1 to replace it.`);
+  await Promise.all(items.map((i) => checkLink(i.link)));
+
+  const { year, week } = isoWeek(new Date(slug));
+  const issue = { slug, kind: 'daily', year, week, title, intro, date: `${slug}T06:00:00.000Z`, count: items.length, links: items.map((i) => i.link) };
+  await mkdir(dir, { recursive: true });
+  await writeFile(new URL('index.html', dir), issuePage(issue, items));
+  const all = [issue, ...issues.filter((i) => i.slug !== slug)].sort((a, b) => b.date.localeCompare(a.date));
+  await renderShared(all);
+  console.log(`Published ${slug}: "${title}" with ${items.length} picks.`);
+  if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `slug=${slug}\n`);
+}
+
 async function main() {
   const issues = JSON.parse(await readFile(ISSUES, 'utf8').catch(() => '[]'));
+  const at = process.argv.indexOf('--publish');
+  if (at > 0) {
+    if (!process.argv[at + 1]) throw new Error('usage: --publish <post.json>');
+    await publish(process.argv[at + 1], issues);
+    return;
+  }
   if (args.has('--render-only')) {
     await renderShared(issues);
     console.log(`Rendered radar index, feed and sitemap (${issues.length} issues).`);
@@ -293,8 +362,12 @@ async function main() {
     .filter((i) => i.date.getTime() >= since && !seen.has(i.link) && seen.add(i.link))
     .sort((a, b) => b.date - a.date)
     .slice(0, 120);
-  console.log(`${candidates.length} candidates from the last ${DAYS} days.`);
+  if (!args.has('--json')) console.log(`${candidates.length} candidates from the last ${DAYS} days.`);
 
+  if (args.has('--dry-run') && args.has('--json')) {
+    console.log(JSON.stringify(candidates.map((c) => ({ source: c.source, title: c.title, link: c.link, date: c.date.toISOString().slice(0, 10), snippet: c.snippet })), null, 2));
+    return;
+  }
   if (args.has('--dry-run')) {
     candidates.forEach((c, i) => console.log(`[${i}] ${c.source} · ${fmtDate(c.date)} · ${c.title}`));
     return;

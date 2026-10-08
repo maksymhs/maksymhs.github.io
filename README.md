@@ -42,17 +42,17 @@ The chat and the forms call `https://api.maksym.site` (Cloudflare Worker), which
 
 ## Radar
 
-Every Monday `.github/workflows/radar.yml` reads the feeds in `scripts/radar/feeds.json`, asks an LLM to pick 5-8 relevant items and draft a short take for each, and opens a PR with `site/radar/<year>-w<week>/index.html`. Only titles, links and original commentary are published. Edit the takes so they sound like you, then merge to publish.
+A daily post at `/radar/<YYYY-MM-DD>/`: one main pick with a take plus up to three short ones, in Maksym's voice, drafted with AI assistance. Only titles, links and original commentary are published.
 
-Setup: repo secret `LLM_API_KEY`, optional repo variable `LLM_MODEL`, and enable *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests*.
+A scheduled Claude routine writes `/tmp/post.json` following `scripts/radar/STYLE.md`, runs the publisher and opens a PR from `radar/<date>`. `.github/workflows/radar-automerge.yml` merges it if it only touches radar files and then starts the deploy.
 
 ```bash
-node --use-system-ca scripts/radar/generate.mjs --dry-run      # list candidates, no LLM, no writes
-LLM_API_KEY=... node --use-system-ca scripts/radar/generate.mjs # draft this week's issue locally
-node scripts/radar/generate.mjs --render-only                  # rebuild radar index, RSS and sitemap
+node scripts/radar/generate.mjs --dry-run --json            # candidate articles from feeds.json (last DAYS days)
+node scripts/radar/generate.mjs --publish post.json         # validate, check links, write the post, rebuild index/RSS/sitemap/llms.txt
+node scripts/radar/generate.mjs --render-only               # rebuild radar index, RSS and sitemap
 ```
 
-`--use-system-ca` is only needed behind a TLS-intercepting proxy. If you edit an issue's title or intro, update `site/radar/issues.json` too and run `--render-only`.
+Setup: enable *Settings → General → Allow auto-merge* is not needed, but the repo must allow Actions to merge (no required reviews on `main`). The old weekly generator (no `--publish`) still works with `LLM_API_KEY` but no longer runs on a schedule.
 
 ## Worker
 

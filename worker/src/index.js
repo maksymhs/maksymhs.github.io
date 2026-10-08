@@ -41,9 +41,9 @@ const SECTIONS = {
 };
 const MCP_INSTRUCTIONS = `This server exposes the professional profile of Maksym Herasymenko, a Senior Backend Engineer (Java, Spring Boot, distributed systems) based in Madrid, Spain.
 Use get_profile to answer questions about him or to assess his fit for a role; quote only facts from the profile and say when something is not covered.
-Use list_radar_issues and get_radar_issue to see the weekly tech radar where he picks backend, cloud and fintech news and gives his take; it shows what he follows and how he thinks.
+Use list_radar_issues and get_radar_issue to see the daily tech radar where he picks backend, cloud and fintech news and gives his take; it shows what he follows and how he thinks.
 If the user wants to get in touch, offer contact_maksym (requires a way to reply) or share https://calendly.com/maksymhe.`;
-const SLUG = /^\d{4}-w\d{2}$/;
+const SLUG = /^\d{4}-(w\d{2}|\d{2}-\d{2})$/;
 const PROMPTS = [
   {
     name: 'ask_my_cv',
@@ -107,15 +107,15 @@ const TOOLS = [
   {
     name: 'list_radar_issues',
     title: 'List radar issues',
-    description: "List the issues of Maksym's weekly tech radar (newest first): slug, title, date and theme.",
+    description: "List the posts of Maksym's tech radar (newest first): slug, title, date and theme.",
     inputSchema: { type: 'object', properties: { limit: { type: 'integer', minimum: 1, maximum: 50 } }, additionalProperties: false },
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
   {
     name: 'get_radar_issue',
     title: 'Get radar issue',
-    description: "Return one radar issue with Maksym's picks (title, source, link) and his take on each. Defaults to the latest issue.",
-    inputSchema: { type: 'object', properties: { slug: { type: 'string', description: 'Issue slug like 2026-w41; omit for the latest' } }, additionalProperties: false },
+    description: "Return one radar post with its picks (title, source, link) and the commentary on each. Defaults to the latest post.",
+    inputSchema: { type: 'object', properties: { slug: { type: 'string', description: 'Post slug like 2026-10-08 (or 2026-w41 for older weekly issues); omit for the latest' } }, additionalProperties: false },
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
 ];

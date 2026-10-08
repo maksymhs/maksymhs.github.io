@@ -1,0 +1,36 @@
+name: Radar auto-merge
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  merge:
+    if: startsWith(github.head_ref, 'radar/')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Only radar files changed
+        run: |
+          files=$(gh pr diff ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --name-only)
+          echo "$files"
+          bad=$(echo "$files" | grep -vE '^(site/radar/|site/sitemap\.xml$|site/llms\.txt$)' || true)
+          if [ -n "$bad" ]; then
+            echo "::error::PR touches files outside the radar:"
+            echo "$bad"
+            exit 1
+          fi
+
+      - name: Merge
+        run: gh pr merge ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --squash --delete-branch
+
+      # Merges made with GITHUB_TOKEN do not trigger other workflows, so start the deploy explicitly.
+      - name: Deploy
+        run: gh workflow run deploy.yml --repo ${{ github.repository }} --ref main
