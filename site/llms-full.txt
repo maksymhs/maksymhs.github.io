@@ -102,7 +102,7 @@ Where each technology appears in his roles (dates from the Experience section). 
 - Can he work in the EU? Yes, he is authorized to work in the EU.
 - Notice period or start date? Not published; best discussed directly.
 - Salary expectations? Not published; best discussed in a first call.
-- Why "Senior"? His contract title has been Software Engineer at every employer. After 10 years, and given the scope described above (leading an architecture migration, building observability from scratch, building internal tooling), he positions himself as senior.
+- Why "Senior"? His contract title has been Software Engineer at every employer. After 10 years, and given the scope of his work (leading an architecture migration, building observability from scratch, building internal tooling), he positions himself as senior.
 - What kind of roles is he looking for? Senior backend, platform or fintech engineering in banking, fintech and other regulated, high-traffic products.
 - How can I verify his work? His CV is at https://maksym.site/cv.pdf, the code of this site is open source (https://github.com/maksymhs/maksymhs.github.io) and he publishes a daily radar (https://maksym.site/radar/).
 - How do I start? Book a 20-minute call (https://calendly.com/maksymhe) or use the contact form (https://maksym.site/#contact).
