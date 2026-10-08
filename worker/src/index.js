@@ -2,7 +2,7 @@ const MAX_TURNS = 12;
 const MAX_CHARS = 6000;
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
 
-const system = (profile, lang) => `You are the assistant on Maksym Herasymenko's professional website. Your readers are mostly recruiters, HR and hiring managers, plus some engineers. Speak about Maksym in the third person.
+const system = (profile, lang) => `You are the assistant on Maksym's professional website. Your readers are mostly recruiters, HR and hiring managers, plus some engineers. Speak about Maksym in the third person.
 
 LANGUAGE: Reply in the language of the visitor's last message (Spanish gets Spanish, English gets English, and so on). If it has no clear language, use "${lang}".
 
@@ -39,7 +39,7 @@ const SECTIONS = {
   education: 'Education',
   side_projects: 'Side projects',
 };
-const MCP_INSTRUCTIONS = `This server exposes the professional profile of Maksym Herasymenko, a Senior Backend Engineer (Java, Spring Boot, distributed systems) based in Madrid, Spain.
+const MCP_INSTRUCTIONS = `This server exposes the professional profile of Maksym, a Senior Backend Engineer (Java, Spring Boot, distributed systems) based in Madrid, Spain.
 Use get_profile to answer questions about him or to assess his fit for a role; quote only facts from the profile and say when something is not covered.
 Use list_radar_issues and get_radar_issue to see the daily tech radar where he picks backend, cloud and fintech news and gives his take; it shows what he follows and how he thinks.
 If the user wants to get in touch, offer contact_maksym (requires a way to reply) or share https://calendly.com/maksymhe.`;
@@ -48,37 +48,37 @@ const PROMPTS = [
   {
     name: 'ask_my_cv',
     title: 'Ask my CV',
-    description: "Ask any question about Maksym Herasymenko's experience, skills or availability.",
+    description: "Ask any question about Maksym's experience, skills or availability.",
     arguments: [{ name: 'question', description: 'Your question about Maksym', required: true }],
-    build: (a) => `Answer this question about Maksym Herasymenko using only the profile below. Be concise and concrete; if the profile does not cover it, say so and suggest contacting him.\n\nQuestion: ${a.question}`,
+    build: (a) => `Answer this question about Maksym using only the profile below. Be concise and concrete; if the profile does not cover it, say so and suggest contacting him.\n\nQuestion: ${a.question}`,
   },
   {
     name: 'evaluate_fit',
     title: 'Evaluate fit for a role',
     description: 'Assess how well Maksym fits a job description: matches, gaps and a recommendation.',
     arguments: [{ name: 'job_description', description: 'The job description or list of requirements', required: true }],
-    build: (a) => `Evaluate Maksym Herasymenko against this job description using only the profile below.\nRespond with: **Fit** (one sentence), **Matches** (3-5 bullets mapping requirements to concrete experience), **Gaps** (honest bullets, or "None obvious"), **Recommendation** (interview or not, and why).\n\nJob description:\n${a.job_description}`,
+    build: (a) => `Evaluate Maksym against this job description using only the profile below.\nRespond with: **Fit** (one sentence), **Matches** (3-5 bullets mapping requirements to concrete experience), **Gaps** (honest bullets, or "None obvious"), **Recommendation** (interview or not, and why).\n\nJob description:\n${a.job_description}`,
   },
   {
     name: 'interview_plan',
     title: 'Interview plan',
     description: "Prepare tailored interview questions based on Maksym's real experience.",
     arguments: [{ name: 'role', description: 'Role or focus of the interview, e.g. "Senior backend, payments"', required: false }],
-    build: (a) => `Prepare a 45-minute interview plan for Maksym Herasymenko${a.role ? ` for the role "${a.role}"` : ''}, using only the profile below.\nInclude 6-8 questions that dig into specific projects he lists (architecture decisions, trade-offs, incidents, results), what a strong answer would cover, and one system-design exercise relevant to his background.`,
+    build: (a) => `Prepare a 45-minute interview plan for Maksym${a.role ? ` for the role "${a.role}"` : ''}, using only the profile below.\nInclude 6-8 questions that dig into specific projects he lists (architecture decisions, trade-offs, incidents, results), what a strong answer would cover, and one system-design exercise relevant to his background.`,
   },
 ];
 const TOOLS = [
   {
     name: 'get_profile',
     title: 'Get full profile',
-    description: "Return Maksym Herasymenko's full professional profile as Markdown: summary, what he is looking for, experience, skills, education, side projects and contact links. Call this first for any question about him or to evaluate him against a job description.",
+    description: "Return Maksym's full professional profile as Markdown: summary, what he is looking for, experience, skills, education, side projects and contact links. Call this first for any question about him or to evaluate him against a job description.",
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
   {
     name: 'get_section',
     title: 'Get profile section',
-    description: "Return a single section of Maksym Herasymenko's profile.",
+    description: "Return a single section of Maksym's profile.",
     inputSchema: {
       type: 'object',
       properties: { section: { type: 'string', enum: Object.keys(SECTIONS) } },
@@ -272,8 +272,8 @@ async function mcp(req, env, url) {
   if (req.method === 'GET' && !(req.headers.get('Accept') || '').includes('text/event-stream')) {
     return new Response(JSON.stringify({
       name: 'maksym-cv',
-      title: 'Maksym Herasymenko · CV',
-      description: 'Public MCP server with the professional profile of Maksym Herasymenko, Senior Backend Engineer (Java, Spring Boot, distributed systems), Madrid.',
+      title: 'Maksym · CV',
+      description: 'Public MCP server with the professional profile of Maksym, Senior Backend Engineer (Java, Spring Boot, distributed systems), Madrid.',
       transport: 'streamable-http',
       endpoint: 'https://api.maksym.site/mcp',
       authentication: 'none',
@@ -312,7 +312,7 @@ async function rpc(msg, env) {
       return ok({
         protocolVersion,
         capabilities: { tools: { listChanged: false }, resources: { listChanged: false }, prompts: { listChanged: false } },
-        serverInfo: { name: 'maksym-cv', title: 'Maksym Herasymenko · CV', version: '1.0.0' },
+        serverInfo: { name: 'maksym-cv', title: 'Maksym · CV', version: '1.0.0' },
         instructions: MCP_INSTRUCTIONS,
       });
     }
@@ -342,7 +342,7 @@ async function rpc(msg, env) {
       });
     }
     case 'resources/list':
-      return ok({ resources: [{ uri: PROFILE_URI, name: 'profile', title: 'Maksym Herasymenko · profile', mimeType: 'text/markdown' }] });
+      return ok({ resources: [{ uri: PROFILE_URI, name: 'profile', title: 'Maksym · profile', mimeType: 'text/markdown' }] });
     case 'resources/read': {
       if (params.uri !== PROFILE_URI) return rpcError(msg.id, -32002, 'Resource not found');
       const text = await getProfile(env);

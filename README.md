@@ -1,6 +1,6 @@
 # maksym.site
 
-Personal site of **Maksym Herasymenko**, Senior Backend Engineer (Java · Spring Boot · distributed systems).
+Personal site of **Maksym**, Senior Backend Engineer (Java · Spring Boot · distributed systems).
 
 **Live:** https://maksym.site
 
@@ -82,4 +82,4 @@ Vars in `wrangler.toml`: `LLM_URL` / `LLM_MODEL` (any OpenAI-compatible endpoint
 
 ## License
 
-MIT © 2026 Maksym Herasymenko
+MIT © 2026 Maksym

@@ -11,7 +11,7 @@ const DAYS = Number(process.env.DAYS || 7);
 const LLM_URL = process.env.LLM_URL || 'https://openrouter.ai/api/v1/chat/completions';
 const LLM_MODEL = process.env.LLM_MODEL || 'openai/gpt-4o-mini';
 
-const SYSTEM = `You curate a weekly tech radar for the personal site of Maksym Herasymenko, a Senior Backend Engineer (Java, Spring Boot, distributed systems, event-driven architecture, observability, AWS and Google Cloud) working in banking and fintech in Madrid. Audience: backend engineers, engineering managers and tech recruiters.
+const SYSTEM = `You curate a weekly tech radar for the personal site of Maksym, a Senior Backend Engineer (Java, Spring Boot, distributed systems, event-driven architecture, observability, AWS and Google Cloud) working in banking and fintech in Madrid. Audience: backend engineers, engineering managers and tech recruiters.
 From the candidate articles, pick the 5 to 8 most relevant and substantive for that audience. Prefer Java/Spring/JVM, distributed systems, architecture, cloud, observability, reliability, security, fintech/payments and AI-assisted engineering. Skip marketing, funding news, duplicates and listicles.
 For each pick write "take": 2-3 sentences in first person as Maksym explaining why it matters in practice for backend teams. Do not summarise the article at length, do not quote it, and do not invent facts beyond the title and snippet; if unsure, keep it general. Plain text, no emojis, no hype.
 Also write "title": a short, specific headline for this week's issue (max 70 characters, no date), and "intro": 1-2 sentences on the theme of the week, in first person.
@@ -136,7 +136,7 @@ function page({ title, description, path, body, jsonld }) {
   <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#131312" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="alternate" type="application/rss+xml" title="Maksym Herasymenko · Radar" href="/radar/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
   <meta property="og:type" content="article">
   <meta property="og:url" content="${ORIGIN}${path}">
   <meta property="og:title" content="${esc(title)}">
@@ -152,7 +152,7 @@ function page({ title, description, path, body, jsonld }) {
   <a class="skip" href="#content">Skip to content</a>
   <div class="wrap">
     <header class="top">
-      <a class="brand" href="/">Maksym Herasymenko</a>
+      <a class="brand" href="/">Maksym</a>
       <nav class="nav" aria-label="Site">
         <a href="/radar/">Radar</a>
         <a href="/#ask">Ask my CV</a>
@@ -163,7 +163,7 @@ function page({ title, description, path, body, jsonld }) {
     <main id="content">
 ${body}
       <footer class="foot">
-        <p>© ${new Date().getUTCFullYear()} Maksym Herasymenko · <a href="/radar/feed.xml">RSS</a> · Links point to the original sources. Commentary is drafted with AI assistance and published automatically.</p>
+        <p>© ${new Date().getUTCFullYear()} Maksym · <a href="/radar/feed.xml">RSS</a> · Links point to the original sources. Commentary is drafted with AI assistance and published automatically.</p>
       </footer>
     </main>
   </div>
@@ -180,7 +180,7 @@ function issuePage(issue, items) {
             <p>${esc(i.take)}</p>
           </li>`).join('\n');
   return page({
-    title: `${issue.title} · Radar ${issue.slug} · Maksym Herasymenko`,
+    title: `${issue.title} · Radar ${issue.slug} · Maksym`,
     description: issue.intro,
     path,
     jsonld: {
@@ -190,7 +190,7 @@ function issuePage(issue, items) {
       description: issue.intro,
       datePublished: issue.date,
       url: `${ORIGIN}${path}`,
-      author: { '@type': 'Person', name: 'Maksym Herasymenko', url: ORIGIN },
+      author: { '@type': 'Person', name: 'Maksym', url: ORIGIN },
     },
     body: `      <article class="post">
         <p class="kicker"><a href="/radar/">Radar</a> · ${issue.kind === 'daily' ? fmtDate(issue.date) : `Week ${issue.week}, ${issue.year}`}</p>
@@ -214,10 +214,10 @@ function indexPage(issues) {
           </li>`).join('\n')
     : '          <li><p class="muted">The first issue is on its way.</p></li>';
   return page({
-    title: 'Radar · Backend, cloud and fintech picks · Maksym Herasymenko',
+    title: 'Radar · Backend, cloud and fintech picks · Maksym',
     description: 'A daily selection of backend, cloud and fintech engineering news, with a take on why it matters for teams building regulated, high-traffic systems.',
     path: '/radar/',
-    jsonld: { '@context': 'https://schema.org', '@type': 'Blog', name: 'Radar', url: `${ORIGIN}/radar/`, author: { '@type': 'Person', name: 'Maksym Herasymenko', url: ORIGIN } },
+    jsonld: { '@context': 'https://schema.org', '@type': 'Blog', name: 'Radar', url: `${ORIGIN}/radar/`, author: { '@type': 'Person', name: 'Maksym', url: ORIGIN } },
     body: `      <article class="post">
         <p class="kicker">Radar</p>
         <h1>What I'm reading<span class="dot-accent" aria-hidden="true">.</span></h1>
@@ -240,7 +240,7 @@ function feedXml(issues) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>Maksym Herasymenko · Radar</title>
+    <title>Maksym · Radar</title>
     <link>${ORIGIN}/radar/</link>
     <description>Daily backend, cloud and fintech engineering picks with commentary.</description>
     <language>en</language>
