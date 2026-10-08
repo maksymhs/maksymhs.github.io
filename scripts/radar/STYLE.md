@@ -11,7 +11,8 @@ One post per day: a **main pick** with a real take, plus up to 3 short **more** 
 1. `node scripts/radar/generate.mjs --dry-run --json` lists the last `DAYS` (default 7) days of articles from `feeds.json` as JSON (source, title, link, date, snippet).
 2. Complement with web search for the last 24-48 hours when the feeds are thin. Prefer primary sources (vendor engineering blogs, JEPs, release notes, InfoQ, Spring, AWS, Cloudflare, Martin Fowler, Inside Java).
 3. Topics, in order: Java/Spring/JVM, distributed systems and architecture, resilience and reliability, observability, AWS and Google Cloud, security and regulated/fintech/payments engineering, AI-assisted engineering and agents (MCP). Skip funding news, marketing, listicles, opinion without substance and anything already published (the script rejects repeated links; check `site/radar/issues.json` `links`).
-4. Open the main article and read it. Do not write a main take from a title or snippet.
+4. Candidates may carry a `note`. Habr articles are in Russian: they are welcome when substantive (architecture, infrastructure, engineering write-ups from companies like Yandex), but then set `source` to `Habr (in Russian)`, write the take in English based on the article you actually read, and say what the piece contains so English readers know what they will find. Prefer an English main pick when quality is similar.
+5. Open the main article and read it. Do not write a main take from a title or snippet.
 
 ## Post file
 

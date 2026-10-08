@@ -42,6 +42,16 @@ function linkOf(block) {
   return null;
 }
 
+function cleanUrl(link) {
+  try {
+    const u = new URL(link);
+    for (const k of [...u.searchParams.keys()]) if (/^(utm_|fbclid$|gclid$|ref$)/i.test(k)) u.searchParams.delete(k);
+    return u.href;
+  } catch {
+    return link;
+  }
+}
+
 function parseFeed(xml, source) {
   const blocks = [...xml.matchAll(/<(item|entry)[\s>][\s\S]*?<\/\1>/gi)].map((m) => m[0]);
   return blocks.map((b) => {
@@ -49,21 +59,21 @@ function parseFeed(xml, source) {
     return {
       source,
       title: plain(tag(b, 'title') || ''),
-      link: linkOf(b),
+      link: cleanUrl(linkOf(b)),
       date: Number.isNaN(date.getTime()) ? null : date,
       snippet: plain(tag(b, 'description') || tag(b, 'summary') || tag(b, 'content') || '').slice(0, 300),
     };
   }).filter((i) => i.title && i.link && i.date);
 }
 
-async function fetchFeed({ name, url }) {
+async function fetchFeed({ name, url, note }) {
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'maksym.site radar (+https://maksym.site/radar/)', Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml' },
       signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return parseFeed(await res.text(), name).slice(0, 15);
+    return parseFeed(await res.text(), name).slice(0, 15).map((i) => (note ? { ...i, note } : i));
   } catch (e) {
     console.warn(`! ${name}: ${e.message}`);
     return [];
@@ -365,7 +375,7 @@ async function main() {
   if (!args.has('--json')) console.log(`${candidates.length} candidates from the last ${DAYS} days.`);
 
   if (args.has('--dry-run') && args.has('--json')) {
-    console.log(JSON.stringify(candidates.map((c) => ({ source: c.source, title: c.title, link: c.link, date: c.date.toISOString().slice(0, 10), snippet: c.snippet })), null, 2));
+    console.log(JSON.stringify(candidates.map((c) => ({ source: c.source, title: c.title, link: c.link, date: c.date.toISOString().slice(0, 10), snippet: c.snippet, ...(c.note && { note: c.note }) })), null, 2));
     return;
   }
   if (args.has('--dry-run')) {
