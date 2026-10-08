@@ -1,6 +1,6 @@
 # Maksym Herasymenko
 
-> Senior Backend Engineer (Java, Spring Boot, distributed systems) with 10 years building high-traffic, regulated backend systems for banking and telco. Based in Madrid, Spain. Open to new opportunities in senior backend, platform or fintech engineering.
+> Senior Backend Engineer (Java, Spring Boot, distributed systems) with 10 years building high-traffic, regulated backend systems for banking and telco. Based in Madrid, Spain. Open to new remote opportunities in senior backend, platform or fintech engineering; authorized to work in the EU.
 
 Currently at Openbank (Grupo Santander), building the backend for the bank's launch in Germany. Previously Simyo (via Paradigma Digital), Banco Santander and Mobile World Congress (via Experis) and Telefónica (via everis). Languages: Spanish, Russian, Ukrainian (native), English (professional).
 
