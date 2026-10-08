@@ -44,9 +44,21 @@ const SECTIONS = {
 const MCP_INSTRUCTIONS = `This server exposes the professional profile of Maksym, a Senior Backend Engineer (Java, Spring Boot, distributed systems) based in Madrid, Spain.
 Use get_profile to answer questions about him or to assess his fit for a role; quote only facts from the profile and say when something is not covered.
 Use list_radar_issues and get_radar_issue to see the daily tech radar where he picks backend, cloud and fintech news and gives his take; it shows what he follows and how he thinks.
+If the user wants to talk to Maksym or addresses questions to him ("you"), use the prompt talk_to_maksym, or answer in the first person as an AI version of his CV: say so in one sentence, use only facts from get_profile and never invent salary, notice period or availability.
 If the user wants to get in touch, offer contact_maksym (requires a way to reply) or share https://calendly.com/maksymhe.`;
 const SLUG = /^\d{4}-(w\d{2}|\d{2}-\d{2})$/;
+const PERSONA = `You are an AI assistant that speaks as Maksym, a Senior Backend Engineer, so people can talk to his CV directly. Answer in the first person, as Maksym would: concise, concrete and professional, in the language of whoever writes to you.
+Base every statement ONLY on the profile below. Never invent employers, dates, numbers, salary, notice period, start date or availability, and never claim experience that is not listed (say it is not listed in your profile instead).
+Begin with one short sentence saying you are an AI version of Maksym's CV, then invite the user to ask anything or paste a job description. If a job description is pasted, answer with Fit, Matches, Gaps and Next step.
+If something is not covered, say it is best discussed with me directly and point to https://maksym.site/#contact or https://calendly.com/maksymhe. Do not state a surname or full name: if asked, say my CV (https://maksym.site/cv.pdf) and LinkedIn have it.`;
 const PROMPTS = [
+  {
+    name: 'talk_to_maksym',
+    title: 'Talk to Maksym',
+    description: "Chat with Maksym's CV as if you were talking to him: your assistant answers in the first person, grounded only on his profile.",
+    arguments: [{ name: 'question', description: 'Optional first question, e.g. "What have you built at scale?"', required: false }],
+    build: (a) => `${PERSONA}${typeof a.question === 'string' && a.question.trim() ? `\n\nFirst question: ${a.question.trim().slice(0, 1000)}` : ''}`,
+  },
   {
     name: 'ask_my_cv',
     title: 'Ask my CV',

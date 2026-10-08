@@ -167,18 +167,18 @@
         </div>
         <div class="mcp" id="mcp">
           <p class="kicker">Ask your own AI</p>
-          <h3>Or use your own assistant</h3>
-          <p class="muted">No sign-up and no setup: open your assistant with my profile already linked, and it will summarize my experience and assess my fit for your role.</p>
+          <h3>Or talk to me from your own assistant</h3>
+          <p class="muted">Ask my CV directly, as if you were talking to me: your assistant answers in the first person, based only on my profile. No sign-up and no setup.</p>
           <div class="mcp-quick">
-            <a class="btn primary" href="https://claude.ai/new?q=Read%20https%3A%2F%2Fmaksym.site%2Fllms-full.txt%20and%20summarize%20Maksym%27s%20experience%20in%203%20lines.%20Then%20ask%20me%20for%20the%20job%20description%20of%20the%20role%20I%27m%20hiring%20for%20and%20assess%20his%20fit%3A%20matches%2C%20gaps%20and%20a%20recommendation." target="_blank" rel="noopener">Open in Claude</a>
-            <a class="btn" href="https://chatgpt.com/?q=Read%20https%3A%2F%2Fmaksym.site%2Fllms-full.txt%20and%20summarize%20Maksym%27s%20experience%20in%203%20lines.%20Then%20ask%20me%20for%20the%20job%20description%20of%20the%20role%20I%27m%20hiring%20for%20and%20assess%20his%20fit%3A%20matches%2C%20gaps%20and%20a%20recommendation." target="_blank" rel="noopener">Open in ChatGPT</a>
+            <a class="btn primary" href="https://claude.ai/new?q=Act%20as%20Maksym%2C%20a%20Senior%20Backend%20Engineer.%20Read%20his%20profile%20at%20https%3A%2F%2Fmaksym.site%2Fllms-full.txt%20and%20answer%20my%20questions%20in%20the%20first%20person%2C%20as%20if%20you%20were%20him%2C%20using%20only%20facts%20from%20that%20profile.%20Start%20by%20saying%20in%20one%20sentence%20that%20you%20are%20an%20AI%20version%20of%20his%20CV%2C%20then%20invite%20me%20to%20ask%20anything%20or%20paste%20a%20job%20description.%20If%20something%20is%20not%20in%20the%20profile%20%28salary%2C%20notice%20period%2C%20start%20date%29%2C%20say%20it%20is%20best%20discussed%20with%20him%20directly%20at%20https%3A%2F%2Fmaksym.site%2F%23contact.%20Do%20not%20state%20a%20surname." target="_blank" rel="noopener">Open in Claude</a>
+            <a class="btn" href="https://chatgpt.com/?q=Act%20as%20Maksym%2C%20a%20Senior%20Backend%20Engineer.%20Read%20his%20profile%20at%20https%3A%2F%2Fmaksym.site%2Fllms-full.txt%20and%20answer%20my%20questions%20in%20the%20first%20person%2C%20as%20if%20you%20were%20him%2C%20using%20only%20facts%20from%20that%20profile.%20Start%20by%20saying%20in%20one%20sentence%20that%20you%20are%20an%20AI%20version%20of%20his%20CV%2C%20then%20invite%20me%20to%20ask%20anything%20or%20paste%20a%20job%20description.%20If%20something%20is%20not%20in%20the%20profile%20%28salary%2C%20notice%20period%2C%20start%20date%29%2C%20say%20it%20is%20best%20discussed%20with%20him%20directly%20at%20https%3A%2F%2Fmaksym.site%2F%23contact.%20Do%20not%20state%20a%20surname." target="_blank" rel="noopener">Open in ChatGPT</a>
             <button class="btn" type="button" id="copyProfile">Copy as prompt</button>
           </div>
-          <p class="mcp-note">The buttons open a new chat with a ready-made message that points to <a href="/llms-full.txt">my profile in plain text</a>. If your assistant cannot open web pages, use <strong>Copy as prompt</strong> and paste it into any AI: it includes my whole profile.</p>
+          <p class="mcp-note">The buttons open a new chat with a ready-made message that points to <a href="/llms-full.txt">my profile in plain text</a>; the answers come from that profile and the assistant says it is an AI. If your assistant cannot open web pages, use <strong>Copy as prompt</strong> and paste it into any AI: it includes my whole profile.</p>
 
           <details class="mcp-dev">
             <summary>For developers: connect my profile as an MCP server</summary>
-            <p class="muted">If you already use connectors, add my profile as a public MCP server. Your assistant can then read my experience and my daily radar, check my fit against a job description and even send me a message. It also adds ready-made prompts: <code>/ask_my_cv</code>, <code>/evaluate_fit</code> and <code>/interview_plan</code>. No sign-up, no API key.</p>
+            <p class="muted">If you already use connectors, add my profile as a public MCP server. Your assistant can then read my experience and my daily radar, check my fit against a job description and even send me a message. It also adds ready-made prompts: <code>/talk_to_maksym</code> (answers as me, in the first person), <code>/ask_my_cv</code>, <code>/evaluate_fit</code> and <code>/interview_plan</code>. No sign-up, no API key.</p>
             <div class="copy-row">
               <code>https://api.maksym.site/mcp</code>
               <button class="copy" type="button" data-copy="https://api.maksym.site/mcp">Copy</button>
@@ -221,7 +221,7 @@
               <p>Run this in a terminal with Claude Code installed:</p>
               <pre><code>claude mcp add --transport http maksym https://api.maksym.site/mcp</code></pre>
             </div>
-            <p class="mcp-try">Then try: <em>“Here's our job description. Is Maksym a good fit, and what would you ask him in an interview?”</em></p>          </details>
+            <p class="mcp-try">Then try <code>/talk_to_maksym</code>, or ask: <em>“Here's our job description. Is Maksym a good fit, and what would you ask him in an interview?”</em></p>          </details>
         </div>
       </section>
 

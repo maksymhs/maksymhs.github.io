@@ -55,7 +55,7 @@
       const res = await fetch('/llms-full.txt');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const profile = (await res.text()).trim();
-      const prompt = `Act as a recruiting assistant. Below is a candidate's professional profile. Summarize his experience in 3 lines. Then ask me for the job description of the role I'm hiring for and assess his fit: matches, gaps and a recommendation. Only use facts from the profile and say when something is not covered.\n\n--- PROFILE ---\n${profile}`;
+      const prompt = `Act as Maksym, a Senior Backend Engineer, using ONLY the profile below. Answer my questions in the first person, as if you were him, concise and concrete, in my language. Start by saying in one sentence that you are an AI version of his CV, then invite me to ask anything or paste a job description. Never invent employers, dates, numbers, salary, notice period or availability; if something is not in the profile, say it is best discussed with him directly at https://maksym.site/#contact. Do not state a surname.\n\n--- PROFILE ---\n${profile}`;
       await navigator.clipboard.writeText(prompt);
       copyProfile.textContent = 'Copied: paste it in any AI';
     } catch {

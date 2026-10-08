@@ -14,7 +14,7 @@ AI assistants can query his profile directly through a public MCP server (no aut
 
 ## Interact
 
-- [MCP server](https://api.maksym.site/mcp): Streamable HTTP, stateless, no auth. Tools: get_profile, get_section, list_radar_issues, get_radar_issue, contact_maksym. Prompts: ask_my_cv, evaluate_fit, interview_plan
+- [MCP server](https://api.maksym.site/mcp): Streamable HTTP, stateless, no auth. Tools: get_profile, get_section, list_radar_issues, get_radar_issue, contact_maksym. Prompts: talk_to_maksym (answers as him, first person), ask_my_cv, evaluate_fit, interview_plan
 - [Book a call](https://calendly.com/maksymhe): 20-minute intro call
 - [Contact form](https://maksym.site/#contact): direct message, delivered to his phone
 - [LinkedIn](https://www.linkedin.com/in/herasymenko)
