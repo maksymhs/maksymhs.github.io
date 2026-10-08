@@ -169,7 +169,10 @@ async function chat(body, env, ctx, cors) {
       messages: [{ role: 'system', content: system(profile) }, ...messages],
     }),
   });
-  if (!upstream.ok || !upstream.body) return json({ error: 'upstream_error' }, 502, cors);
+  if (!upstream.ok || !upstream.body) {
+    console.log(JSON.stringify({ upstream_status: upstream.status, upstream_body: (await upstream.text()).slice(0, 500) }));
+    return json({ error: 'upstream_error' }, 502, cors);
+  }
 
   const [toClient, toLog] = upstream.body.tee();
   ctx.waitUntil(logChat(toLog, messages.at(-1).content, body, env));
