@@ -47,17 +47,17 @@ Use list_radar_issues and get_radar_issue to see the daily tech radar where he p
 If the user wants to talk to Maksym or addresses questions to him ("you"), use the prompt talk_to_maksym, or answer in the first person as an AI version of his CV: say so in one sentence, use only facts from get_profile and never invent salary, notice period or availability.
 If the user wants to get in touch, offer contact_maksym (requires a way to reply) or share https://calendly.com/maksymhe.`;
 const SLUG = /^\d{4}-(w\d{2}|\d{2}-\d{2})$/;
-const PERSONA = `You are an AI assistant that speaks as Maksym, a Senior Backend Engineer, so people can talk to his CV directly. Answer in the first person, as Maksym would: concise, concrete and professional, in the language of whoever writes to you.
-Base every statement ONLY on the profile below. Never invent employers, dates, numbers, salary, notice period, start date or availability, and never claim experience that is not listed (say it is not listed in your profile instead).
-Begin with one short sentence saying you are an AI version of Maksym's CV, then invite the user to ask anything or paste a job description. If a job description is pasted, answer with Fit, Matches, Gaps and Next step.
-If something is not covered, say it is best discussed with me directly and point to https://maksym.site/#contact or https://calendly.com/maksymhe. Do not state a surname or full name: if asked, say my CV (https://maksym.site/cv.pdf) and LinkedIn have it.`;
+const PERSONA = `Act as Maksym, a Senior Backend Engineer, so people can talk to his CV directly. Answer in the first person, as if you were him: concise, concrete and professional, in the language of whoever writes to you.
+Use ONLY his profile. Never invent employers, dates, numbers, salary, notice period, start date or availability, and never claim experience that is not listed (say it is not listed in the profile instead).
+Begin with one short sentence saying you are an AI version of his CV, then invite the user to ask anything or paste a job description. If a job description is pasted, answer with Fit, Matches, Gaps and Next step.
+If something is not covered, say it is best discussed with me directly and point to https://maksym.site/#contact or https://calendly.com/maksymhe. Do not state a surname or full name: if asked, say my CV (https://maksym.site/cv.pdf) and LinkedIn have it.`; // fallback; the canonical copy is site/persona.txt
 const PROMPTS = [
   {
     name: 'talk_to_maksym',
     title: 'Talk to Maksym',
     description: "Chat with Maksym's CV as if you were talking to him: your assistant answers in the first person, grounded only on his profile.",
     arguments: [{ name: 'question', description: 'Optional first question, e.g. "What have you built at scale?"', required: false }],
-    build: (a) => `${PERSONA}${typeof a.question === 'string' && a.question.trim() ? `\n\nFirst question: ${a.question.trim().slice(0, 1000)}` : ''}`,
+    build: (a, persona) => `${persona || PERSONA}${typeof a.question === 'string' && a.question.trim() ? `\n\nFirst question: ${a.question.trim().slice(0, 1000)}` : ''}`,
   },
   {
     name: 'ask_my_cv',
@@ -349,10 +349,11 @@ async function rpc(msg, env) {
       if (missing) return rpcError(msg.id, -32602, `Missing argument: ${missing.name}`);
       const profile = await getProfile(env);
       if (!profile) return rpcError(msg.id, -32603, 'Profile unavailable');
+      const persona = prompt.name === 'talk_to_maksym' ? await getPersona(env) : null;
       console.log(JSON.stringify({ mcp: 'prompts/get', prompt: prompt.name }));
       return ok({
         description: prompt.description,
-        messages: [{ role: 'user', content: { type: 'text', text: `${prompt.build(a)}\n\nPROFILE:\n${profile}` } }],
+        messages: [{ role: 'user', content: { type: 'text', text: `${prompt.build(a, persona)}\n\nPROFILE:\n${profile}` } }],
       });
     }
     case 'resources/list':
@@ -444,6 +445,16 @@ function rpcError(id, code, message) {
 
 function rpcReply(payload) {
   return new Response(JSON.stringify(payload), { headers: { ...MCP_CORS, 'Content-Type': 'application/json' } });
+}
+
+async function getPersona(env) {
+  try {
+    const res = await fetch(siteUrl(env, '/persona.txt'), { cf: { cacheTtl: 300, cacheEverything: true } });
+    const text = res.ok ? (await res.text()).trim() : '';
+    return text.length > 100 && text.length < 4000 ? text : null;
+  } catch {
+    return null;
+  }
 }
 
 async function getProfile(env) {

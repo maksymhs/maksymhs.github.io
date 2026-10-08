@@ -48,26 +48,33 @@
     setTimeout(() => { b.textContent = 'Copy'; }, 1600);
   });
 
+  // One source of truth for how an assistant should talk as Maksym: /persona.txt (also used by the MCP prompt).
   const copyProfile = document.getElementById('copyProfile');
-  if (copyProfile) {
-    const INSTRUCTIONS = 'Act as Maksym, a Senior Backend Engineer, using ONLY the profile below. Answer my questions in the first person, as if you were him, concise and concrete, in my language. Never invent employers, dates, numbers, salary, notice period or availability; if something is not in the profile, say it is best discussed with him directly at https://maksym.site/#contact. Do not state a surname.';
-    const START = 'Now begin: say in one sentence that you are an AI version of his CV, then invite me to ask anything or paste a job description.';
-    let promptText;
-    const buildPrompt = () => (promptText ||= fetch('/llms-full.txt')
-      .then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.text(); })
-      .then((profile) => `${INSTRUCTIONS}\n\n--- PROFILE ---\n${profile.trim()}\n--- END OF PROFILE ---\n\n${START}`));
-    buildPrompt().catch(() => { promptText = undefined; });
-    copyProfile.addEventListener('click', async () => {
+  const openClaude = document.getElementById('openClaude');
+  const openChatGPT = document.getElementById('openChatGPT');
+  if (copyProfile || openClaude || openChatGPT) {
+    const text = (path) => fetch(path).then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.text(); }).then((s) => s.trim());
+    const persona = text('/persona.txt');
+    const profile = text('/llms-full.txt');
+    const START = 'Now begin.';
+    const withLink = persona.then((p) => `${p}\n\nHis profile is at https://maksym.site/llms-full.txt: read it first and use only that.`);
+    const withProfile = Promise.all([persona, profile]).then(([p, prof]) => `${p}\n\n--- PROFILE ---\n${prof}\n--- END OF PROFILE ---\n\n${START}`);
+    withLink.then((prompt) => {
+      const q = encodeURIComponent(prompt);
+      if (openClaude) openClaude.href = `https://claude.ai/new?q=${q}`;
+      if (openChatGPT) openChatGPT.href = `https://chatgpt.com/?q=${q}`;
+    }).catch(() => {});
+    withProfile.catch(() => {});
+    copyProfile?.addEventListener('click', async () => {
       const label = copyProfile.textContent;
       try {
         if (window.ClipboardItem && navigator.clipboard?.write) {
-          await navigator.clipboard.write([new ClipboardItem({ 'text/plain': buildPrompt().then((text) => new Blob([text], { type: 'text/plain' })) })]);
+          await navigator.clipboard.write([new ClipboardItem({ 'text/plain': withProfile.then((s) => new Blob([s], { type: 'text/plain' })) })]);
         } else {
-          await navigator.clipboard.writeText(await buildPrompt());
+          await navigator.clipboard.writeText(await withProfile);
         }
         copyProfile.textContent = 'Copied. Paste it in any AI';
       } catch {
-        promptText = undefined;
         copyProfile.textContent = 'Could not copy';
       }
       setTimeout(() => { copyProfile.textContent = label; }, 2600);
