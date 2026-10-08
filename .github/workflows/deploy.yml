@@ -25,6 +25,13 @@ jobs:
 
       - uses: actions/configure-pages@v5
 
+      # Cloudflare serves /assets with a 4 hour browser cache: version the URLs so a new deploy is picked up at once.
+      - name: Cache-bust assets
+        run: |
+          v=$(cat site/assets/site.js site/assets/site.css | sha256sum | cut -c1-8)
+          find site -name '*.html' -exec sed -i -E "s#/assets/(site\.(js|css))(\?v=[a-z0-9]+)?\"#/assets/\1?v=$v\"#g" {} +
+          grep -o "/assets/site\.[a-z]*?v=$v" site/index.html | sort -u
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site

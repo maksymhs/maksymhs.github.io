@@ -49,20 +49,30 @@
   });
 
   const copyProfile = document.getElementById('copyProfile');
-  copyProfile?.addEventListener('click', async () => {
-    const label = copyProfile.textContent;
-    try {
-      const res = await fetch('/llms-full.txt');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const profile = (await res.text()).trim();
-      const prompt = `Act as Maksym, a Senior Backend Engineer, using ONLY the profile below. Answer my questions in the first person, as if you were him, concise and concrete, in my language. Start by saying in one sentence that you are an AI version of his CV, then invite me to ask anything or paste a job description. Never invent employers, dates, numbers, salary, notice period or availability; if something is not in the profile, say it is best discussed with him directly at https://maksym.site/#contact. Do not state a surname.\n\n--- PROFILE ---\n${profile}`;
-      await navigator.clipboard.writeText(prompt);
-      copyProfile.textContent = 'Copied: paste it in any AI';
-    } catch {
-      copyProfile.textContent = 'Could not copy';
-    }
-    setTimeout(() => { copyProfile.textContent = label; }, 2600);
-  });
+  if (copyProfile) {
+    const INSTRUCTIONS = 'Act as Maksym, a Senior Backend Engineer, using ONLY the profile below. Answer my questions in the first person, as if you were him, concise and concrete, in my language. Never invent employers, dates, numbers, salary, notice period or availability; if something is not in the profile, say it is best discussed with him directly at https://maksym.site/#contact. Do not state a surname.';
+    const START = 'Now begin: say in one sentence that you are an AI version of his CV, then invite me to ask anything or paste a job description.';
+    let promptText;
+    const buildPrompt = () => (promptText ||= fetch('/llms-full.txt')
+      .then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.text(); })
+      .then((profile) => `${INSTRUCTIONS}\n\n--- PROFILE ---\n${profile.trim()}\n--- END OF PROFILE ---\n\n${START}`));
+    buildPrompt().catch(() => { promptText = undefined; });
+    copyProfile.addEventListener('click', async () => {
+      const label = copyProfile.textContent;
+      try {
+        if (window.ClipboardItem && navigator.clipboard?.write) {
+          await navigator.clipboard.write([new ClipboardItem({ 'text/plain': buildPrompt().then((text) => new Blob([text], { type: 'text/plain' })) })]);
+        } else {
+          await navigator.clipboard.writeText(await buildPrompt());
+        }
+        copyProfile.textContent = 'Copied. Paste it in any AI';
+      } catch {
+        promptText = undefined;
+        copyProfile.textContent = 'Could not copy';
+      }
+      setTimeout(() => { copyProfile.textContent = label; }, 2600);
+    });
+  }
 
   const tabs = [...document.querySelectorAll('[role="tab"]')];
   const select = (tab) => {
