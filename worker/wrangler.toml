@@ -1,4 +1,4 @@
-name = "maksym-api"
+name = "api"
 main = "src/index.js"
 compatibility_date = "2025-09-01"
 
