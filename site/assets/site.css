@@ -271,7 +271,10 @@ input:focus, textarea:focus { outline: none; border-color: var(--fg); }
 .mcp > .muted { margin-bottom: 1.25rem; font-size: .9375rem; }
 .mcp-quick { display: flex; flex-wrap: wrap; gap: .625rem; margin: 0 0 .75rem; }
 .mcp-note { margin: 0 0 1.75rem; font-size: .875rem; color: var(--muted); }
-.mcp-sub { margin: 0 0 .5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font: 600 1rem var(--sans); }
+.mcp-dev { padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.mcp-dev > summary { cursor: pointer; font: 600 .9375rem var(--sans); color: var(--muted); }
+.mcp-dev > summary:hover, .mcp-dev[open] > summary { color: var(--fg); }
+.mcp-dev[open] > summary { margin-bottom: .875rem; }
 .copy-row { display: flex; align-items: center; gap: .5rem; padding: .375rem .375rem .375rem .875rem; border: 1px solid var(--line); border-radius: 8px; background: var(--soft); }
 .copy-row code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font: .875rem var(--mono); }
 .copy {

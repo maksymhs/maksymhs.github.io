@@ -48,6 +48,22 @@
     setTimeout(() => { b.textContent = 'Copy'; }, 1600);
   });
 
+  const copyProfile = document.getElementById('copyProfile');
+  copyProfile?.addEventListener('click', async () => {
+    const label = copyProfile.textContent;
+    try {
+      const res = await fetch('/llms-full.txt');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const profile = (await res.text()).trim();
+      const prompt = `Act as a recruiting assistant. Below is a candidate's professional profile. Summarize his experience in 3 lines. Then ask me for the job description of the role I'm hiring for and assess his fit: matches, gaps and a recommendation. Only use facts from the profile and say when something is not covered.\n\n--- PROFILE ---\n${profile}`;
+      await navigator.clipboard.writeText(prompt);
+      copyProfile.textContent = 'Copied: paste it in any AI';
+    } catch {
+      copyProfile.textContent = 'Could not copy';
+    }
+    setTimeout(() => { copyProfile.textContent = label; }, 2600);
+  });
+
   const tabs = [...document.querySelectorAll('[role="tab"]')];
   const select = (tab) => {
     tabs.forEach((t) => {
