@@ -67,7 +67,6 @@ Client: Telefónica.
 
 ## Side projects
 
-- VpsCodeBot (https://t.me/VpsCodeBot): multi-user AI deploy platform on Telegram; describe an app and get a live URL, with per-user isolation, auto-sleep and OpenRouter. The bot is live; the source is private.
 - This site, open source (https://github.com/maksymhs/maksymhs.github.io): static site on GitHub Pages, a Cloudflare Worker (chat, contact form, MCP server) and the daily radar automation.
 - Ask my CV (https://maksym.site/#ask): the assistant on his site, an LLM grounded on this profile, served from a Cloudflare Worker with streaming.
 - Public MCP server (https://api.maksym.site/mcp): this profile exposed over the Model Context Protocol so any AI assistant can read it or send him a message.

@@ -35,5 +35,4 @@ AI assistants can query his profile directly through a public MCP server (no aut
 ## Optional
 
 - [Ask my CV](https://maksym.site/#ask): on-site AI assistant grounded on his profile
-- [VpsCodeBot](https://t.me/VpsCodeBot): side project, multi-user AI deploy platform on Telegram (source is private)
 - [Source of this site](https://github.com/maksymhs/maksymhs.github.io): static site, Cloudflare Worker (chat, contact form, MCP server) and daily radar automation
