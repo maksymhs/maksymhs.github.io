@@ -8,5 +8,6 @@
   { "name": "Netflix Tech Blog", "url": "https://netflixtechblog.com/feed" },
   { "name": "Cloudflare", "url": "https://blog.cloudflare.com/rss/" },
   { "name": "Hacker News", "url": "https://hnrss.org/frontpage?points=250" },
-  { "name": "Habr", "url": "https://habr.com/en/rss/best/daily/", "note": "Articles are in Russian even in the English feed" }
+  { "name": "Habr", "url": "https://habr.com/en/rss/best/daily/", "note": "Articles are in Russian even in the English feed" },
+  { "name": "Habr", "url": "https://habr.com/en/rss/hubs/java/articles/", "note": "Java hub; articles are in Russian" }
 ]
