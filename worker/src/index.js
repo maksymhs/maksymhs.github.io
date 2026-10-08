@@ -35,9 +35,12 @@ const MCP_CORS = {
 };
 const PROFILE_URI = 'https://maksym.site/llms-full.txt';
 const SECTIONS = {
+  quick_facts: 'Quick facts',
   looking_for: 'What he is looking for',
   experience: 'Experience',
   skills: 'Skills',
+  tech_evidence: 'Technology by evidence',
+  recruiter_faq: 'Recruiter FAQ',
   education: 'Education',
   side_projects: 'Side projects',
 };
