@@ -25,11 +25,11 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [All issues](https://maksym.site/radar/): daily backend, cloud and fintech picks with commentary
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
+- [Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles](https://maksym.site/radar/2026-10-09/): A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud's new train builds on it, with a Resilience4J bump.
 - [Multi-agent systems need boundaries, tests and traces](https://maksym.site/radar/2026-10-08/): Spotify's talk on production multi-agent systems reads like a distributed-systems lesson: ownership, guardrails in code and tracing before evaluation.
 - [Grab halves p99 latency by redesigning its counter storage](https://maksym.site/radar/2026-10-07/): A careful storage migration at about a billion requests a day: an abstraction layer, shadow traffic and a data model that needs fewer round trips.
 - [OpenTelemetry's Kubernetes processor hits 1.0, with renames to plan for](https://maksym.site/radar/2026-10-06/): A stable release is good news for observability pipelines. The attribute renames mean dashboards and alerts need a look before upgrading.
 - [AWS treats digital sovereignty as an architecture question](https://maksym.site/radar/2026-10-05/): The new Well-Architected lens turns sovereignty into five design questions, a useful framing for regulated European workloads.
-- [Cloudflare Traces puts the whole request path in one trace](https://maksym.site/radar/2026-10-02/): Tracing that starts at the edge and continues into your origin over W3C and OpenTelemetry standards closes a common blind spot.
 <!-- radar:end -->
 
 ## Optional
