@@ -1,5 +1,19 @@
 [
   {
+    "slug": "2026-10-09",
+    "kind": "daily",
+    "year": 2026,
+    "week": 41,
+    "title": "Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles",
+    "intro": "A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud's new train builds on it, with a Resilience4J bump.",
+    "date": "2026-10-09T06:00:00.000Z",
+    "count": 2,
+    "links": [
+      "https://spring.io/blog/2026/09/25/spring-boot-4-2-0-M2-available-now",
+      "https://spring.io/blog/2026/09/24/spring-cloud-2026-0-0-M1-has-been-released"
+    ]
+  },
+  {
     "slug": "2026-10-08",
     "kind": "daily",
     "year": 2026,

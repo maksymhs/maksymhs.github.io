@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles · Radar 2026-10-09 · Maksym</title>
+  <meta name="description" content="A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud&#39;s new train builds on it, with a Resilience4J bump.">
+  <link rel="canonical" href="https://maksym.site/radar/2026-10-09/">
+  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#131312" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://maksym.site/radar/2026-10-09/">
+  <meta property="og:title" content="Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles · Radar 2026-10-09 · Maksym">
+  <meta property="og:description" content="A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud&#39;s new train builds on it, with a Resilience4J bump.">
+  <meta property="og:image" content="https://maksym.site/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles","description":"A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud's new train builds on it, with a Resilience4J bump.","datePublished":"2026-10-09T06:00:00.000Z","url":"https://maksym.site/radar/2026-10-09/","author":{"@type":"Person","name":"Maksym","url":"https://maksym.site"}}</script>
+  <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+  <link rel="stylesheet" href="/assets/site.css">
+  <script src="/assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="/">Maksym</a>
+      <nav class="nav" aria-label="Site">
+        <a href="/radar/">Radar</a>
+        <a href="/#ask">Ask my CV</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+      <button class="theme" id="themeToggle" type="button" aria-label="Toggle theme">
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
+      </button>
+    </header>
+    <main id="content">
+      <article class="post">
+        <p class="kicker"><a href="/radar/">Radar</a> · 9 Oct 2026</p>
+        <h1>Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles</h1>
+        <p class="post-meta">9 Oct 2026 · 2 picks</p>
+        <p class="post-intro">A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud&#39;s new train builds on it, with a Resilience4J bump.</p>
+        <ol class="radar-items">
+          <li>
+            <h2><a href="https://spring.io/blog/2026/09/25/spring-boot-4-2-0-M2-available-now" target="_blank" rel="noopener">Spring Boot 4.2.0-M2 available now</a></h2>
+            <p class="radar-src">Spring · 25 Sept 2026</p>
+            <p>Spring Boot 4.2.0-M2 is on Maven Central. The announcement is short: it counts 141 enhancements, documentation improvements, dependency upgrades and bug fixes, and highlights two features. One is SSL bundle support for LDAP, including LDAPS for the embedded LDAP server. The other is support for OpenTelemetry semantic conventions, plus common OTLP endpoint, header and compression configuration. The post does not list the individual changes, so the release notes on GitHub are where to check the rest. The OpenTelemetry part is the one I would watch. Telemetry setup tends to end up scattered across properties, agents and custom code, and a shared configuration surface for OTLP means less glue per service and fewer differences between teams. On a platform with many services that consistency matters more than any single feature. When I built observability at Simyo it was custom AOP instrumentation feeding Grafana and Kibana, so I know how much work a standard convention would have saved. This is a milestone, so I would try it in a branch or a side service, read the release notes and wait for the GA before planning an upgrade.</p>
+          </li>
+          <li>
+            <h2><a href="https://spring.io/blog/2026/09/24/spring-cloud-2026-0-0-M1-has-been-released" target="_blank" rel="noopener">Spring Cloud 2026.0.0-M1 (aka Paddington) Has Been Released</a></h2>
+            <p class="radar-src">Spring · 24 Sept 2026</p>
+            <p>The new release train is built on Spring Boot 4.2.0-M2. The announcement lists Resilience4J 2.4.0 in Circuitbreaker, Feign 13.14 in Openfeign and Spring Vault 4.1.0. If you rely on circuit breakers, as I did with Hystrix at Santander, the Resilience4J bump is the line to check.</p>
+          </li>
+        </ol>
+        <p class="post-end"><a href="/radar/">← All issues</a> · <a href="/#ask">Ask my CV</a></p>
+      </article>
+      <footer class="foot">
+        <p>© 2026 Maksym · <a href="/radar/feed.xml">RSS</a> · Links point to the original sources. Commentary is drafted with AI assistance and published automatically.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

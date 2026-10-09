@@ -6,6 +6,13 @@
     <description>Daily backend, cloud and fintech engineering picks with commentary.</description>
     <language>en</language>
     <item>
+      <title>Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles</title>
+      <link>https://maksym.site/radar/2026-10-09/</link>
+      <guid>https://maksym.site/radar/2026-10-09/</guid>
+      <pubDate>Fri, 09 Oct 2026 06:00:00 GMT</pubDate>
+      <description>A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud&#39;s new train builds on it, with a Resilience4J bump.</description>
+    </item>
+    <item>
       <title>Multi-agent systems need boundaries, tests and traces</title>
       <link>https://maksym.site/radar/2026-10-08/</link>
       <guid>https://maksym.site/radar/2026-10-08/</guid>
