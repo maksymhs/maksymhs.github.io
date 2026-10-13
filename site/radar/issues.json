@@ -1,5 +1,19 @@
 [
   {
+    "slug": "2026-10-13",
+    "kind": "daily",
+    "year": 2026,
+    "week": 42,
+    "title": "Spring AI 2.1 milestone: tool calls and reasoning become typed message parts",
+    "intro": "Agent code lives or dies on how it replays model output between turns. Spring AI 2.1.0-M1 changes the message model for that, and fixes a silent timeout bug.",
+    "date": "2026-10-13T06:00:00.000Z",
+    "count": 2,
+    "links": [
+      "https://spring.io/blog/2026/09/25/spring-ai-2-1-0-M1-available-now",
+      "https://www.datadoghq.com/blog/engineering/postgresql-ha-kubernetes/"
+    ]
+  },
+  {
     "slug": "2026-10-09",
     "kind": "daily",
     "year": 2026,
