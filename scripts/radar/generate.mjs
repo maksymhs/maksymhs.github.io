@@ -152,7 +152,7 @@ function page({ title, description, path, body, jsonld }) {
   <a class="skip" href="#content">Skip to content</a>
   <div class="wrap">
     <header class="top">
-      <a class="brand" href="/">Maksym</a>
+      <a class="brand" href="/"><img class="brand-icon" src="/avatar.svg" width="28" height="28" alt="">Maksym</a>
       <nav class="nav" aria-label="Site">
         <a href="/citadel/">Citadel</a>
         <a href="/about/">About</a>
