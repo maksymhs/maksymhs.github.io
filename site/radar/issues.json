@@ -15,22 +15,6 @@
     ]
   },
   {
-    "slug": "2026-10-20",
-    "kind": "daily",
-    "year": 2026,
-    "week": 43,
-    "title": "Anthropic's AI safety bill proposes halting models that could kill 50+ people",
-    "intro": "Anthropic's proposed AI safety bill aims to block model releases that pose significant risks, while Microsoft Research highlights tech for positive impact.",
-    "date": "2026-10-20T06:00:00.000Z",
-    "count": 4,
-    "links": [
-      "https://techcrunch.com/2026/10/20/anthropic-pitches-ai-safety-bill-that-may-block-a-model-if-50-people-could-be-killed/",
-      "https://fulcrumsec.vg/pingcap/",
-      "https://www.microsoft.com/en-us/research/podcast/called-to-serve-tech-research-and-positive-impact-with-chris-white/",
-      "https://www.infoq.com/presentations/scale-llm-agents-production-ray/"
-    ]
-  },
-  {
     "slug": "2026-10-19",
     "kind": "daily",
     "year": 2026,
