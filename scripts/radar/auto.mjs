@@ -51,7 +51,13 @@ function json(text) {
   const start = t.indexOf('{');
   const end = t.lastIndexOf('}');
   if (start < 0 || end < start) throw new Error('the answer has no JSON object');
-  return JSON.parse(t.slice(start, end + 1));
+  const body = t.slice(start, end + 1);
+  try {
+    return JSON.parse(body);
+  } catch {
+    // Models sometimes add // comments or trailing commas.
+    return JSON.parse(body.replace(/(^|[\s,\[{])\/\/[^\n]*/g, '$1').replace(/,(\s*[\]}])/g, '$1'));
+  }
 }
 
 const words = (s) => s.trim().split(/\s+/).filter(Boolean).length;
@@ -100,7 +106,14 @@ async function main() {
   if (list.length < 5) throw new Error(`only ${list.length} fresh candidates, not publishing`);
   const line = (c, i) => `${i}. [${c.source}] ${c.date} ${c.title}${c.snippet ? ` | ${c.snippet.slice(0, 170)}` : ''}`;
 
-  const pick = json(await llm([{ role: 'system', content: SELECT }, { role: 'user', content: list.map(line).join('\n') }], 400));
+  let pick;
+  for (let attempt = 0; attempt < 3 && !pick; attempt++) {
+    try {
+      pick = json(await llm([{ role: 'system', content: `${SELECT}\nValid JSON only: no comments, no text around it.` }, { role: 'user', content: list.map(line).join('\n') }], 400));
+    } catch (e) {
+      if (attempt === 2) throw new Error(`the selection answer was not usable: ${e.message}`);
+    }
+  }
   const ids = (a) => (Array.isArray(a) ? a.map(Number).filter((n) => Number.isInteger(n) && list[n]) : []);
   const ranked = [...new Set(ids(pick.ranked))].filter((n) => list[n].source !== 'Habr');
   const hids = [...new Set(ids(pick.habr))].filter((n) => list[n].source === 'Habr');
