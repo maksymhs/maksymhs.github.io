@@ -212,7 +212,8 @@ async function radarApi(req, env, url) {
   const maxTokens = Math.min(Math.max(Number(body.max_tokens) || 1500, 100), 3000);
   const temperature = Math.min(Math.max(Number(body.temperature ?? 0.3), 0), 1);
 
-  const out = (await completeWorkersAi(env, messages, maxTokens, temperature)) || (await completeOpenRouter(env, messages, maxTokens, temperature));
+  // OpenRouter first: the radar must not use up the Workers AI free quota that the chat depends on.
+  const out = (await completeOpenRouter(env, messages, maxTokens, temperature)) || (await completeWorkersAi(env, messages, maxTokens, temperature));
   if (!out) return json({ error: 'upstream_error' }, 502, {});
   return json(out, 200, {});
 }
@@ -240,19 +241,27 @@ async function completeWorkersAi(env, messages, max_tokens, temperature) {
   }
 }
 
+// Free OpenRouter models are rate-limited or withdrawn without notice, so try a chain: LLM_MODEL first, then LLM_MODELS (comma separated).
+function llmModels(env) {
+  return [env.LLM_MODEL, ...(env.LLM_MODELS || '').split(',')].map((m) => (m || '').trim()).filter(Boolean);
+}
+
 async function completeOpenRouter(env, messages, max_tokens, temperature) {
   if (!env.LLM_API_KEY) return null;
-  const res = await fetch(env.LLM_URL, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${env.LLM_API_KEY}`, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://maksym.site', 'X-Title': 'maksym.site' },
-    body: JSON.stringify({ model: env.LLM_MODEL, temperature, max_tokens, messages }),
-  });
-  if (!res.ok) {
-    console.log(JSON.stringify({ upstream_status: res.status, upstream_body: (await res.text()).slice(0, 500) }));
-    return null;
+  for (const model of llmModels(env)) {
+    const res = await fetch(env.LLM_URL, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${env.LLM_API_KEY}`, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://maksym.site', 'X-Title': 'maksym.site' },
+      body: JSON.stringify({ model, temperature, max_tokens, messages }),
+    });
+    if (!res.ok) {
+      console.log(JSON.stringify({ model, upstream_status: res.status, upstream_body: (await res.text()).slice(0, 500) }));
+      continue;
+    }
+    const text = (await res.json())?.choices?.[0]?.message?.content;
+    if (typeof text === 'string' && text.trim()) return { text, model };
   }
-  const text = (await res.json())?.choices?.[0]?.message?.content;
-  return typeof text === 'string' && text.trim() ? { text, model: env.LLM_MODEL } : null;
+  return null;
 }
 
 async function workersAi(env, messages) {
@@ -273,18 +282,20 @@ async function workersAi(env, messages) {
 
 async function openRouter(env, messages) {
   if (!env.LLM_API_KEY) return null;
-  const res = await fetch(env.LLM_URL, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${env.LLM_API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://maksym.site',
-      'X-Title': 'maksym.site',
-    },
-    body: JSON.stringify({ model: env.LLM_MODEL, stream: true, temperature: 0.3, max_tokens: 1500, messages }),
-  });
-  if (res.ok && res.body) return res.body;
-  console.log(JSON.stringify({ upstream_status: res.status, upstream_body: (await res.text()).slice(0, 500) }));
+  for (const model of llmModels(env)) {
+    const res = await fetch(env.LLM_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${env.LLM_API_KEY}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://maksym.site',
+        'X-Title': 'maksym.site',
+      },
+      body: JSON.stringify({ model, stream: true, temperature: 0.3, max_tokens: 1500, messages }),
+    });
+    if (res.ok && res.body) return res.body;
+    console.log(JSON.stringify({ model, upstream_status: res.status, upstream_body: (await res.text()).slice(0, 500) }));
+  }
   return null;
 }
 
