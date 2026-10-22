@@ -15,6 +15,22 @@
     ]
   },
   {
+    "slug": "2026-10-20",
+    "kind": "daily",
+    "year": 2026,
+    "week": 43,
+    "title": "Java's GPU computing, eMudhra certificates compromised, GitHub Actions reliability",
+    "intro": "Today, Java introduces GPU computing, Cloudflare reports compromised certificates, and GitHub Actions improves reliability",
+    "date": "2026-10-20T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://inside.java/2026/10/20/devoxxbelgium-bringing-gpu-computing-to-java/",
+      "https://blog.cloudflare.com/emudhra-certificate-compromise/",
+      "https://www.infoq.com/news/2026/10/github-runner-controller-0-15/",
+      "https://habr.com/ru/articles/1096954/"
+    ]
+  },
+  {
     "slug": "2026-10-19",
     "kind": "daily",
     "year": 2026,
