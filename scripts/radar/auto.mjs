@@ -129,7 +129,7 @@ async function main() {
 
   const style = await read('scripts/radar/STYLE.md');
   const profile = await read('site/llms-full.txt');
-  const system = `You write today's post for the tech radar of Maksym's personal site, in first person as Maksym. Follow this style guide for voice and honesty (ignore its publishing steps and file format):\n\n${style}\n\nPROFILE (the only source of facts about Maksym):\n${profile}\n\nRules for this job: use only facts that are in the ARTICLE text given for each item; if the article does not say something, do not say it. Do not copy sentences. Quote numbers exactly as the article states them and attribute them ("according to InfoQ"). Mention Maksym's experience only if it genuinely applies and only with facts from the PROFILE. The main_take is NOT a summary: use at most four sentences to say what happened (names and numbers from the article), then at least two sentences in first person ("I", "I would", "I would check") on why it matters in practice for backend teams and what you would verify before adopting it. For Russian articles write in English, mention naturally that the article is in Russian and what it contains. No emojis, no hype, no markdown, no bullet lists.\nReturn only JSON: {"title": "10-90 chars, specific headline, no date", "intro": "30-400 chars", "main_take": "100-170 words", "more_takes": [${more.map(() => '"1-3 sentences (60-500 characters)"').join(', ')}]}`;
+  const system = `You write today's post for the tech radar of Maksym's personal site, in first person as Maksym. Follow this style guide for voice and honesty (ignore its publishing steps and file format):\n\n${style}\n\nPROFILE (the only source of facts about Maksym):\n${profile}\n\nRules for this job: use only facts that are in the ARTICLE text given for each item; if the article does not say something, do not say it. Do not copy sentences. Quote numbers exactly as the article states them and attribute them ("according to InfoQ"). Mention Maksym's experience only if it genuinely applies and only with facts from the PROFILE. The main_take is NOT a summary: use at most four sentences to say what happened (names and numbers from the article), then at least two sentences in first person ("I", "I would", "I would check") on why it matters in practice for backend teams and what you would verify before adopting it. For Russian articles write in English, mention naturally that the article is in Russian and what it contains. Speak only as Maksym, never as a company: do not use "we", "our" or "us". Name an employer (Openbank, Simyo, Santander, Telefónica) at most once, only in main_take, and only when the article is about the same technology as a fact in the PROFILE (for example AWS SQS and event-driven messaging, hexagonal architecture, Grafana and Kibana observability, circuit breakers, MCP servers); otherwise mention no employer at all, and never in more_takes. Do not end every take with the same formula such as "I would check": vary the closing, and for the more_takes a plain remark on why the item is worth a look is enough. No emojis, no hype, no markdown, no bullet lists.\nReturn only JSON: {"title": "10-90 chars, specific headline, no date", "intro": "30-400 chars", "main_take": "100-170 words", "more_takes": [${more.map(() => '"1-3 sentences (60-500 characters)"').join(', ')}]}`;
   const block = (c, label) => `### ${label}\nSource: ${c.source}\nTitle: ${c.title}\nDate: ${c.date}\nARTICLE TEXT:\n${c.text}`;
   const user = [block(main, 'MAIN'), ...more.map((c, i) => block(c, `MORE ${i + 1}`))].join('\n\n');
 
@@ -141,6 +141,15 @@ async function main() {
     if (typeof d.intro !== 'string' || d.intro.length < 30 || d.intro.length > 400) bad.push('intro must be 30-400 characters');
     const takes = [d.main_take, ...(Array.isArray(d.more_takes) ? d.more_takes : [])];
     if (typeof d.main_take !== 'string' || words(d.main_take) < 100 || words(d.main_take) > 170) bad.push(`main_take must be 100-170 words (got ${typeof d.main_take === 'string' ? words(d.main_take) : 0})`);
+    const employer = /\b(Openbank|Simyo|Paradigma|Santander|Telef[oó]nica|everis|Experis)\b/gi;
+    if ((String(d.main_take).match(employer) || []).length > 1) bad.push('name an employer at most once in main_take, and only if it directly matches the article');
+    (d.more_takes || []).forEach((t, i) => {
+      if (employer.test(String(t))) bad.push(`more_takes[${i}] must not mention an employer`);
+      employer.lastIndex = 0;
+    });
+    [d.main_take, ...(d.more_takes || [])].forEach((t) => {
+      if (/\b(we|our|ours|us)\b/i.test(String(t))) bad.push('do not speak as a company: remove "we", "our" and "us"; speak only as I');
+    });
     if (typeof d.main_take === 'string' && !/\b(I|I'd|I'll|I've|my|me)\b/.test(d.main_take)) bad.push('main_take must be in first person: add what you would check and why it matters to you');
     more.forEach((_, i) => {
       const t = d.more_takes?.[i];
