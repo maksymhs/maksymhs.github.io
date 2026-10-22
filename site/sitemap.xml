@@ -31,6 +31,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://maksym.site/radar/2026-10-20/</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://maksym.site/radar/2026-10-19/</loc>
     <lastmod>2026-10-19</lastmod>
     <changefreq>yearly</changefreq>
