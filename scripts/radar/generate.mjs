@@ -201,7 +201,7 @@ function issuePage(issue, items) {
         <ol class="radar-items">
 ${list}
         </ol>
-        <p class="post-end"><a href="/radar/">← All issues</a> · <a href="/about/#ask">Ask my CV</a></p>
+        <p class="post-end"><a href="/radar/">← All issues</a> · <a href="/about/#ask">Ask me</a></p>
       </article>`,
   });
 }

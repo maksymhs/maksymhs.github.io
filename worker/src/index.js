@@ -64,7 +64,7 @@ const PROMPTS = [
   },
   {
     name: 'ask_my_cv',
-    title: 'Ask my CV',
+    title: 'Ask me',
     description: "Ask any question about Maksym's experience, skills or availability.",
     arguments: [{ name: 'question', description: 'Your question about Maksym', required: true }],
     build: (a) => `Answer this question about Maksym using only the profile below. Be concise and concrete; if the profile does not cover it, say so and suggest contacting him.\n\nQuestion: ${a.question}`,

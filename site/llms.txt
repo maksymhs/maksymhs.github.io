@@ -36,5 +36,5 @@ AI assistants can query his profile directly through a public MCP server (no aut
 
 ## Optional
 
-- [Ask my CV](https://maksym.site/about/#ask): on-site AI assistant grounded on his profile
+- [Ask me](https://maksym.site/about/#ask): on-site AI assistant grounded on his profile
 - [Source of this site](https://github.com/maksymhs/maksymhs.github.io): static site, Cloudflare Worker (chat, contact form, MCP server) and daily radar automation

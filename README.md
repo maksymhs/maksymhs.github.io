@@ -18,7 +18,7 @@ site/
 ├── favicon.svg, apple-touch-icon.png, robots.txt, sitemap.xml
 └── assets/
     ├── site.css        # Layout, light/dark theme (system default + toggle), print stylesheet (CV)
-    └── site.js         # Theme toggle, "Ask my CV" chat, lead capture, contact form
+    └── site.js         # Theme toggle, "Ask me" chat, lead capture, contact form
 worker/                 # Cloudflare Worker for api.maksym.site (/chat, /lead, /mcp)
 scripts/radar/          # Radar generator (Node, no dependencies) + feeds.json
 ```

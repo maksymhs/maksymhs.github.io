@@ -5,7 +5,7 @@ Personal site of Maksym (https://maksym.site), a Senior Backend Engineer. Static
 ## Layout
 
 - `site/`: the published site (HTML, CSS, JS, `llms.txt`, `llms-full.txt`, `persona.txt`, `cv.pdf`, `radar/`). Pages: `index.html` (minimal hub), `about/` (CV, chat, contact), `citadel/` (landing of the Citadel project, with its screenshots) and `radar/`. Pushing to `main` deploys it (`.github/workflows/deploy.yml`).
-- `worker/`: Cloudflare Worker `api` at `api.maksym.site`: `/chat` (Ask my CV), `/lead` (contact form to Telegram) and `/mcp` (public MCP server). Deploy with `cd worker && npx wrangler deploy`.
+- `worker/`: Cloudflare Worker `api` at `api.maksym.site`: `/chat` (Ask me), `/lead` (contact form to Telegram) and `/mcp` (public MCP server). Deploy with `cd worker && npx wrangler deploy`.
 - `scripts/radar/`: daily radar generator. `STYLE.md` is the writing guide used by the scheduled routine.
 - `cv/cv.tex`: LaTeX source of the public CV. Compile with pdflatex or xelatex, then replace `site/cv.pdf`.
 - `.github/workflows/`: `deploy.yml` (Pages, adds asset hashes), `radar-automerge.yml` (merges `radar/*` PRs that only touch radar files, then triggers the deploy).

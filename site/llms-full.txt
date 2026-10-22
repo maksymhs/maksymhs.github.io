@@ -116,5 +116,5 @@ Where each technology appears in his roles (dates from the Experience section). 
 
 - Citadel (https://maksym.site/citadel/, source https://github.com/maksymhs/Citadel): open-source (MIT), self-hosted command center for projects, persistent tmux terminals and AI coding agents (Claude Code, Codex CLI, OpenCode and others). Includes an AES-256-GCM credential vault, machines paired by QR code, health alerts and a task mesh with an MCP server. Node.js, Fastify, SQLite; runs on 512 MB of RAM.
 - This site, open source (https://github.com/maksymhs/maksymhs.github.io): static site on GitHub Pages, a Cloudflare Worker (chat, contact form, MCP server) and the daily radar automation.
-- Ask my CV (https://maksym.site/about/#ask): the assistant on his site, an LLM grounded on this profile, served from a Cloudflare Worker with streaming.
+- Ask me (https://maksym.site/about/#ask): the assistant on his site, an LLM grounded on this profile, served from a Cloudflare Worker with streaming.
 - Public MCP server (https://api.maksym.site/mcp): this profile exposed over the Model Context Protocol so any AI assistant can read it or send him a message.
