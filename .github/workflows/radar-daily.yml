@@ -28,9 +28,11 @@ jobs:
     timeout-minutes: 15
     env:
       RADAR_TOKEN: ${{ secrets.RADAR_TOKEN }}
-      RADAR_SUMMARY: ${{ runner.temp }}/radar-summary.txt
     steps:
       - uses: actions/checkout@v4
+
+      - name: Summary file
+        run: echo "RADAR_SUMMARY=$RUNNER_TEMP/radar-summary.txt" >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v4
         with:
