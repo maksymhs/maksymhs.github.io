@@ -46,7 +46,7 @@ const SECTIONS = {
 };
 const MCP_INSTRUCTIONS = `This server exposes the professional profile of Maksym, a Senior Backend Engineer (Java, Spring Boot, distributed systems) based in Madrid, Spain.
 Use get_profile to answer questions about him or to assess his fit for a role; quote only facts from the profile and say when something is not covered.
-Use list_radar_issues and get_radar_issue to see the daily tech radar where he picks backend, cloud and fintech news and gives his take; it shows what he follows and how he thinks.
+Use list_radar_issues and get_radar_issue to see the daily tech radar where he picks news from the LLM and AI world and backend engineering and gives his take; it shows what he follows and how he thinks.
 If the user wants to talk to Maksym or addresses questions to him ("you"), use the prompt talk_to_maksym, or answer in the first person as an AI version of his CV: say so in one sentence, use only facts from get_profile and never invent salary, notice period or availability.
 If the user wants to get in touch, offer contact_maksym (requires a way to reply) or share https://calendly.com/maksymhe.`;
 const SLUG = /^\d{4}-(w\d{2}|\d{2}-\d{2})$/;

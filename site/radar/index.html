@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Radar · Backend, cloud and fintech picks · Maksym</title>
-  <meta name="description" content="A daily selection of backend, cloud and fintech engineering news, with a take on why it matters for teams building regulated, high-traffic systems.">
+  <title>Radar · AI, LLM and backend engineering news · Maksym</title>
+  <meta name="description" content="Daily news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams.">
   <link rel="canonical" href="https://maksym.site/radar/">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="next" href="https://maksym.site/radar/page/2/">
   <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#131312" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://maksym.site/radar/">
-  <meta property="og:title" content="Radar · Backend, cloud and fintech picks · Maksym">
-  <meta property="og:description" content="A daily selection of backend, cloud and fintech engineering news, with a take on why it matters for teams building regulated, high-traffic systems.">
+  <meta property="og:title" content="Radar · AI, LLM and backend engineering news · Maksym">
+  <meta property="og:description" content="Daily news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams.">
   <meta property="og:image" content="https://maksym.site/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Blog","name":"Radar","url":"https://maksym.site/radar/","author":{"@type":"Person","name":"Maksym","url":"https://maksym.site"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Blog","name":"Radar","url":"https://maksym.site/radar/","inLanguage":"en","description":"Daily news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams.","author":{"@type":"Person","name":"Maksym","url":"https://maksym.site"},"blogPost":[{"@type":"BlogPosting","headline":"JEP 543 makes structured concurrency final in JDK 28","url":"https://maksym.site/radar/2026-10-22/","datePublished":"2026-10-22T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Claude designs protein binders against scorpion neurotoxins","url":"https://maksym.site/radar/2026-10-20/","datePublished":"2026-10-20T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Disney's $12.5M deal for Character.AI tech avoids lawsuits","url":"https://maksym.site/radar/2026-10-19/","datePublished":"2026-10-19T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Spring AI 2.1 milestone: tool calls and reasoning become typed message parts","url":"https://maksym.site/radar/2026-10-13/","datePublished":"2026-10-13T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles","url":"https://maksym.site/radar/2026-10-09/","datePublished":"2026-10-09T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Multi-agent systems need boundaries, tests and traces","url":"https://maksym.site/radar/2026-10-08/","datePublished":"2026-10-08T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Grab halves p99 latency by redesigning its counter storage","url":"https://maksym.site/radar/2026-10-07/","datePublished":"2026-10-07T06:00:00.000Z"},{"@type":"BlogPosting","headline":"OpenTelemetry's Kubernetes processor hits 1.0, with renames to plan for","url":"https://maksym.site/radar/2026-10-06/","datePublished":"2026-10-06T06:00:00.000Z"},{"@type":"BlogPosting","headline":"AWS treats digital sovereignty as an architecture question","url":"https://maksym.site/radar/2026-10-05/","datePublished":"2026-10-05T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Cloudflare Traces puts the whole request path in one trace","url":"https://maksym.site/radar/2026-10-02/","datePublished":"2026-10-02T06:00:00.000Z"}]}</script>
   <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="stylesheet" href="/assets/site.css">
   <script src="/assets/site.js" defer></script>
@@ -41,7 +43,7 @@
       <article class="post">
         <p class="kicker">Radar</p>
         <h1>What I'm reading<span class="dot-accent" aria-hidden="true">.</span></h1>
-        <p class="post-intro">A daily selection of backend, cloud and fintech engineering news, with a take on why it matters for teams building regulated, high-traffic systems. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a>.</p>
+        <p class="post-intro">A daily selection of news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a> or read it from your assistant through the <a href="/about/#mcp">MCP server</a>.</p>
         <ol class="radar-items issues">
           <li>
             <p class="radar-src">22 Oct 2026</p>
@@ -93,12 +95,12 @@
             <h2><a href="/radar/2026-10-02/">Cloudflare Traces puts the whole request path in one trace</a></h2>
             <p>Tracing that starts at the edge and continues into your origin over W3C and OpenTelemetry standards closes a common blind spot.</p>
           </li>
-          <li>
-            <p class="radar-src">30 Sept 2026</p>
-            <h2><a href="/radar/2026-09-30/">Prove your multi-AZ design with a 72-hour zone drill</a></h2>
-            <p>Short failover tests miss time-dependent failures. AWS shows how to run a multi-day Availability Zone evacuation with ARC Zonal Shift.</p>
-          </li>
         </ol>
+        <nav class="pager" aria-label="Pages">
+          <span></span>
+          <span class="muted">Page 1 of 2</span>
+          <a href="/radar/page/2/" rel="next">Older →</a>
+        </nav>
       </article>
       <footer class="foot">
         <p>© 2026 Maksym · <a href="/radar/feed.xml">RSS</a> · Links point to the original sources. Commentary is drafted with AI assistance and published automatically.</p>

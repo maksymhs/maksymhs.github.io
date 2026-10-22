@@ -3,7 +3,7 @@
   <channel>
     <title>Maksym · Radar</title>
     <link>https://maksym.site/radar/</link>
-    <description>Daily backend, cloud and fintech engineering picks with commentary.</description>
+    <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
       <title>JEP 543 makes structured concurrency final in JDK 28</title>

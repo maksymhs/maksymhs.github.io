@@ -24,7 +24,7 @@ AI assistants can query his profile directly through a public MCP server (no aut
 
 ## Radar
 
-- [All issues](https://maksym.site/radar/): daily backend, cloud and fintech picks with commentary
+- [All issues](https://maksym.site/radar/): daily news from the LLM and AI world and backend engineering, with a short take on each (RSS and MCP available)
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
 - [JEP 543 makes structured concurrency final in JDK 28](https://maksym.site/radar/2026-10-22/): After seven preview rounds, structured concurrency is final in JDK 28, with no API changes from the last preview. Fan-out code in Java backends gets a lifetime you can read in the code.

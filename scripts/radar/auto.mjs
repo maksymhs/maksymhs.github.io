@@ -46,6 +46,20 @@ async function llm(messages, max_tokens = 1600) {
   throw new Error(`LLM unavailable: ${last}`);
 }
 
+const tryLlm = async (...a) => {
+  try {
+    return await llm(...a);
+  } catch (e) {
+    console.warn(`! ${e.message}`);
+    return null;
+  }
+};
+
+// Without the model the post is still published: the order comes from the source priority and the text from the article facts.
+const PRIORITY = ['Anthropic', 'OpenAI', 'Google', 'Microsoft', 'Meta', 'Hugging Face', 'MIT Technology Review', 'Ars Technica', 'The Verge', 'TechCrunch', 'InfoQ'];
+const rank = (c) => { const i = PRIORITY.findIndex((p) => c.source.startsWith(p)); return i < 0 ? 99 : i; };
+const bullets = (s) => s.split('\n').map((l) => l.replace(/^[-*\u2022]\s*/, '').trim()).filter(Boolean).join(' ');
+
 function json(text) {
   const t = String(text).replace(/^```(?:json)?\s*|\s*```$/gim, '');
   const start = t.indexOf('{');
@@ -124,12 +138,12 @@ async function main() {
     try {
       pick = json(await llm([{ role: 'system', content: `${SELECT}\nValid JSON only: no comments, no text around it.` }, { role: 'user', content: list.map(line).join('\n') }], 400));
     } catch (e) {
-      if (attempt === 2) throw new Error(`the selection answer was not usable: ${e.message}`);
+      if (attempt === 2) console.warn(`! the selection answer was not usable: ${e.message}`);
     }
   }
   const ids = (a) => (Array.isArray(a) ? a.map(Number).filter((n) => Number.isInteger(n) && list[n]) : []);
-  const ranked = [...new Set(ids(pick.ranked))];
-  if (!ranked.length) throw new Error('the model did not pick any article');
+  let ranked = [...new Set(ids(pick?.ranked))];
+  if (!ranked.length) ranked = list.map((_, i) => i).sort((a, b) => rank(list[a]) - rank(list[b]) || list[b].date.localeCompare(list[a].date)).slice(0, 8);
 
   const withText = async (idList, limit) => (await Promise.all(idList.map(async (n) => ({ ...list[n], text: await article(list[n], limit) })))).filter((c) => c.text);
   const main = (await withText(ranked.slice(0, 5), 9000))[0];
@@ -138,7 +152,7 @@ async function main() {
   let more = others.slice(0, 3);
 
   await Promise.all([main, ...more].map(async (c) => {
-    c.facts = (await llm([{ role: 'system', content: FACTS }, { role: 'user', content: `Title: ${c.title}\n\n${c.text.slice(0, 7000)}` }], 700)).trim();
+    c.facts = ((await tryLlm([{ role: 'system', content: FACTS }, { role: 'user', content: `Title: ${c.title}\n\n${c.text.slice(0, 7000)}` }], 700)) || c.snippet || c.title).trim();
   }));
 
   const style = await read('scripts/radar/STYLE.md');
@@ -190,7 +204,12 @@ async function main() {
   let problems = [];
   const messages = [{ role: 'system', content: system }, { role: 'user', content: user }];
   for (let attempt = 0; attempt < 3; attempt++) {
-    const raw = await llm(messages, 1800);
+    const raw = await tryLlm(messages, 1800);
+    if (!raw) {
+      draft = null;
+      problems = ['the model is unavailable'];
+      break;
+    }
     try {
       draft = json(raw);
       problems = check(draft);
@@ -209,7 +228,19 @@ async function main() {
     sources = [main, ...more];
     problems = check(draft);
   }
-  if (problems.length) throw new Error(`the draft did not pass validation: ${problems.join('; ')}`);
+  if (problems.length) {
+    console.warn(`! falling back to an extract post: ${problems.join('; ')}`);
+    const take = (c, max) => {
+      const t = `According to ${c.source}: ${bullets(c.facts)}`.slice(0, max);
+      return t.length >= 60 ? t : `${c.title}. ${t}`.slice(0, max);
+    };
+    draft = {
+      title: main.title.length > 90 ? `${main.title.slice(0, 87)}...` : main.title.length < 10 ? `Radar: ${main.title}` : main.title,
+      intro: `Today's picks start with ${main.source}: ${main.title}`.slice(0, 400),
+      main_take: take(main, 1100),
+      more_takes: more.map((c) => take(c, 480)),
+    };
+  }
 
   const item = (c, take) => ({ title: c.title, source: c.source, date: c.date, link: c.link, take: take.trim() });
   const post = {

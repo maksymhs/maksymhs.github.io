@@ -124,7 +124,9 @@ const TOGGLE = `<button class="theme" id="themeToggle" type="button" aria-label=
         <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
       </button>`;
 
-function page({ title, description, path, body, jsonld }) {
+const PAGE_SIZE = 10;
+
+function page({ title, description, path, body, jsonld, head = '' }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -133,7 +135,8 @@ function page({ title, description, path, body, jsonld }) {
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
   <link rel="canonical" href="${ORIGIN}${path}">
-  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+${head}  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#131312" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
@@ -173,7 +176,7 @@ ${body}
 `;
 }
 
-function issuePage(issue, items) {
+function issuePage(issue, items, prev) {
   const path = `/radar/${issue.slug}/`;
   const list = items.map((i) => `          <li>
             <h2><a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a></h2>
@@ -190,9 +193,18 @@ function issuePage(issue, items) {
       headline: issue.title,
       description: issue.intro,
       datePublished: issue.date,
+      dateModified: issue.date,
+      inLanguage: 'en',
+      articleSection: 'AI and backend engineering',
       url: `${ORIGIN}${path}`,
+      mainEntityOfPage: `${ORIGIN}${path}`,
+      image: `${ORIGIN}/og.png`,
+      isPartOf: { '@type': 'Blog', name: 'Radar', url: `${ORIGIN}/radar/` },
       author: { '@type': 'Person', name: 'Maksym', url: ORIGIN },
+      publisher: { '@type': 'Person', name: 'Maksym', url: ORIGIN },
+      citation: items.map((i) => ({ '@type': 'CreativeWork', name: i.title, url: i.link, datePublished: i.date.toISOString().slice(0, 10), publisher: { '@type': 'Organization', name: i.source } })),
     },
+    head: prev ? `  <link rel="prev" href="${ORIGIN}/radar/${prev.slug}/">\n` : '',
     body: `      <article class="post">
         <p class="kicker"><a href="/radar/">Radar</a> · ${issue.kind === 'daily' ? fmtDate(issue.date) : `Week ${issue.week}, ${issue.year}`}</p>
         <h1>${esc(issue.title)}</h1>
@@ -201,12 +213,15 @@ function issuePage(issue, items) {
         <ol class="radar-items">
 ${list}
         </ol>
-        <p class="post-end"><a href="/radar/">← All issues</a> · <a href="/about/#ask">Ask me</a></p>
+        <p class="post-end"><a href="/radar/">← All issues</a>${prev ? ` · <a href="/radar/${prev.slug}/" rel="prev">Previous: ${esc(prev.title)}</a>` : ''} · <a href="/about/#ask">Ask me</a></p>
       </article>`,
   });
 }
 
-function indexPage(issues) {
+function indexPage(all, pageNo = 1) {
+  const pages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+  const issues = all.slice((pageNo - 1) * PAGE_SIZE, pageNo * PAGE_SIZE);
+  const at = (n) => (n === 1 ? '/radar/' : `/radar/page/${n}/`);
   const list = issues.length
     ? issues.map((i) => `          <li>
             <p class="radar-src">${i.kind === 'daily' ? fmtDate(i.date) : `Week ${i.week}, ${i.year} · ${fmtDate(i.date)}`}</p>
@@ -214,18 +229,26 @@ function indexPage(issues) {
             <p>${esc(i.intro)}</p>
           </li>`).join('\n')
     : '          <li><p class="muted">The first issue is on its way.</p></li>';
+  const pager = pages > 1 ? `
+        <nav class="pager" aria-label="Pages">
+          ${pageNo > 1 ? `<a href="${at(pageNo - 1)}" rel="prev">← Newer</a>` : '<span></span>'}
+          <span class="muted">Page ${pageNo} of ${pages}</span>
+          ${pageNo < pages ? `<a href="${at(pageNo + 1)}" rel="next">Older →</a>` : '<span></span>'}
+        </nav>` : '';
+  const description = 'Daily news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams.';
   return page({
-    title: 'Radar · Backend, cloud and fintech picks · Maksym',
-    description: 'A daily selection of backend, cloud and fintech engineering news, with a take on why it matters for teams building regulated, high-traffic systems.',
-    path: '/radar/',
-    jsonld: { '@context': 'https://schema.org', '@type': 'Blog', name: 'Radar', url: `${ORIGIN}/radar/`, author: { '@type': 'Person', name: 'Maksym', url: ORIGIN } },
+    title: pageNo > 1 ? `Radar, page ${pageNo} · AI, LLM and backend news · Maksym` : 'Radar · AI, LLM and backend engineering news · Maksym',
+    description,
+    path: at(pageNo),
+    head: `${pageNo > 1 ? `  <link rel="prev" href="${ORIGIN}${at(pageNo - 1)}">\n` : ''}${pageNo < pages ? `  <link rel="next" href="${ORIGIN}${at(pageNo + 1)}">\n` : ''}`,
+    jsonld: { '@context': 'https://schema.org', '@type': 'Blog', name: 'Radar', url: `${ORIGIN}${at(pageNo)}`, inLanguage: 'en', description, author: { '@type': 'Person', name: 'Maksym', url: ORIGIN }, blogPost: issues.slice(0, 10).map((i) => ({ '@type': 'BlogPosting', headline: i.title, url: `${ORIGIN}/radar/${i.slug}/`, datePublished: i.date })) },
     body: `      <article class="post">
         <p class="kicker">Radar</p>
         <h1>What I'm reading<span class="dot-accent" aria-hidden="true">.</span></h1>
-        <p class="post-intro">A daily selection of backend, cloud and fintech engineering news, with a take on why it matters for teams building regulated, high-traffic systems. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a>.</p>
+        <p class="post-intro">A daily selection of news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a> or read it from your assistant through the <a href="/about/#mcp">MCP server</a>.</p>
         <ol class="radar-items issues">
 ${list}
-        </ol>
+        </ol>${pager}
       </article>`,
   });
 }
@@ -243,7 +266,7 @@ function feedXml(issues) {
   <channel>
     <title>Maksym · Radar</title>
     <link>${ORIGIN}/radar/</link>
-    <description>Daily backend, cloud and fintech engineering picks with commentary.</description>
+    <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
 ${items}
   </channel>
@@ -260,7 +283,7 @@ async function sitemapXml(issues) {
   const latest = issues[0]?.date.slice(0, 10) || home;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, stamp('/citadel/'), 'monthly', '0.9'), url(`${ORIGIN}/about/`, stamp('/about/'), 'monthly', '0.9'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
+${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, stamp('/citadel/'), 'monthly', '0.9'), url(`${ORIGIN}/about/`, stamp('/about/'), 'monthly', '0.9'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...Array.from({ length: Math.max(0, Math.ceil(issues.length / PAGE_SIZE) - 1) }, (_, k) => url(`${ORIGIN}/radar/page/${k + 2}/`, latest, 'daily', '0.4')), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
 </urlset>
 `;
 }
@@ -290,7 +313,11 @@ async function updateHome(issues) {
 async function renderShared(issues) {
   await mkdir(RADAR, { recursive: true });
   await writeFile(ISSUES, `${JSON.stringify(issues, null, 2)}\n`);
-  await writeFile(new URL('index.html', RADAR), indexPage(issues));
+  await writeFile(new URL('index.html', RADAR), indexPage(issues, 1));
+  for (let n = 2; n <= Math.ceil(issues.length / PAGE_SIZE); n++) {
+    await mkdir(new URL(`page/${n}/`, RADAR), { recursive: true });
+    await writeFile(new URL(`page/${n}/index.html`, RADAR), indexPage(issues, n));
+  }
   await writeFile(new URL('feed.xml', RADAR), feedXml(issues));
   await writeFile(new URL('sitemap.xml', SITE), await sitemapXml(issues));
   await updateLlms(issues);
@@ -353,7 +380,8 @@ async function publish(file, issues) {
   const { year, week } = isoWeek(new Date(slug));
   const issue = { slug, kind: 'daily', year, week, title, intro, date: `${slug}T06:00:00.000Z`, count: items.length, links: items.map((i) => i.link) };
   await mkdir(dir, { recursive: true });
-  await writeFile(new URL('index.html', dir), issuePage(issue, items));
+  const prev = issues.filter((i) => i.date < issue.date && i.slug !== slug).sort((a, b) => b.date.localeCompare(a.date))[0];
+  await writeFile(new URL('index.html', dir), issuePage(issue, items, prev));
   const all = [issue, ...issues.filter((i) => i.slug !== slug)].sort((a, b) => b.date.localeCompare(a.date));
   await renderShared(all);
   console.log(`Published ${slug}: "${title}" with ${items.length} picks.`);
