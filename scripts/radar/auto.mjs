@@ -115,7 +115,7 @@ From the numbered candidates return the ids ranked by substance and relevance, b
 Return only JSON: {"ranked":[up to 8 ids, best first]}`;
 
 function candidates(days) {
-  const r = spawnSync('node', ['scripts/radar/generate.mjs', '--dry-run', '--json'], { cwd: new URL(ROOT).pathname, env: { ...process.env, DAYS: String(days) }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const r = spawnSync('node', ['scripts/radar/generate.mjs', '--dry-run', '--json'], { cwd: new URL(ROOT).pathname, env: { ...process.env, DAYS: String(days), MAX_CANDIDATES: '3000' }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   if (r.status !== 0) throw new Error(`feed collection failed: ${r.stderr.slice(0, 300)}`);
   return JSON.parse(r.stdout);
 }

@@ -467,7 +467,7 @@ async function main() {
   const candidates = (await Promise.all(feeds.map(fetchFeed))).flat()
     .filter((i) => i.date.getTime() >= since && !seen.has(i.link) && seen.add(i.link))
     .sort((a, b) => b.date - a.date)
-    .slice(0, 120);
+    .slice(0, Number(process.env.MAX_CANDIDATES || 120));
   if (!args.has('--json')) console.log(`${candidates.length} candidates from the last ${DAYS} days.`);
 
   if (args.has('--dry-run') && args.has('--json')) {
