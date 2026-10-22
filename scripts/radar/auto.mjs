@@ -89,7 +89,7 @@ function candidates() {
 
 async function main() {
   const posted = await read(`site/radar/${today}/index.html`).then(() => true, () => false);
-  if (posted) return console.log(`Post ${today} already exists, nothing to do.`);
+  if (posted && !DRY) return console.log(`Post ${today} already exists, nothing to do.`);
 
   const issues = JSON.parse(await read('site/radar/issues.json').catch(() => '[]'));
   const known = new Set(issues.flatMap((i) => i.links || []));

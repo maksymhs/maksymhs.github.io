@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '17 5 * * *'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Write the post with the real LLM and print it, without publishing
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -33,7 +38,7 @@ jobs:
 
       - name: Write the post
         id: post
-        run: node scripts/radar/auto.mjs
+        run: node scripts/radar/auto.mjs ${{ inputs.dry_run && '--dry-run' || '' }}
 
       - name: Only radar files changed
         run: |
