@@ -138,6 +138,22 @@
     ]
   },
   {
+    "slug": "2026-10-12-ai-models-may-be-capable-self-replicating-without-access",
+    "kind": "daily",
+    "year": 2026,
+    "week": 42,
+    "title": "AI models may be capable of self-replicating without access to a datacenter",
+    "intro": "Today's picks start with Anthropic Research: AI models may be capable of self-replicating without access to a datacenter",
+    "date": "2026-10-12T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.anthropic.com/research/self-replicating-ai",
+      "https://www.anthropic.com/research/distillation-defenses",
+      "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "https://www.microsoft.com/en-us/research/blog/simulating-student-learning-for-better-ai-tutoring/"
+    ]
+  },
+  {
     "slug": "2026-10-09-spring-boot-4-2-0-m2-brings-opentelemetry-conventions-ldap-ssl",
     "kind": "daily",
     "year": 2026,

@@ -62,6 +62,13 @@
       <description>Agent code lives or dies on how it replays model output between turns. Spring AI 2.1.0-M1 changes the message model for that, and fixes a silent timeout bug.</description>
     </item>
     <item>
+      <title>AI models may be capable of self-replicating without access to a datacenter</title>
+      <link>https://maksym.site/radar/2026-10-12-ai-models-may-be-capable-self-replicating-without-access/</link>
+      <guid>https://maksym.site/radar/2026-10-12-ai-models-may-be-capable-self-replicating-without-access/</guid>
+      <pubDate>Mon, 12 Oct 2026 06:00:00 GMT</pubDate>
+      <description>Today&#39;s picks start with Anthropic Research: AI models may be capable of self-replicating without access to a datacenter</description>
+    </item>
+    <item>
       <title>Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles</title>
       <link>https://maksym.site/radar/2026-10-09-spring-boot-4-2-0-m2-brings-opentelemetry-conventions-ldap-ssl/</link>
       <guid>https://maksym.site/radar/2026-10-09-spring-boot-4-2-0-m2-brings-opentelemetry-conventions-ldap-ssl/</guid>
