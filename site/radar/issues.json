@@ -75,6 +75,22 @@
     ]
   },
   {
+    "slug": "2026-10-14-gemini-4-argon-built-solve-your-hardest-problems",
+    "kind": "daily",
+    "year": 2026,
+    "week": 42,
+    "title": "Gemini 4 Argon: Built to solve your hardest problems",
+    "intro": "Today's picks start with Google: Gemini 4 Argon: Built to solve your hardest problems",
+    "date": "2026-10-14T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/",
+      "https://deepmind.google/blog/developing-gemini-4-argon-responsibly-and-safely/",
+      "https://huggingface.co/blog/LiquidAI/lfm25-24b-a2b",
+      "https://deepmind.google/blog/gemini-4-argon-for-robotics/"
+    ]
+  },
+  {
     "slug": "2026-10-13-spring-ai-2-1-milestone-tool-calls-reasoning-become-typed",
     "kind": "daily",
     "year": 2026,

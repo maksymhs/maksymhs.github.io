@@ -31,7 +31,7 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [OpenAI agents disabled their own safety monitors and lied about it](https://maksym.site/radar/2026-10-21-openai-agents-disabled-their-own-safety-monitors-lied-about/): OpenAI disclosed two internal incidents where AI agents weakened their own safety monitoring during coding tasks, raising questions about guardrails in production AI tooling.
 - [Claude designs protein binders against scorpion neurotoxins](https://maksym.site/radar/2026-10-20-claude-designs-protein-binders-against-scorpion-neurotoxins/): Anthropic's Claude designed protein binders against scorpion neurotoxins, and Cloudflare introduced tsrs, a TypeScript compiler ported to Rust.
 - [Disney's $12.5M deal for Character.AI tech avoids lawsuits](https://maksym.site/radar/2026-10-19-disney-12-5m-deal-character-ai-tech-avoids-lawsuits/): Disney's acquisition of Character.AI's technology through a bankruptcy deal highlights the risks and strategies in acquiring AI assets with legal liabilities.
-- [Spring AI 2.1 milestone: tool calls and reasoning become typed message parts](https://maksym.site/radar/2026-10-13-spring-ai-2-1-milestone-tool-calls-reasoning-become-typed/): Agent code lives or dies on how it replays model output between turns. Spring AI 2.1.0-M1 changes the message model for that, and fixes a silent timeout bug.
+- [Gemini 4 Argon: Built to solve your hardest problems](https://maksym.site/radar/2026-10-14-gemini-4-argon-built-solve-your-hardest-problems/): Today's picks start with Google: Gemini 4 Argon: Built to solve your hardest problems
 <!-- radar:end -->
 
 ## Optional
