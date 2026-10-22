@@ -160,7 +160,7 @@
 
   $('contactForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    sendLead(e.currentTarget, { source: 'contact' });
+    sendLead(e.currentTarget, { source: 'contact', contact: '(not provided, direct message)' });
   });
 
   const log = $('chatLog');

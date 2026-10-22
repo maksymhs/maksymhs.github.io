@@ -217,15 +217,13 @@ input:focus, textarea:focus { outline: none; border-color: var(--fg); }
 .form-status:empty { display: none; }
 .dm {
   margin-top: 1.5rem;
-  border: 1px solid var(--line); border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--fg) 22%, var(--line)); border-radius: 12px;
   background: var(--soft);
   transition: border-color .15s;
 }
-.dm:focus-within { border-color: var(--muted); }
-.dm textarea { display: block; min-height: 6rem; padding: 1rem 1rem .5rem; resize: vertical; border: 0; background: transparent; font-size: 1rem; }
-.dm-foot { display: flex; flex-wrap: wrap; gap: .5rem; padding: .5rem; border-top: 1px solid var(--line); }
-.dm-foot input { flex: 1 1 14rem; width: auto; border-color: transparent; background: var(--bg); }
-.dm-foot input:focus { border-color: var(--line); }
+.dm:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
+.dm textarea { display: block; min-height: 10rem; padding: 1.125rem 1.25rem; resize: vertical; border: 0; background: transparent; font-size: 1.0625rem; line-height: 1.6; }
+.dm-foot { display: flex; justify-content: flex-end; padding: .5rem; border-top: 1px solid var(--line); }
 .dm .form-status { padding: 0 1rem .875rem; }
 .lead-form { gap: .625rem; margin: 0; padding: 1rem; border: 1px solid var(--line); border-radius: 8px; }
 .lead-form p { margin: 0; font-size: .9375rem; }
