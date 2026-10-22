@@ -125,7 +125,7 @@ async function main() {
   if (!main) throw new Error('could not read any of the picked articles, not publishing');
   const others = (await withText(ranked.filter((n) => list[n].link !== main.link).slice(0, 4), 4000)).slice(0, 2);
   const ru = (await withText(hids, 4000)).slice(0, 1);
-  const more = [...others, ...ru].slice(0, 3);
+  let more = [...others, ...ru].slice(0, 3);
 
   const style = await read('scripts/radar/STYLE.md');
   const profile = await read('site/llms-full.txt');
@@ -133,7 +133,7 @@ async function main() {
   const block = (c, label) => `### ${label}\nSource: ${c.source}\nTitle: ${c.title}\nDate: ${c.date}\nARTICLE TEXT:\n${c.text}`;
   const user = [block(main, 'MAIN'), ...more.map((c, i) => block(c, `MORE ${i + 1}`))].join('\n\n');
 
-  const sources = [main, ...more];
+  let sources = [main, ...more];
   const profileNums = new Set(nums(profile));
   const check = (d) => {
     const bad = [];
@@ -180,6 +180,14 @@ async function main() {
     }
     if (!problems.length) break;
     messages.push({ role: 'assistant', content: raw }, { role: 'user', content: `Fix these problems and return the full JSON again:\n- ${problems.join('\n- ')}` });
+  }
+  if (problems.length && draft && Array.isArray(draft.more_takes)) {
+    // A broken comment on a minor pick should not sink the post: drop those picks and check again.
+    const keep = more.map((_, i) => !problems.some((p) => p.startsWith(`more_takes[${i}]`)) && typeof draft.more_takes[i] === 'string');
+    more = more.filter((_, i) => keep[i]);
+    draft.more_takes = draft.more_takes.filter((_, i) => keep[i]).slice(0, more.length);
+    sources = [main, ...more];
+    problems = check(draft);
   }
   if (problems.length) throw new Error(`the draft did not pass validation: ${problems.join('; ')}`);
 
