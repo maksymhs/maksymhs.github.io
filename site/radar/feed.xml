@@ -41,13 +41,6 @@
       <description>Today&#39;s picks start with Hugging Face: Welcome Beam: a 501B open model you can own, customize, and scale</description>
     </item>
     <item>
-      <title>An update on independent evaluators</title>
-      <link>https://maksym.site/radar/2026-10-15-update-independent-evaluators/</link>
-      <guid>https://maksym.site/radar/2026-10-15-update-independent-evaluators/</guid>
-      <pubDate>Thu, 15 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Today&#39;s picks start with Anthropic: An update on independent evaluators</description>
-    </item>
-    <item>
       <title>Gemini 4 Argon: Built to solve your hardest problems</title>
       <link>https://maksym.site/radar/2026-10-14-gemini-4-argon-built-solve-your-hardest-problems/</link>
       <guid>https://maksym.site/radar/2026-10-14-gemini-4-argon-built-solve-your-hardest-problems/</guid>
@@ -60,13 +53,6 @@
       <guid>https://maksym.site/radar/2026-10-13-spring-ai-2-1-milestone-tool-calls-reasoning-become-typed/</guid>
       <pubDate>Tue, 13 Oct 2026 06:00:00 GMT</pubDate>
       <description>Agent code lives or dies on how it replays model output between turns. Spring AI 2.1.0-M1 changes the message model for that, and fixes a silent timeout bug.</description>
-    </item>
-    <item>
-      <title>AI models may be capable of self-replicating without access to a datacenter</title>
-      <link>https://maksym.site/radar/2026-10-12-ai-models-may-be-capable-self-replicating-without-access/</link>
-      <guid>https://maksym.site/radar/2026-10-12-ai-models-may-be-capable-self-replicating-without-access/</guid>
-      <pubDate>Mon, 12 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Today&#39;s picks start with Anthropic Research: AI models may be capable of self-replicating without access to a datacenter</description>
     </item>
     <item>
       <title>Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles</title>
@@ -109,13 +95,6 @@
       <guid>https://maksym.site/radar/2026-10-02-cloudflare-traces-puts-whole-request-path-one-trace/</guid>
       <pubDate>Fri, 02 Oct 2026 06:00:00 GMT</pubDate>
       <description>Tracing that starts at the edge and continues into your origin over W3C and OpenTelemetry standards closes a common blind spot.</description>
-    </item>
-    <item>
-      <title>Barclays scales Claude to upgrade operations and improve client experience</title>
-      <link>https://maksym.site/radar/2026-10-01-barclays-scales-claude-upgrade-operations-improve-client/</link>
-      <guid>https://maksym.site/radar/2026-10-01-barclays-scales-claude-upgrade-operations-improve-client/</guid>
-      <pubDate>Thu, 01 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Today&#39;s picks start with Anthropic: Barclays scales Claude to upgrade operations and improve client experience</description>
     </item>
     <item>
       <title>Prove your multi-AZ design with a 72-hour zone drill</title>

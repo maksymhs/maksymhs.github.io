@@ -144,7 +144,11 @@ async function main() {
   }
   const ids = (a) => (Array.isArray(a) ? a.map(Number).filter((n) => Number.isInteger(n) && list[n]) : []);
   let ranked = [...new Set(ids(pick?.ranked))];
-  if (!ranked.length) ranked = list.map((_, i) => i).sort((a, b) => rank(list[a]) - rank(list[b]) || list[b].date.localeCompare(list[a].date)).slice(0, 8);
+  if (!ranked.length) {
+    const seen = new Set();
+    ranked = list.map((_, i) => i).sort((a, b) => rank(list[a]) - rank(list[b]) || list[b].date.localeCompare(list[a].date))
+      .filter((i) => !seen.has(list[i].source.split(' ')[0]) && seen.add(list[i].source.split(' ')[0])).slice(0, 8);
+  }
 
   const withText = async (idList, limit) => (await Promise.all(idList.map(async (n) => ({ ...list[n], text: await article(list[n], limit) })))).filter((c) => c.text);
   const main = (await withText(ranked.slice(0, 5), 9000))[0];
@@ -230,6 +234,8 @@ async function main() {
     problems = check(draft);
   }
   if (problems.length) {
+    // Filling an earlier day by hand: better no post than a bare extract.
+    if (process.env.RADAR_DATE) throw new Error(`the draft did not pass validation and extracts are not published for earlier days: ${problems.join('; ')}`);
     console.warn(`! falling back to an extract post: ${problems.join('; ')}`);
     const take = (c, max) => {
       const t = `According to ${c.source}: ${bullets(c.facts)}`.slice(0, max);
