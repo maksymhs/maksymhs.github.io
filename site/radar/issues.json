@@ -75,6 +75,22 @@
     ]
   },
   {
+    "slug": "2026-10-15-gemini-4-argon-google-agentic-coding-model-ships-concrete",
+    "kind": "daily",
+    "year": 2026,
+    "week": 42,
+    "title": "Gemini 4 Argon: Google's agentic coding model ships with concrete numbers",
+    "intro": "Google DeepMind has made Gemini 4 Argon globally available, and the launch notes include measurable results from internal use rather than benchmark scores alone.",
+    "date": "2026-10-15T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://deepmind.google/blog/introducing-gemini-4-argon/",
+      "https://huggingface.co/blog/meta-muse-spark-open",
+      "https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/",
+      "https://inside.java/2026/10/12/devoxxbelgium-structured-concurrency/"
+    ]
+  },
+  {
     "slug": "2026-10-14-gemini-4-argon-built-solve-your-hardest-problems",
     "kind": "daily",
     "year": 2026,
