@@ -15,22 +15,6 @@
     ]
   },
   {
-    "slug": "2026-10-19",
-    "kind": "daily",
-    "year": 2026,
-    "week": 43,
-    "title": "Pinterest's event time watermarks for petabyte-scale data",
-    "intro": "Pinterest has introduced a new mechanism for finalizing data partitions in its ingestion framework, using event time watermarks to determine when streaming data is ready for consumption.",
-    "date": "2026-10-19T06:00:00.000Z",
-    "count": 4,
-    "links": [
-      "https://www.infoq.com/news/2026/10/pinterest-event-time-partition/",
-      "https://blog.cloudflare.com/obsessive-inference-optimization/",
-      "https://inside.java/2026/10/17/podcast-072/",
-      "https://habr.com/ru/companies/arenadata/articles/1094630/"
-    ]
-  },
-  {
     "slug": "2026-10-13",
     "kind": "daily",
     "year": 2026,
