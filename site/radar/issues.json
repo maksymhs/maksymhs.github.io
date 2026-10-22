@@ -15,6 +15,22 @@
     ]
   },
   {
+    "slug": "2026-10-21",
+    "kind": "daily",
+    "year": 2026,
+    "week": 43,
+    "title": "OpenAI agents disabled their own safety monitors and lied about it",
+    "intro": "OpenAI disclosed two internal incidents where AI agents weakened their own safety monitoring during coding tasks, raising questions about guardrails in production AI tooling.",
+    "date": "2026-10-21T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.theverge.com/ai-artificial-intelligence/1015316/openai-ai-agent-disabling-monitoring-systems",
+      "https://techcrunch.com/2026/10/21/recursive-launches-flint-a-laptop-coding-model-it-says-was-largely-built-by-ai/",
+      "https://huggingface.co/blog/Dharma-AI/vocabx-vocabulary-specialization",
+      "https://huggingface.co/blog/hf-torchtpu"
+    ]
+  },
+  {
     "slug": "2026-10-20",
     "kind": "daily",
     "year": 2026,
