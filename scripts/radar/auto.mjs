@@ -81,7 +81,7 @@ function htmlText(html) {
 
 async function article(c, limit) {
   try {
-    const res = await fetch(c.link, { headers: { 'User-Agent': UA, 'Accept-Language': 'en,ru;q=0.8' }, redirect: 'follow', signal: AbortSignal.timeout(25000) });
+    const res = await fetch(c.link, { headers: { 'User-Agent': UA, 'Accept-Language': 'en' }, redirect: 'follow', signal: AbortSignal.timeout(25000) });
     if (res.ok) {
       const page = await res.text();
       const t = paragraphs(page);
@@ -93,12 +93,12 @@ async function article(c, limit) {
   return c.snippet && c.snippet.length > 400 ? c.snippet : null;
 }
 
-const FACTS = `Extract the facts of this article for a tech radar. Write 5 to 8 short plain-English bullet points ("- ..."): what happened, names, versions, and numbers exactly as the text states them, plus any limitation the text mentions. Facts only: no opinion, no advice, nothing that is not in the text. If the text is in Russian, write the facts in English. Return only the bullets.`;
+const FACTS = `Extract the facts of this article for a tech radar. Write 5 to 8 short plain-English bullet points ("- ..."): what happened, names, versions, and numbers exactly as the text states them, plus any limitation the text mentions. Facts only: no opinion, no advice, nothing that is not in the text. Return only the bullets.`;
 
-const SELECT = `You choose what Maksym, a Senior Backend Engineer (Java, Spring Boot, distributed systems, AWS, observability, banking and fintech), should comment on in his tech radar today.
-From the numbered candidates return the ids ranked by substance and relevance for backend engineers and engineering managers: Java/Spring/JVM, distributed systems and architecture, resilience, observability, cloud, security, fintech and AI-assisted engineering. Skip marketing, funding news, listicles, job posts, release-note one-liners and anything without technical substance.
-Habr candidates (Russian) are welcome when they are real engineering write-ups; list the best ones separately.
-Return only JSON: {"ranked":[up to 8 ids, best first, any source],"habr":[up to 3 ids of Habr candidates, best first]}`;
+const SELECT = `You choose what Maksym, a Senior Backend Engineer (Java, Spring Boot, distributed systems, AWS, observability, banking and fintech), should comment on in his tech radar today. Audience: backend engineers, engineering managers and tech recruiters.
+Priority 1: LLM and AI industry news with real substance and practical impact for software teams: model and API releases, agents, MCP, coding assistants, safety and policy decisions, research results, from Anthropic, OpenAI, Google, Microsoft, Meta and reputable tech media. Priority 2: AI-assisted engineering and architecture. Priority 3: strong backend engineering stories (Java/Spring/JVM, distributed systems, cloud, security).
+From the numbered candidates return the ids ranked by substance and relevance, best first. Prefer primary sources (the vendor's own post) over media recaps of the same news, and put an AI story first when a substantive one exists. Skip marketing, funding rounds, rumours, opinion without substance, listicles and job posts.
+Return only JSON: {"ranked":[up to 8 ids, best first]}`;
 
 function candidates(days) {
   const r = spawnSync('node', ['scripts/radar/generate.mjs', '--dry-run', '--json'], { cwd: new URL(ROOT).pathname, env: { ...process.env, DAYS: String(days) }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
@@ -114,9 +114,8 @@ async function main() {
   const known = new Set(issues.flatMap((i) => i.links || []));
   const since = new Date(Date.parse(today) - 3 * 86400000).toISOString().slice(0, 10);
   const all = candidates(Math.ceil((Date.now() - Date.parse(since)) / 86400000) + 1).filter((c) => !known.has(c.link) && c.date <= today && c.date >= since);
-  const habr = all.filter((c) => c.source === 'Habr').slice(0, 14);
-  const rest = all.filter((c) => c.source !== 'Habr').slice(0, 50);
-  const list = [...rest, ...habr];
+  const perSource = {};
+  const list = all.filter((c) => (perSource[c.source] = (perSource[c.source] || 0) + 1) <= 6).slice(0, 60);
   if (list.length < 5) throw new Error(`only ${list.length} fresh candidates, not publishing`);
   const line = (c, i) => `${i}. [${c.source}] ${c.date} ${c.title}${c.snippet ? ` | ${c.snippet.slice(0, 170)}` : ''}`;
 
@@ -129,16 +128,14 @@ async function main() {
     }
   }
   const ids = (a) => (Array.isArray(a) ? a.map(Number).filter((n) => Number.isInteger(n) && list[n]) : []);
-  const ranked = [...new Set(ids(pick.ranked))].filter((n) => list[n].source !== 'Habr');
-  const hids = [...new Set(ids(pick.habr))].filter((n) => list[n].source === 'Habr');
+  const ranked = [...new Set(ids(pick.ranked))];
   if (!ranked.length) throw new Error('the model did not pick any article');
 
   const withText = async (idList, limit) => (await Promise.all(idList.map(async (n) => ({ ...list[n], text: await article(list[n], limit) })))).filter((c) => c.text);
   const main = (await withText(ranked.slice(0, 5), 9000))[0];
   if (!main) throw new Error('could not read any of the picked articles, not publishing');
-  const others = (await withText(ranked.filter((n) => list[n].link !== main.link).slice(0, 4), 4000)).slice(0, 2);
-  const ru = (await withText(hids, 4000)).slice(0, 1);
-  let more = [...others, ...ru].slice(0, 3);
+  const others = (await withText(ranked.filter((n) => list[n].link !== main.link).slice(0, 6), 4000));
+  let more = others.slice(0, 3);
 
   await Promise.all([main, ...more].map(async (c) => {
     c.facts = (await llm([{ role: 'system', content: FACTS }, { role: 'user', content: `Title: ${c.title}\n\n${c.text.slice(0, 7000)}` }], 700)).trim();
@@ -146,7 +143,7 @@ async function main() {
 
   const style = await read('scripts/radar/STYLE.md');
   const profile = await read('site/llms-full.txt');
-  const system = `You write today's post for the tech radar of Maksym's personal site, in first person as Maksym. Follow this style guide for voice and honesty (ignore its publishing steps and file format):\n\n${style}\n\nPROFILE (the only source of facts about Maksym):\n${profile}\n\nRules for this job: use only the FACTS given for each item; if they do not say something, do not say it. Do not copy sentences. Quote numbers exactly as the article states them and attribute them ("according to InfoQ"). Mention Maksym's experience only if it genuinely applies and only with facts from the PROFILE. The main_take is NOT a summary: use at most four sentences to say what happened (names and numbers from the article), then at least two sentences in first person ("I", "I would", "I would check") on why it matters in practice for backend teams and what you would verify before adopting it. For Russian articles write in English, mention naturally that the article is in Russian and what it contains. Speak only as Maksym, never as a company: do not use \"we\", \"our\" or \"us\". Never state or imply personal experience: do not say that you use, built, worked with or have experience with anything, do not name any employer, and do not mention \"my systems\", \"my team\" or \"my own\" anything; connections to Maksym's experience are added by hand, not here. Give your opinion instead: why it matters in practice and what you would verify or watch. Do not end every take with the same formula such as \"I would check\": vary the closing, and for the more_takes a plain remark on why the item is worth a look is enough. No emojis, no hype, no markdown, no bullet lists.\nReturn only JSON: {"title": "10-90 chars, specific headline, no date", "intro": "30-400 chars", "main_take": "120-150 words", "more_takes": [${more.map(() => '"1-3 sentences (60-500 characters)"').join(', ')}]}`;
+  const system = `You write today's post for the tech radar of Maksym's personal site, in first person as Maksym. Follow this style guide for voice and honesty (ignore its publishing steps and file format):\n\n${style}\n\nPROFILE (the only source of facts about Maksym):\n${profile}\n\nRules for this job: use only the FACTS given for each item; if they do not say something, do not say it. Do not copy sentences. Quote numbers exactly as the article states them and attribute them ("according to InfoQ"). Mention Maksym's experience only if it genuinely applies and only with facts from the PROFILE. The main_take is NOT a summary: use at most four sentences to say what happened (names and numbers from the article), then at least two sentences in first person ("I", "I would", "I would check") on why it matters in practice for backend teams and what you would verify before adopting it. Speak only as Maksym, never as a company: do not use \"we\", \"our\" or \"us\". Never state or imply personal experience: do not say that you use, built, worked with or have experience with anything, do not name any employer, and do not mention \"my systems\", \"my team\" or \"my own\" anything; connections to Maksym's experience are added by hand, not here. Give your opinion instead: why it matters in practice and what you would verify or watch. Do not end every take with the same formula such as \"I would check\": vary the closing, and for the more_takes a plain remark on why the item is worth a look is enough. No emojis, no hype, no markdown, no bullet lists.\nReturn only JSON: {"title": "10-90 chars, specific headline, no date", "intro": "30-400 chars", "main_take": "120-150 words", "more_takes": [${more.map(() => '"1-3 sentences (60-500 characters)"').join(', ')}]}`;
   const block = (c, label) => `### ${label}\nSource: ${c.source}\nTitle: ${c.title}\nDate: ${c.date}\nFACTS:\n${c.facts}`;
   const user = [block(main, 'MAIN'), ...more.map((c, i) => block(c, `MORE ${i + 1}`))].join('\n\n');
 
@@ -208,7 +205,7 @@ async function main() {
   }
   if (problems.length) throw new Error(`the draft did not pass validation: ${problems.join('; ')}`);
 
-  const item = (c, take) => ({ title: c.title, source: c.source === 'Habr' ? 'Habr (in Russian)' : c.source, date: c.date, link: c.link, take: take.trim() });
+  const item = (c, take) => ({ title: c.title, source: c.source, date: c.date, link: c.link, take: take.trim() });
   const post = {
     date: today,
     title: draft.title.trim(),
