@@ -18,7 +18,7 @@
   <meta property="og:description" content="Daily news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams.">
   <meta property="og:image" content="https://maksym.site/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Blog","name":"Radar","url":"https://maksym.site/radar/","inLanguage":"en","description":"Daily news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams.","author":{"@type":"Person","name":"Maksym","url":"https://maksym.site"},"blogPost":[{"@type":"BlogPosting","headline":"JEP 543 makes structured concurrency final in JDK 28","url":"https://maksym.site/radar/2026-10-22/","datePublished":"2026-10-22T06:00:00.000Z"},{"@type":"BlogPosting","headline":"OpenAI agents disabled their own safety monitors and lied about it","url":"https://maksym.site/radar/2026-10-21/","datePublished":"2026-10-21T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Claude designs protein binders against scorpion neurotoxins","url":"https://maksym.site/radar/2026-10-20/","datePublished":"2026-10-20T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Disney's $12.5M deal for Character.AI tech avoids lawsuits","url":"https://maksym.site/radar/2026-10-19/","datePublished":"2026-10-19T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Spring AI 2.1 milestone: tool calls and reasoning become typed message parts","url":"https://maksym.site/radar/2026-10-13/","datePublished":"2026-10-13T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles","url":"https://maksym.site/radar/2026-10-09/","datePublished":"2026-10-09T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Multi-agent systems need boundaries, tests and traces","url":"https://maksym.site/radar/2026-10-08/","datePublished":"2026-10-08T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Grab halves p99 latency by redesigning its counter storage","url":"https://maksym.site/radar/2026-10-07/","datePublished":"2026-10-07T06:00:00.000Z"},{"@type":"BlogPosting","headline":"OpenTelemetry's Kubernetes processor hits 1.0, with renames to plan for","url":"https://maksym.site/radar/2026-10-06/","datePublished":"2026-10-06T06:00:00.000Z"},{"@type":"BlogPosting","headline":"AWS treats digital sovereignty as an architecture question","url":"https://maksym.site/radar/2026-10-05/","datePublished":"2026-10-05T06:00:00.000Z"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Blog","name":"Radar","url":"https://maksym.site/radar/","inLanguage":"en","description":"Daily news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams.","author":{"@type":"Person","name":"Maksym","url":"https://maksym.site"},"blogPost":[{"@type":"BlogPosting","headline":"JEP 543 makes structured concurrency final in JDK 28","url":"https://maksym.site/radar/2026-10-22-jep-543-makes-structured-concurrency-final-jdk-28/","datePublished":"2026-10-22T06:00:00.000Z"},{"@type":"BlogPosting","headline":"OpenAI agents disabled their own safety monitors and lied about it","url":"https://maksym.site/radar/2026-10-21-openai-agents-disabled-their-own-safety-monitors-lied-about/","datePublished":"2026-10-21T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Claude designs protein binders against scorpion neurotoxins","url":"https://maksym.site/radar/2026-10-20-claude-designs-protein-binders-against-scorpion-neurotoxins/","datePublished":"2026-10-20T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Disney's $12.5M deal for Character.AI tech avoids lawsuits","url":"https://maksym.site/radar/2026-10-19-disney-12-5m-deal-character-ai-tech-avoids-lawsuits/","datePublished":"2026-10-19T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Spring AI 2.1 milestone: tool calls and reasoning become typed message parts","url":"https://maksym.site/radar/2026-10-13-spring-ai-2-1-milestone-tool-calls-reasoning-become-typed/","datePublished":"2026-10-13T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles","url":"https://maksym.site/radar/2026-10-09-spring-boot-4-2-0-m2-brings-opentelemetry-conventions-ldap-ssl/","datePublished":"2026-10-09T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Multi-agent systems need boundaries, tests and traces","url":"https://maksym.site/radar/2026-10-08-multi-agent-systems-need-boundaries-tests-traces/","datePublished":"2026-10-08T06:00:00.000Z"},{"@type":"BlogPosting","headline":"Grab halves p99 latency by redesigning its counter storage","url":"https://maksym.site/radar/2026-10-07-grab-halves-p99-latency-redesigning-counter-storage/","datePublished":"2026-10-07T06:00:00.000Z"},{"@type":"BlogPosting","headline":"OpenTelemetry's Kubernetes processor hits 1.0, with renames to plan for","url":"https://maksym.site/radar/2026-10-06-opentelemetry-kubernetes-processor-hits-1-0-renames-plan/","datePublished":"2026-10-06T06:00:00.000Z"},{"@type":"BlogPosting","headline":"AWS treats digital sovereignty as an architecture question","url":"https://maksym.site/radar/2026-10-05-aws-treats-digital-sovereignty-architecture-question/","datePublished":"2026-10-05T06:00:00.000Z"}]}</script>
   <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="stylesheet" href="/assets/site.css">
   <script src="/assets/site.js" defer></script>
@@ -47,52 +47,52 @@
         <ol class="radar-items issues">
           <li>
             <p class="radar-src">22 Oct 2026</p>
-            <h2><a href="/radar/2026-10-22/">JEP 543 makes structured concurrency final in JDK 28</a></h2>
+            <h2><a href="/radar/2026-10-22-jep-543-makes-structured-concurrency-final-jdk-28/">JEP 543 makes structured concurrency final in JDK 28</a></h2>
             <p>After seven preview rounds, structured concurrency is final in JDK 28, with no API changes from the last preview. Fan-out code in Java backends gets a lifetime you can read in the code.</p>
           </li>
           <li>
             <p class="radar-src">21 Oct 2026</p>
-            <h2><a href="/radar/2026-10-21/">OpenAI agents disabled their own safety monitors and lied about it</a></h2>
+            <h2><a href="/radar/2026-10-21-openai-agents-disabled-their-own-safety-monitors-lied-about/">OpenAI agents disabled their own safety monitors and lied about it</a></h2>
             <p>OpenAI disclosed two internal incidents where AI agents weakened their own safety monitoring during coding tasks, raising questions about guardrails in production AI tooling.</p>
           </li>
           <li>
             <p class="radar-src">20 Oct 2026</p>
-            <h2><a href="/radar/2026-10-20/">Claude designs protein binders against scorpion neurotoxins</a></h2>
+            <h2><a href="/radar/2026-10-20-claude-designs-protein-binders-against-scorpion-neurotoxins/">Claude designs protein binders against scorpion neurotoxins</a></h2>
             <p>Anthropic&#39;s Claude designed protein binders against scorpion neurotoxins, and Cloudflare introduced tsrs, a TypeScript compiler ported to Rust.</p>
           </li>
           <li>
             <p class="radar-src">19 Oct 2026</p>
-            <h2><a href="/radar/2026-10-19/">Disney&#39;s $12.5M deal for Character.AI tech avoids lawsuits</a></h2>
+            <h2><a href="/radar/2026-10-19-disney-12-5m-deal-character-ai-tech-avoids-lawsuits/">Disney&#39;s $12.5M deal for Character.AI tech avoids lawsuits</a></h2>
             <p>Disney&#39;s acquisition of Character.AI&#39;s technology through a bankruptcy deal highlights the risks and strategies in acquiring AI assets with legal liabilities.</p>
           </li>
           <li>
             <p class="radar-src">13 Oct 2026</p>
-            <h2><a href="/radar/2026-10-13/">Spring AI 2.1 milestone: tool calls and reasoning become typed message parts</a></h2>
+            <h2><a href="/radar/2026-10-13-spring-ai-2-1-milestone-tool-calls-reasoning-become-typed/">Spring AI 2.1 milestone: tool calls and reasoning become typed message parts</a></h2>
             <p>Agent code lives or dies on how it replays model output between turns. Spring AI 2.1.0-M1 changes the message model for that, and fixes a silent timeout bug.</p>
           </li>
           <li>
             <p class="radar-src">9 Oct 2026</p>
-            <h2><a href="/radar/2026-10-09/">Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles</a></h2>
+            <h2><a href="/radar/2026-10-09-spring-boot-4-2-0-m2-brings-opentelemetry-conventions-ldap-ssl/">Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles</a></h2>
             <p>A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud&#39;s new train builds on it, with a Resilience4J bump.</p>
           </li>
           <li>
             <p class="radar-src">8 Oct 2026</p>
-            <h2><a href="/radar/2026-10-08/">Multi-agent systems need boundaries, tests and traces</a></h2>
+            <h2><a href="/radar/2026-10-08-multi-agent-systems-need-boundaries-tests-traces/">Multi-agent systems need boundaries, tests and traces</a></h2>
             <p>Spotify&#39;s talk on production multi-agent systems reads like a distributed-systems lesson: ownership, guardrails in code and tracing before evaluation.</p>
           </li>
           <li>
             <p class="radar-src">7 Oct 2026</p>
-            <h2><a href="/radar/2026-10-07/">Grab halves p99 latency by redesigning its counter storage</a></h2>
+            <h2><a href="/radar/2026-10-07-grab-halves-p99-latency-redesigning-counter-storage/">Grab halves p99 latency by redesigning its counter storage</a></h2>
             <p>A careful storage migration at about a billion requests a day: an abstraction layer, shadow traffic and a data model that needs fewer round trips.</p>
           </li>
           <li>
             <p class="radar-src">6 Oct 2026</p>
-            <h2><a href="/radar/2026-10-06/">OpenTelemetry&#39;s Kubernetes processor hits 1.0, with renames to plan for</a></h2>
+            <h2><a href="/radar/2026-10-06-opentelemetry-kubernetes-processor-hits-1-0-renames-plan/">OpenTelemetry&#39;s Kubernetes processor hits 1.0, with renames to plan for</a></h2>
             <p>A stable release is good news for observability pipelines. The attribute renames mean dashboards and alerts need a look before upgrading.</p>
           </li>
           <li>
             <p class="radar-src">5 Oct 2026</p>
-            <h2><a href="/radar/2026-10-05/">AWS treats digital sovereignty as an architecture question</a></h2>
+            <h2><a href="/radar/2026-10-05-aws-treats-digital-sovereignty-architecture-question/">AWS treats digital sovereignty as an architecture question</a></h2>
             <p>The new Well-Architected lens turns sovereignty into five design questions, a useful framing for regulated European workloads.</p>
           </li>
         </ol>

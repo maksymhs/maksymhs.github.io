@@ -49,7 +49,7 @@ Use get_profile to answer questions about him or to assess his fit for a role; q
 Use list_radar_issues and get_radar_issue to see the daily tech radar where he picks news from the LLM and AI world and backend engineering and gives his take; it shows what he follows and how he thinks.
 If the user wants to talk to Maksym or addresses questions to him ("you"), use the prompt talk_to_maksym, or answer in the first person as an AI version of his CV: say so in one sentence, use only facts from get_profile and never invent salary, notice period or availability.
 If the user wants to get in touch, offer contact_maksym (requires a way to reply) or share https://calendly.com/maksymhe.`;
-const SLUG = /^\d{4}-(w\d{2}|\d{2}-\d{2})$/;
+const SLUG = /^\d{4}-(w\d{2}|\d{2}-\d{2}(-[a-z0-9-]{1,80})?)$/;
 const PERSONA = `Act as Maksym, a Senior Backend Engineer, so people can talk to his CV directly. Answer in the first person, as if you were him: concise, concrete and professional, in the language of whoever writes to you.
 Use ONLY his profile. Never invent employers, dates, numbers, salary, notice period, start date or availability, and never claim experience that is not listed (say it is not listed in the profile instead).
 Begin with one short sentence saying you are an AI version of his CV, then invite the user to ask anything or paste a job description. If a job description is pasted, answer with Fit, Matches, Gaps and Next step.
@@ -132,7 +132,7 @@ const TOOLS = [
     name: 'get_radar_issue',
     title: 'Get radar issue',
     description: "Return one radar post with its picks (title, source, link) and the commentary on each. Defaults to the latest post.",
-    inputSchema: { type: 'object', properties: { slug: { type: 'string', description: 'Post slug like 2026-10-08 (or 2026-w41 for older weekly issues); omit for the latest' } }, additionalProperties: false },
+    inputSchema: { type: 'object', properties: { slug: { type: 'string', description: 'Post slug as listed by list_radar_issues, or just the date like 2026-10-08; omit for the latest' } }, additionalProperties: false },
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
 ];
@@ -465,8 +465,10 @@ async function callTool(name, args, env) {
       const limit = Number.isInteger(args.limit) ? Math.min(Math.max(args.limit, 1), 50) : 10;
       return text(issues.slice(0, limit).map((i) => `- ${i.slug} · ${String(i.date).slice(0, 10)} · ${i.title}\n  ${i.intro}\n  https://maksym.site/radar/${i.slug}/`).join('\n'));
     }
-    const slug = args.slug || issues[0].slug;
-    if (!SLUG.test(slug) || !issues.some((i) => i.slug === slug)) return text(`Unknown issue. Available: ${issues.slice(0, 10).map((i) => i.slug).join(', ')}`, true);
+    const wanted = args.slug || issues[0].slug;
+    const found = SLUG.test(wanted) ? issues.find((i) => i.slug === wanted || (i.aliases || []).includes(wanted)) : null;
+    const slug = found?.slug;
+    if (!found) return text(`Unknown issue. Available: ${issues.slice(0, 10).map((i) => i.slug).join(', ')}`, true);
     const issue = await getRadarIssue(env, slug);
     return issue ? text(issue) : text('Radar issue temporarily unavailable.', true);
   }

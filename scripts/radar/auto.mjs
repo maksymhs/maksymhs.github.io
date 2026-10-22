@@ -121,10 +121,10 @@ function candidates(days) {
 }
 
 async function main() {
-  const posted = await read(`site/radar/${today}/index.html`).then(() => true, () => false);
+  const issues = JSON.parse(await read('site/radar/issues.json').catch(() => '[]'));
+  const posted = issues.some((i) => String(i.date).slice(0, 10) === today);
   if (posted && !DRY) return console.log(`Post ${today} already exists, nothing to do.`);
 
-  const issues = JSON.parse(await read('site/radar/issues.json').catch(() => '[]'));
   const known = new Set(issues.flatMap((i) => i.links || []));
   const since = new Date(Date.parse(today) - 3 * 86400000).toISOString().slice(0, 10);
   const all = candidates(Math.ceil((Date.now() - Date.parse(since)) / 86400000) + 1).filter((c) => !known.has(c.link) && c.date <= today && c.date >= since);

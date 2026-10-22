@@ -1,6 +1,6 @@
 [
   {
-    "slug": "2026-10-22",
+    "slug": "2026-10-22-jep-543-makes-structured-concurrency-final-jdk-28",
     "kind": "daily",
     "year": 2026,
     "week": 43,
@@ -12,10 +12,13 @@
       "https://www.infoq.com/news/2026/10/jep-543-jdk-28/",
       "https://www.infoq.com/articles/spring-batch-without-broker/",
       "https://www.infoq.com/news/2026/10/netflix-workload-attestation-aws/"
+    ],
+    "aliases": [
+      "2026-10-22"
     ]
   },
   {
-    "slug": "2026-10-21",
+    "slug": "2026-10-21-openai-agents-disabled-their-own-safety-monitors-lied-about",
     "kind": "daily",
     "year": 2026,
     "week": 43,
@@ -28,10 +31,13 @@
       "https://techcrunch.com/2026/10/21/recursive-launches-flint-a-laptop-coding-model-it-says-was-largely-built-by-ai/",
       "https://huggingface.co/blog/Dharma-AI/vocabx-vocabulary-specialization",
       "https://huggingface.co/blog/hf-torchtpu"
+    ],
+    "aliases": [
+      "2026-10-21"
     ]
   },
   {
-    "slug": "2026-10-20",
+    "slug": "2026-10-20-claude-designs-protein-binders-against-scorpion-neurotoxins",
     "kind": "daily",
     "year": 2026,
     "week": 43,
@@ -44,10 +50,13 @@
       "https://blog.cloudflare.com/typescript-rust-port/",
       "https://blog.cloudflare.com/emudhra-certificate-compromise/",
       "https://simonwillison.net/2026/Oct/19/my-obituary-for-programming/"
+    ],
+    "aliases": [
+      "2026-10-20"
     ]
   },
   {
-    "slug": "2026-10-19",
+    "slug": "2026-10-19-disney-12-5m-deal-character-ai-tech-avoids-lawsuits",
     "kind": "daily",
     "year": 2026,
     "week": 43,
@@ -60,10 +69,13 @@
       "https://www.infoq.com/news/2026/10/pinterest-event-time-partition/",
       "https://devblogs.microsoft.com/foundry/browser-automation-tool-ga/",
       "https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/"
+    ],
+    "aliases": [
+      "2026-10-19"
     ]
   },
   {
-    "slug": "2026-10-13",
+    "slug": "2026-10-13-spring-ai-2-1-milestone-tool-calls-reasoning-become-typed",
     "kind": "daily",
     "year": 2026,
     "week": 42,
@@ -74,10 +86,13 @@
     "links": [
       "https://spring.io/blog/2026/09/25/spring-ai-2-1-0-M1-available-now",
       "https://www.datadoghq.com/blog/engineering/postgresql-ha-kubernetes/"
+    ],
+    "aliases": [
+      "2026-10-13"
     ]
   },
   {
-    "slug": "2026-10-09",
+    "slug": "2026-10-09-spring-boot-4-2-0-m2-brings-opentelemetry-conventions-ldap-ssl",
     "kind": "daily",
     "year": 2026,
     "week": 41,
@@ -88,10 +103,13 @@
     "links": [
       "https://spring.io/blog/2026/09/25/spring-boot-4-2-0-M2-available-now",
       "https://spring.io/blog/2026/09/24/spring-cloud-2026-0-0-M1-has-been-released"
+    ],
+    "aliases": [
+      "2026-10-09"
     ]
   },
   {
-    "slug": "2026-10-08",
+    "slug": "2026-10-08-multi-agent-systems-need-boundaries-tests-traces",
     "kind": "daily",
     "year": 2026,
     "week": 41,
@@ -103,10 +121,13 @@
       "https://www.infoq.com/presentations/spotify-multi-agent-ai-architecture/",
       "https://www.infoq.com/news/2026/10/clef-decision-models/",
       "https://www.infoq.com/news/2026/10/survey-complex-codebases-agents/"
+    ],
+    "aliases": [
+      "2026-10-08"
     ]
   },
   {
-    "slug": "2026-10-07",
+    "slug": "2026-10-07-grab-halves-p99-latency-redesigning-counter-storage",
     "kind": "daily",
     "year": 2026,
     "week": 41,
@@ -117,10 +138,13 @@
     "links": [
       "https://www.infoq.com/news/2026/10/grab-counter-aerospike-migration/",
       "https://www.infoq.com/news/2026/10/spanner-omni-deploy-anywhere-ga/"
+    ],
+    "aliases": [
+      "2026-10-07"
     ]
   },
   {
-    "slug": "2026-10-06",
+    "slug": "2026-10-06-opentelemetry-kubernetes-processor-hits-1-0-renames-plan",
     "kind": "daily",
     "year": 2026,
     "week": 41,
@@ -131,10 +155,13 @@
     "links": [
       "https://www.infoq.com/news/2026/10/opentelemetry-kubernetes-observ/",
       "https://inside.java/2026/10/06/jep542-target-jdk28/"
+    ],
+    "aliases": [
+      "2026-10-06"
     ]
   },
   {
-    "slug": "2026-10-05",
+    "slug": "2026-10-05-aws-treats-digital-sovereignty-architecture-question",
     "kind": "daily",
     "year": 2026,
     "week": 41,
@@ -145,10 +172,13 @@
     "links": [
       "https://aws.amazon.com/blogs/architecture/announcing-the-aws-digital-sovereignty-well-architected-lens/",
       "https://inside.java/2026/10/05/confined-pools/"
+    ],
+    "aliases": [
+      "2026-10-05"
     ]
   },
   {
-    "slug": "2026-10-02",
+    "slug": "2026-10-02-cloudflare-traces-puts-whole-request-path-one-trace",
     "kind": "daily",
     "year": 2026,
     "week": 40,
@@ -161,10 +191,13 @@
       "https://blog.cloudflare.com/one-observability-platform/",
       "https://spring.io/blog/2026/10/02/spring-ai-modular-rag-typesafe-jev",
       "https://inside.java/2026/10/02/jep549-target-jdk28/"
+    ],
+    "aliases": [
+      "2026-10-02"
     ]
   },
   {
-    "slug": "2026-09-30",
+    "slug": "2026-09-30-prove-your-multi-az-design-72-hour-zone-drill",
     "kind": "daily",
     "year": 2026,
     "week": 40,
@@ -176,6 +209,9 @@
       "https://aws.amazon.com/blogs/architecture/running-multi-day-az-evacuation-drills-with-arc-zonal-shift/",
       "https://aws.amazon.com/blogs/aws/amazon-aurora-postgresql-now-supports-direct-querying-of-apache-iceberg-and-parquet-data-in-your-data-lake/",
       "https://inside.java/2026/09/30/faster-post-quantum-cryptography-with-jdk-intrinsics/"
+    ],
+    "aliases": [
+      "2026-09-30"
     ]
   }
 ]

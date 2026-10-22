@@ -46,7 +46,7 @@ The chat and the forms call `https://api.maksym.site` (Cloudflare Worker), which
 
 ## Radar
 
-A daily post at `/radar/<YYYY-MM-DD>/`: one main pick with a take plus up to three short ones, in Maksym's voice, drafted with AI assistance. Only titles, links and original commentary are published.
+A daily post at `/radar/<YYYY-MM-DD>-<headline-keywords>/` (older date-only URLs redirect): one main pick with a take plus up to three short ones, in Maksym's voice, drafted with AI assistance. Only titles, links and original commentary are published.
 
 The post is written by `.github/workflows/radar-daily.yml` (every day, 05:17 UTC): `scripts/radar/auto.mjs` collects the feeds, asks the Worker's LLM (the one behind "Ask me", route `POST /draft`) to rank the candidates, reads the chosen articles, asks it for the headline and the takes following `scripts/radar/STYLE.md`, validates them and publishes through `generate.mjs --publish`. Links, titles, sources and dates always come from the feeds; every number in a take must appear in the article it comments on; sources are English-language only, led by LLM and AI news from Anthropic, OpenAI, Google, Microsoft and Meta (feeds in `scripts/radar/feeds.json`). If nothing passes validation it publishes nothing and reports to Telegram through the Worker (`POST /radar-notify`). The workflow commits straight to `main` and starts the deploy.
 

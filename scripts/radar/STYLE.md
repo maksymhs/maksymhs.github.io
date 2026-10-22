@@ -15,7 +15,7 @@ One post per day: a **main pick** with a real take, plus up to 3 short **more** 
 
 ## Post file
 
-Write a JSON file (outside the repo, e.g. `/tmp/post.json`) and publish it with `node scripts/radar/generate.mjs --publish /tmp/post.json`. The script validates it, checks that links are not dead, writes `site/radar/<date>/index.html` and rebuilds the index, RSS, sitemap, `llms.txt` and the radar block of the home page.
+Write a JSON file (outside the repo, e.g. `/tmp/post.json`) and publish it with `node scripts/radar/generate.mjs --publish /tmp/post.json`. The script validates it, checks that links are not dead, writes `site/radar/<date>-<headline-keywords>/index.html` (descriptive URL, one post per date) and rebuilds the index, RSS, sitemap, `llms.txt` and the radar block of the home page.
 
 ```json
 {

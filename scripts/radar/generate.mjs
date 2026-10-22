@@ -184,7 +184,7 @@ function issuePage(issue, items, prev) {
             <p>${esc(i.take)}</p>
           </li>`).join('\n');
   return page({
-    title: `${issue.title} · Radar ${issue.slug} · Maksym`,
+    title: `${issue.title} · Radar ${issue.slug.slice(0, 10)} · Maksym`,
     description: issue.intro,
     path,
     jsonld: {
@@ -347,6 +347,52 @@ const text = (v, min, max, name) => {
   return t;
 };
 
+const STOP = new Set(['the', 'a', 'an', 'of', 'in', 'to', 'and', 'for', 'with', 'by', 'on', 'at', 'is', 'are', 'its', 'it', 'as', 'from', 'that', 'this']);
+
+// Descriptive URL: <date>-<keywords from the headline>, for example 2026-10-22-jep-543-makes-structured-concurrency-final-jdk-28.
+export function slugify(title) {
+  const words = title.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/['\u2019]s\b/g, '').replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, ' ').trim().split(' ')
+    .filter((w) => w && !STOP.has(w));
+  let out = '';
+  for (const w of words) {
+    if ((out + '-' + w).length > 64) break;
+    out = out ? `${out}-${w}` : w;
+  }
+  return out || 'issue';
+}
+
+const redirectPage = (to) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>This page has moved</title>
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="${ORIGIN}${to}">
+  <meta http-equiv="refresh" content="0; url=${to}">
+</head>
+<body><p>This page has moved to <a href="${to}">${ORIGIN}${to}</a>.</p></body>
+</html>
+`;
+
+// One-off: give the posts published with a date-only URL a descriptive one, and leave a redirect at the old address.
+async function migrateSlugs(issues) {
+  const map = new Map();
+  for (const i of issues) if (/^\d{4}-\d{2}-\d{2}$/.test(i.slug)) map.set(i.slug, `${i.slug}-${slugify(i.title)}`);
+  if (!map.size) return console.log('Nothing to migrate.');
+  const pages = new Map();
+  for (const [old] of map) pages.set(old, await readFile(new URL(`${old}/index.html`, RADAR), 'utf8'));
+  for (const [old, next] of map) {
+    let html = pages.get(old);
+    for (const [o, n] of map) html = html.split(`/radar/${o}/`).join(`/radar/${n}/`);
+    await mkdir(new URL(`${next}/`, RADAR), { recursive: true });
+    await writeFile(new URL(`${next}/index.html`, RADAR), html);
+    await writeFile(new URL(`${old}/index.html`, RADAR), redirectPage(`/radar/${next}/`));
+  }
+  const moved = issues.map((i) => (map.has(i.slug) ? { ...i, slug: map.get(i.slug), aliases: [...new Set([...(i.aliases || []), i.slug])] } : i));
+  await renderShared(moved);
+  console.log(`Migrated ${map.size} posts to descriptive URLs.`);
+}
+
 // Publishes one daily post from a JSON file written by a human or an agent. See scripts/radar/STYLE.md.
 async function publish(file, issues) {
   const post = JSON.parse(await readFile(file, 'utf8'));
@@ -372,17 +418,18 @@ async function publish(file, issues) {
   const title = text(post.title, 10, 90, 'title');
   const intro = text(post.intro, 30, 400, 'intro');
 
-  const slug = post.date;
+  const slug = `${post.date}-${slugify(title)}`;
   const dir = new URL(`${slug}/`, RADAR);
-  if (!process.env.FORCE && await access(dir).then(() => true, () => false)) throw new Error(`Post ${slug} already exists; set FORCE=1 to replace it.`);
+  const sameDay = issues.filter((i) => String(i.date).slice(0, 10) === post.date);
+  if (!process.env.FORCE && sameDay.length) throw new Error(`There is already a post for ${post.date} (${sameDay[0].slug}); set FORCE=1 to replace it.`);
   await Promise.all(items.map((i) => checkLink(i.link)));
 
-  const { year, week } = isoWeek(new Date(slug));
-  const issue = { slug, kind: 'daily', year, week, title, intro, date: `${slug}T06:00:00.000Z`, count: items.length, links: items.map((i) => i.link) };
+  const { year, week } = isoWeek(new Date(post.date));
+  const issue = { slug, kind: 'daily', year, week, title, intro, date: `${post.date}T06:00:00.000Z`, count: items.length, links: items.map((i) => i.link) };
   await mkdir(dir, { recursive: true });
-  const prev = issues.filter((i) => i.date < issue.date && i.slug !== slug).sort((a, b) => b.date.localeCompare(a.date))[0];
+  const prev = issues.filter((i) => i.date < issue.date && i.slug !== slug && !sameDay.includes(i)).sort((a, b) => b.date.localeCompare(a.date))[0];
   await writeFile(new URL('index.html', dir), issuePage(issue, items, prev));
-  const all = [issue, ...issues.filter((i) => i.slug !== slug)].sort((a, b) => b.date.localeCompare(a.date));
+  const all = [issue, ...issues.filter((i) => i.slug !== slug && !sameDay.includes(i))].sort((a, b) => b.date.localeCompare(a.date));
   await renderShared(all);
   console.log(`Published ${slug}: "${title}" with ${items.length} picks.`);
   if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `slug=${slug}\n`);
@@ -394,6 +441,10 @@ async function main() {
   if (at > 0) {
     if (!process.argv[at + 1]) throw new Error('usage: --publish <post.json>');
     await publish(process.argv[at + 1], issues);
+    return;
+  }
+  if (args.has('--migrate-slugs')) {
+    await migrateSlugs(issues);
     return;
   }
   if (args.has('--render-only')) {
