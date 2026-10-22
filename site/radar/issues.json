@@ -75,6 +75,7 @@
     ]
   },
   {
+<<<<<<< HEAD
     "slug": "2026-10-16-welcome-beam-501b-open-model-you-can-own-customize-scale",
     "kind": "daily",
     "year": 2026,
@@ -105,6 +106,8 @@
     ]
   },
   {
+=======
+>>>>>>> parent of e13faaa (radar: 2026-10-15)
     "slug": "2026-10-14-gemini-4-argon-built-solve-your-hardest-problems",
     "kind": "daily",
     "year": 2026,

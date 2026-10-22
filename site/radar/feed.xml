@@ -34,6 +34,7 @@
       <description>Disney&#39;s acquisition of Character.AI&#39;s technology through a bankruptcy deal highlights the risks and strategies in acquiring AI assets with legal liabilities.</description>
     </item>
     <item>
+<<<<<<< HEAD
       <title>Welcome Beam: a 501B open model you can own, customize, and scale</title>
       <link>https://maksym.site/radar/2026-10-16-welcome-beam-501b-open-model-you-can-own-customize-scale/</link>
       <guid>https://maksym.site/radar/2026-10-16-welcome-beam-501b-open-model-you-can-own-customize-scale/</guid>
@@ -48,6 +49,8 @@
       <description>Google DeepMind has made Gemini 4 Argon globally available, and the launch notes include measurable results from internal use rather than benchmark scores alone.</description>
     </item>
     <item>
+=======
+>>>>>>> parent of e13faaa (radar: 2026-10-15)
       <title>Gemini 4 Argon: Built to solve your hardest problems</title>
       <link>https://maksym.site/radar/2026-10-14-gemini-4-argon-built-solve-your-hardest-problems/</link>
       <guid>https://maksym.site/radar/2026-10-14-gemini-4-argon-built-solve-your-hardest-problems/</guid>
