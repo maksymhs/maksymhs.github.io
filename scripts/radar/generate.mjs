@@ -157,6 +157,7 @@ function page({ title, description, path, body, jsonld }) {
         <a href="/citadel/">Citadel</a>
         <a href="/about/">About</a>
         <a href="/radar/">Radar</a>
+        <a href="/about/#contact">Contact</a>
       </nav>
       ${TOGGLE}
     </header>
