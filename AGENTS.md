@@ -4,7 +4,7 @@ Personal site of Maksym (https://maksym.site), a Senior Backend Engineer. Static
 
 ## Layout
 
-- `site/`: the published site (HTML, CSS, JS, `llms.txt`, `llms-full.txt`, `persona.txt`, `cv.pdf`, `radar/`). Pushing to `main` deploys it (`.github/workflows/deploy.yml`).
+- `site/`: the published site (HTML, CSS, JS, `llms.txt`, `llms-full.txt`, `persona.txt`, `cv.pdf`, `radar/`). Pages: `index.html` (minimal hub), `about/` (CV, chat, contact), `citadel/` (landing of the Citadel project, with its screenshots) and `radar/`. Pushing to `main` deploys it (`.github/workflows/deploy.yml`).
 - `worker/`: Cloudflare Worker `api` at `api.maksym.site`: `/chat` (Ask my CV), `/lead` (contact form to Telegram) and `/mcp` (public MCP server). Deploy with `cd worker && npx wrangler deploy`.
 - `scripts/radar/`: daily radar generator. `STYLE.md` is the writing guide used by the scheduled routine.
 - `cv/cv.tex`: LaTeX source of the public CV. Compile with pdflatex or xelatex, then replace `site/cv.pdf`.
@@ -12,7 +12,7 @@ Personal site of Maksym (https://maksym.site), a Senior Backend Engineer. Static
 
 ## Sources of truth (edit once, everything follows)
 
-- Facts about Maksym: `site/llms-full.txt`. The chat, the MCP server (`get_profile`, `get_section`), the "Copy as prompt" button and the radar all read it. The homepage (`site/index.html`) and the CV are written by hand: keep them consistent with it.
+- Facts about Maksym: `site/llms-full.txt`. The chat, the MCP server (`get_profile`, `get_section`), the "Copy as prompt" button and the radar all read it. The About page (`site/about/index.html`), the Citadel landing (`site/citadel/index.html`) and the CV are written by hand: keep them consistent with it.
 - How an assistant talks as Maksym: `site/persona.txt`. Used by the "Open in Claude/ChatGPT" buttons, "Copy as prompt" and the MCP prompt `talk_to_maksym` (the worker keeps an identical fallback in `PERSONA`).
 - Chat system prompt: `system()` in `worker/src/index.js`.
 
@@ -23,8 +23,8 @@ Personal site of Maksym (https://maksym.site), a Senior Backend Engineer. Static
 - No phone or email on the site or in the public CV. Contact goes through the form, Calendly and LinkedIn.
 - Assistants speaking as Maksym must say they are an AI version of his CV.
 - No secrets in the repo. Worker secrets: `LLM_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (set with `pbpaste | npx wrangler secret put NAME`; typing into `!` prompts uploads an empty value). The chat uses Workers AI first (`CF_MODEL`) and OpenRouter (`LLM_MODEL`) as fallback.
-- Radar posts: first person, honest, sources linked; never copy article text. Run `node scripts/radar/generate.mjs --render-only` after hand edits to regenerate index, RSS, sitemap, `llms.txt` and the homepage block.
-- The only repo that is public besides this one is `maksymhs/maksymhs` (GitHub profile README). Do not link private repositories.
+- Radar posts: first person, honest, sources linked; never copy article text. Run `node scripts/radar/generate.mjs --render-only` after hand edits to regenerate index, RSS, sitemap, `llms.txt` and the radar block of the About page.
+- The repos that are public besides this one are `maksymhs/maksymhs` (GitHub profile README) and `maksymhs/Citadel` (the project of the landing; keep its claims in line with its README). Do not link private repositories.
 
 ## Checks before pushing
 

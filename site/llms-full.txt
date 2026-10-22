@@ -4,7 +4,7 @@
 
 - Website: https://maksym.site
 - Book a call: https://calendly.com/maksymhe
-- Contact form: https://maksym.site/#contact
+- Contact form: https://maksym.site/about/#contact
 - MCP server (Streamable HTTP, no auth): https://api.maksym.site/mcp
 - LinkedIn: https://www.linkedin.com/in/herasymenko
 - GitHub: https://github.com/maksymhs
@@ -21,7 +21,7 @@ About this file: it is the source of truth for AI assistants answering questions
 - Work authorization: authorized to work in the EU.
 - Domains: banking, fintech, telco and other regulated, high-traffic products.
 - Languages: Spanish, Russian, Ukrainian (native), English (professional).
-- First step: a 20-minute intro call (https://calendly.com/maksymhe) or the contact form (https://maksym.site/#contact).
+- First step: a 20-minute intro call (https://calendly.com/maksymhe) or the contact form (https://maksym.site/about/#contact).
 
 ## Not published here
 
@@ -105,7 +105,7 @@ Where each technology appears in his roles (dates from the Experience section). 
 - Why "Senior"? His contract title has been Software Engineer at every employer. After 10 years, and given the scope of his work (leading an architecture migration, building observability from scratch, building internal tooling), he positions himself as senior.
 - What kind of roles is he looking for? Senior backend, platform or fintech engineering in banking, fintech and other regulated, high-traffic products.
 - How can I verify his work? His CV is at https://maksym.site/cv.pdf, the code of this site is open source (https://github.com/maksymhs/maksymhs.github.io) and he publishes a daily radar (https://maksym.site/radar/).
-- How do I start? Book a 20-minute call (https://calendly.com/maksymhe) or use the contact form (https://maksym.site/#contact).
+- How do I start? Book a 20-minute call (https://calendly.com/maksymhe) or use the contact form (https://maksym.site/about/#contact).
 
 ## Education
 
@@ -114,6 +114,7 @@ Where each technology appears in his roles (dates from the Experience section). 
 
 ## Side projects
 
+- Citadel (https://maksym.site/citadel/, source https://github.com/maksymhs/Citadel): open-source (MIT), self-hosted command center for projects, persistent tmux terminals and AI coding agents (Claude Code, Codex CLI, OpenCode and others). Includes an AES-256-GCM credential vault, machines paired by QR code, health alerts and a task mesh with an MCP server. Node.js, Fastify, SQLite; runs on 512 MB of RAM.
 - This site, open source (https://github.com/maksymhs/maksymhs.github.io): static site on GitHub Pages, a Cloudflare Worker (chat, contact form, MCP server) and the daily radar automation.
-- Ask my CV (https://maksym.site/#ask): the assistant on his site, an LLM grounded on this profile, served from a Cloudflare Worker with streaming.
+- Ask my CV (https://maksym.site/about/#ask): the assistant on his site, an LLM grounded on this profile, served from a Cloudflare Worker with streaming.
 - Public MCP server (https://api.maksym.site/mcp): this profile exposed over the Model Context Protocol so any AI assistant can read it or send him a message.

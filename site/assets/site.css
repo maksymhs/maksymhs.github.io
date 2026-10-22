@@ -367,6 +367,75 @@ main section:not(.hero) > h2::before {
 #radar .radar-items { margin-top: 1rem; }
 .post-end { margin: 1rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: .9375rem; }
 
+/* Home hub and Citadel landing */
+.hub { display: grid; gap: .875rem; margin: 3rem 0 0; padding: 0; list-style: none; }
+.hub li { margin: 0; }
+.hub-card {
+  display: flex; flex-direction: column; gap: .5rem; height: 100%;
+  padding: 1.5rem; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--soft); text-decoration: none;
+  transition: border-color .15s, transform .2s;
+}
+.hub-card:hover { border-color: var(--accent); color: var(--fg); transform: translateY(-2px); }
+.hub-card .kicker { margin: 0; }
+.hub-title { font: 400 1.625rem/1.2 var(--serif); letter-spacing: -.01em; }
+.hub-desc { flex: 1; font-size: .9375rem; color: var(--muted); }
+.hub-go { margin-top: .5rem; font-size: .875rem; font-weight: 500; color: var(--accent); }
+.home .actions { margin-top: 2.5rem; }
+@media (min-width: 840px) { .hub { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 960px) { .home main .hero { padding-top: 8rem; } }
+
+.landing main .hero .kicker { margin-bottom: 1.25rem; }
+.landing .install { margin: 2rem 0 0; max-width: 46rem; }
+.landing .hint { margin: .625rem 0 0; font-size: .8125rem; color: var(--muted); }
+.landing .hint code, .landing .more code { font: .875em var(--mono); }
+.landing .role { max-width: 40rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; margin: 2rem 0 0; padding: 0; list-style: none; }
+.chips li {
+  margin: 0; padding: .25rem .75rem;
+  border: 1px solid var(--line); border-radius: 999px;
+  font: 500 .8125rem/1.5 var(--mono); color: var(--muted);
+}
+.chips.agents { margin-top: 1.25rem; }
+.chips.agents li { color: var(--fg); background: var(--soft); }
+.shot { margin: 3rem 0 0; }
+.shot img {
+  width: 100%; height: auto;
+  border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 24px 60px -24px color-mix(in srgb, var(--fg) 40%, transparent);
+}
+.shot-light { display: var(--moon); }
+.shot-dark { display: var(--sun); }
+
+.landing main section:not(.hero) { display: block; }
+.landing main section:not(.hero) > h2 { position: static; font-size: 1.5rem; }
+.landing main section:not(.hero) > h2::before { content: none; }
+.landing main section:not(.hero) > :not(h2) { max-width: 46rem; }
+.landing main section:not(.hero) > .feats, .landing main section:not(.hero) > .diagram { max-width: none; }
+.landing .more { margin-top: 1.5rem; font-size: .9375rem; }
+kbd { padding: .05em .4em; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; font: .8125em var(--mono); }
+
+.feats { display: grid; gap: 1px; margin: 1.5rem 0 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--line); }
+.feats article { padding: 1.5rem; background: var(--bg); transition: background .15s; }
+.feats article:hover { background: var(--soft); }
+.feats .kicker { margin-bottom: .375rem; }
+.feats h3 { margin-bottom: .5rem; font-family: var(--serif); font-size: 1.25rem; font-weight: 400; }
+.feats p:last-child { margin: 0; font-size: .9375rem; color: var(--muted); }
+.feats code { font: .875em var(--mono); }
+@media (min-width: 640px) { .feats { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 960px) { .feats { grid-template-columns: repeat(4, 1fr); } }
+
+.diagram { margin: 2rem 0 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); overflow-x: auto; }
+.diagram svg { display: block; min-width: 34rem; width: 100%; height: auto; color: var(--muted); }
+.dg-box rect { fill: var(--bg); stroke: var(--line); stroke-width: 1.25; }
+.dg-box.accent rect { stroke: var(--accent); }
+.dg-box.dashed rect { stroke-dasharray: 5 4; }
+.dg-t { fill: var(--fg); font: 600 15px var(--sans); }
+.dg-s { fill: var(--muted); font: 12px var(--sans); }
+.dg-line { fill: none; stroke: currentColor; stroke-width: 1.5; }
+.landing .panel.plain { padding-top: .5rem; }
+.landing .sub code { font: .9em var(--mono); }
+
 @media print {
   @page { size: A4; margin: 13mm 15mm; }
   html, body { background: #fff; }

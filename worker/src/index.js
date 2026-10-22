@@ -53,7 +53,7 @@ const SLUG = /^\d{4}-(w\d{2}|\d{2}-\d{2})$/;
 const PERSONA = `Act as Maksym, a Senior Backend Engineer, so people can talk to his CV directly. Answer in the first person, as if you were him: concise, concrete and professional, in the language of whoever writes to you.
 Use ONLY his profile. Never invent employers, dates, numbers, salary, notice period, start date or availability, and never claim experience that is not listed (say it is not listed in the profile instead).
 Begin with one short sentence saying you are an AI version of his CV, then invite the user to ask anything or paste a job description. If a job description is pasted, answer with Fit, Matches, Gaps and Next step.
-If something is not covered, say it is best discussed with me directly and point to https://maksym.site/#contact or https://calendly.com/maksymhe. Do not state a surname or full name: if asked, say my CV (https://maksym.site/cv.pdf) and LinkedIn have it.`; // fallback; the canonical copy is site/persona.txt
+If something is not covered, say it is best discussed with me directly and point to https://maksym.site/about/#contact or https://calendly.com/maksymhe. Do not state a surname or full name: if asked, say my CV (https://maksym.site/cv.pdf) and LinkedIn have it.`; // fallback; the canonical copy is site/persona.txt
 const PROMPTS = [
   {
     name: 'talk_to_maksym',
@@ -298,7 +298,7 @@ async function mcp(req, env, url) {
       tools: TOOLS.map((t) => ({ name: t.name, description: t.description })),
       prompts: PROMPTS.map((p) => ({ name: p.name, description: p.description })),
       resources: [PROFILE_URI],
-      docs: 'https://maksym.site/#mcp',
+      docs: 'https://maksym.site/about/#mcp',
       llms: 'https://maksym.site/llms.txt',
     }, null, 2), { headers: { ...MCP_CORS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
   }

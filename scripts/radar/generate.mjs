@@ -154,9 +154,11 @@ function page({ title, description, path, body, jsonld }) {
     <header class="top">
       <a class="brand" href="/">Maksym</a>
       <nav class="nav" aria-label="Site">
+        <a href="/citadel/">Citadel</a>
+        <a href="/about/">About</a>
         <a href="/radar/">Radar</a>
-        <a href="/#ask">Ask my CV</a>
-        <a href="/#contact">Contact</a>
+        <a href="/about/#ask">Ask my CV</a>
+        <a href="/about/#contact">Contact</a>
       </nav>
       ${TOGGLE}
     </header>
@@ -200,7 +202,7 @@ function issuePage(issue, items) {
         <ol class="radar-items">
 ${list}
         </ol>
-        <p class="post-end"><a href="/radar/">← All issues</a> · <a href="/#ask">Ask my CV</a></p>
+        <p class="post-end"><a href="/radar/">← All issues</a> · <a href="/about/#ask">Ask my CV</a></p>
       </article>`,
   });
 }
@@ -252,12 +254,14 @@ ${items}
 
 async function sitemapXml(issues) {
   const current = await readFile(new URL('sitemap.xml', SITE), 'utf8').catch(() => '');
-  const home = current.match(/<loc>https:\/\/maksym\.site\/<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/)?.[1] || new Date().toISOString().slice(0, 10);
+  const today = new Date().toISOString().slice(0, 10);
+  const stamp = (path) => current.match(new RegExp(`<loc>https://maksym\\.site${path}</loc>\\s*<lastmod>([^<]+)</lastmod>`))?.[1] || today;
+  const home = stamp('/');
   const url = (loc, lastmod, freq, prio) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${prio}</priority>\n  </url>`;
   const latest = issues[0]?.date.slice(0, 10) || home;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
+${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, stamp('/citadel/'), 'monthly', '0.9'), url(`${ORIGIN}/about/`, stamp('/about/'), 'monthly', '0.9'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
 </urlset>
 `;
 }
@@ -272,7 +276,7 @@ async function updateLlms(issues) {
 }
 
 async function updateHome(issues) {
-  const file = new URL('index.html', SITE);
+  const file = new URL('about/index.html', SITE);
   const current = await readFile(file, 'utf8').catch(() => null);
   if (!current || !current.includes('<!-- radar-home:start -->')) return;
   const items = issues.slice(0, 3).map((i) => `            <li>
