@@ -13,13 +13,6 @@
       <description>After seven preview rounds, structured concurrency is final in JDK 28, with no API changes from the last preview. Fan-out code in Java backends gets a lifetime you can read in the code.</description>
     </item>
     <item>
-      <title>Pinterest&#39;s Event Time Watermarks for Petabyte-Scale Data</title>
-      <link>https://maksym.site/radar/2026-10-19/</link>
-      <guid>https://maksym.site/radar/2026-10-19/</guid>
-      <pubDate>Mon, 19 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Pinterest has introduced an event time-based partition finalization mechanism for its database ingestion framework, allowing downstream jobs to determine when streaming data is sufficiently complete to consume.</description>
-    </item>
-    <item>
       <title>Spring AI 2.1 milestone: tool calls and reasoning become typed message parts</title>
       <link>https://maksym.site/radar/2026-10-13/</link>
       <guid>https://maksym.site/radar/2026-10-13/</guid>

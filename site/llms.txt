@@ -28,10 +28,10 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
 - [JEP 543 makes structured concurrency final in JDK 28](https://maksym.site/radar/2026-10-22/): After seven preview rounds, structured concurrency is final in JDK 28, with no API changes from the last preview. Fan-out code in Java backends gets a lifetime you can read in the code.
-- [Pinterest's Event Time Watermarks for Petabyte-Scale Data](https://maksym.site/radar/2026-10-19/): Pinterest has introduced an event time-based partition finalization mechanism for its database ingestion framework, allowing downstream jobs to determine when streaming data is sufficiently complete to consume.
 - [Spring AI 2.1 milestone: tool calls and reasoning become typed message parts](https://maksym.site/radar/2026-10-13/): Agent code lives or dies on how it replays model output between turns. Spring AI 2.1.0-M1 changes the message model for that, and fixes a silent timeout bug.
 - [Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles](https://maksym.site/radar/2026-10-09/): A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud's new train builds on it, with a Resilience4J bump.
 - [Multi-agent systems need boundaries, tests and traces](https://maksym.site/radar/2026-10-08/): Spotify's talk on production multi-agent systems reads like a distributed-systems lesson: ownership, guardrails in code and tracing before evaluation.
+- [Grab halves p99 latency by redesigning its counter storage](https://maksym.site/radar/2026-10-07/): A careful storage migration at about a billion requests a day: an abstraction layer, shadow traffic and a data model that needs fewer round trips.
 <!-- radar:end -->
 
 ## Optional
