@@ -28,10 +28,10 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
 - [JEP 543 makes structured concurrency final in JDK 28](https://maksym.site/radar/2026-10-22/): After seven preview rounds, structured concurrency is final in JDK 28, with no API changes from the last preview. Fan-out code in Java backends gets a lifetime you can read in the code.
-- [Physicist Christopher Stubbs joins Anthropic's Long-Term Benefit Trust](https://maksym.site/radar/2026-10-21/): Today's picks start with Anthropic: Physicist Christopher Stubbs joins Anthropic's Long-Term Benefit Trust
 - [Claude designs protein binders against scorpion neurotoxins](https://maksym.site/radar/2026-10-20/): Anthropic's Claude designed protein binders against scorpion neurotoxins, and Cloudflare introduced tsrs, a TypeScript compiler ported to Rust.
 - [Disney's $12.5M deal for Character.AI tech avoids lawsuits](https://maksym.site/radar/2026-10-19/): Disney's acquisition of Character.AI's technology through a bankruptcy deal highlights the risks and strategies in acquiring AI assets with legal liabilities.
 - [Spring AI 2.1 milestone: tool calls and reasoning become typed message parts](https://maksym.site/radar/2026-10-13/): Agent code lives or dies on how it replays model output between turns. Spring AI 2.1.0-M1 changes the message model for that, and fixes a silent timeout bug.
+- [Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles](https://maksym.site/radar/2026-10-09/): A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud's new train builds on it, with a Resilience4J bump.
 <!-- radar:end -->
 
 ## Optional
