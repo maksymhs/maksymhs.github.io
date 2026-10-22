@@ -9,6 +9,10 @@ on:
     - cron: '17 5 * * *'
   workflow_dispatch:
     inputs:
+      date:
+        description: Post date YYYY-MM-DD (default today); only for filling a missing day
+        type: string
+        default: ''
       dry_run:
         description: Write the post with the real LLM and print it, without publishing
         type: boolean
@@ -28,6 +32,7 @@ jobs:
     timeout-minutes: 15
     env:
       RADAR_TOKEN: ${{ secrets.RADAR_TOKEN }}
+      RADAR_DATE: ${{ inputs.date }}
     steps:
       - uses: actions/checkout@v4
 
@@ -55,7 +60,7 @@ jobs:
       - name: Commit and deploy
         run: |
           [ -z "$(git status --porcelain)" ] && exit 0
-          date=$(TZ=Europe/Madrid date +%F)
+          date=${RADAR_DATE:-$(TZ=Europe/Madrid date +%F)}
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A site

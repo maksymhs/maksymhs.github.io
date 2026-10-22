@@ -87,8 +87,8 @@ From the numbered candidates return the ids ranked by substance and relevance fo
 Habr candidates (Russian) are welcome when they are real engineering write-ups; list the best ones separately.
 Return only JSON: {"ranked":[up to 8 ids, best first, any source],"habr":[up to 3 ids of Habr candidates, best first]}`;
 
-function candidates() {
-  const r = spawnSync('node', ['scripts/radar/generate.mjs', '--dry-run', '--json'], { cwd: new URL(ROOT).pathname, env: { ...process.env, DAYS: '3' }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+function candidates(days) {
+  const r = spawnSync('node', ['scripts/radar/generate.mjs', '--dry-run', '--json'], { cwd: new URL(ROOT).pathname, env: { ...process.env, DAYS: String(days) }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   if (r.status !== 0) throw new Error(`feed collection failed: ${r.stderr.slice(0, 300)}`);
   return JSON.parse(r.stdout);
 }
@@ -99,7 +99,8 @@ async function main() {
 
   const issues = JSON.parse(await read('site/radar/issues.json').catch(() => '[]'));
   const known = new Set(issues.flatMap((i) => i.links || []));
-  const all = candidates().filter((c) => !known.has(c.link) && c.date <= today);
+  const since = new Date(Date.parse(today) - 3 * 86400000).toISOString().slice(0, 10);
+  const all = candidates(Math.ceil((Date.now() - Date.parse(since)) / 86400000) + 1).filter((c) => !known.has(c.link) && c.date <= today && c.date >= since);
   const habr = all.filter((c) => c.source === 'Habr').slice(0, 14);
   const rest = all.filter((c) => c.source !== 'Habr').slice(0, 50);
   const list = [...rest, ...habr];
