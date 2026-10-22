@@ -75,6 +75,20 @@
     ]
   },
   {
+    "slug": "2026-10-16-welcome-beam-501b-open-model-you-can-own-customize-scale",
+    "kind": "daily",
+    "year": 2026,
+    "week": 42,
+    "title": "Welcome Beam: a 501B open model you can own, customize, and scale",
+    "intro": "Today's picks start with Hugging Face: Welcome Beam: a 501B open model you can own, customize, and scale",
+    "date": "2026-10-16T06:00:00.000Z",
+    "count": 2,
+    "links": [
+      "https://huggingface.co/blog/reflection-beam",
+      "https://www.anthropic.com/research/redesigning-source-control"
+    ]
+  },
+  {
     "slug": "2026-10-15-gemini-4-argon-google-agentic-coding-model-ships-concrete",
     "kind": "daily",
     "year": 2026,
