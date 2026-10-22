@@ -156,6 +156,7 @@ function page({ title, description, path, body, jsonld }) {
       <nav class="nav" aria-label="Site">
         <a href="/citadel/">Citadel</a>
         <a href="/about/">About</a>
+        <a href="/radar/">Radar</a>
       </nav>
       ${TOGGLE}
     </header>
