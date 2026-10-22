@@ -60,7 +60,7 @@ Run it by hand: Actions → "Radar daily" → Run workflow, or `RADAR_TOKEN=... 
 
 ```bash
 node scripts/radar/generate.mjs --dry-run --json            # candidate articles from feeds.json (last DAYS days)
-node scripts/radar/generate.mjs --publish post.json         # validate, check links, write the post, rebuild index/RSS/sitemap/llms.txt/About page radar block
+node scripts/radar/generate.mjs --publish post.json         # validate, check links, write the post, rebuild index/RSS/sitemap/llms.txt/home page radar block
 node scripts/radar/generate.mjs --render-only               # rebuild radar index, RSS and sitemap
 ```
 

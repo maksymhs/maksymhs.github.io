@@ -381,6 +381,7 @@ main section:not(.hero) > h2::before {
 .hub-desc { flex: 1; font-size: .9375rem; color: var(--muted); }
 .hub-go { margin-top: .5rem; font-size: .875rem; font-weight: 500; color: var(--accent); }
 .home .actions { margin-top: 2.5rem; }
+.home main section:not(.hero) > h2::before { content: none; }
 @media (min-width: 840px) { .hub { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 960px) { .home main .hero { padding-top: 8rem; } }
 

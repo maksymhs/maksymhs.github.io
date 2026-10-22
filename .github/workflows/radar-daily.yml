@@ -40,7 +40,7 @@ jobs:
           files=$(git status --porcelain | awk '{print $2}')
           [ -z "$files" ] && { echo "Nothing to publish."; exit 0; }
           echo "$files"
-          bad=$(echo "$files" | grep -vE '^(site/radar/|site/sitemap\.xml$|site/llms\.txt$|site/about/index\.html$)' || true)
+          bad=$(echo "$files" | grep -vE '^(site/radar/|site/sitemap\.xml$|site/llms\.txt$|site/index\.html$)' || true)
           if [ -n "$bad" ]; then
             echo "::error::The run touched files outside the radar:"; echo "$bad"; exit 1
           fi

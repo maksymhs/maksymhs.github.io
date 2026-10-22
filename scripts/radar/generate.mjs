@@ -275,7 +275,7 @@ async function updateLlms(issues) {
 }
 
 async function updateHome(issues) {
-  const file = new URL('about/index.html', SITE);
+  const file = new URL('index.html', SITE);
   const current = await readFile(file, 'utf8').catch(() => null);
   if (!current || !current.includes('<!-- radar-home:start -->')) return;
   const items = issues.slice(0, 3).map((i) => `            <li>

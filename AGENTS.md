@@ -23,7 +23,7 @@ Personal site of Maksym (https://maksym.site), a Senior Backend Engineer. Static
 - No phone or email on the site or in the public CV. Contact goes through the form, Calendly and LinkedIn.
 - Assistants speaking as Maksym must say they are an AI version of his CV.
 - No secrets in the repo. Worker secrets: `LLM_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `RADAR_TOKEN` (also a GitHub Actions secret with the same value) (set with `pbpaste | npx wrangler secret put NAME`; typing into `!` prompts uploads an empty value). The chat uses Workers AI first (`CF_MODEL`) and OpenRouter (`LLM_MODEL`) as fallback.
-- Radar posts: first person, honest, sources linked; never copy article text. Run `node scripts/radar/generate.mjs --render-only` after hand edits to regenerate index, RSS, sitemap, `llms.txt` and the radar block of the About page.
+- Radar posts: first person, honest, sources linked; never copy article text. Run `node scripts/radar/generate.mjs --render-only` after hand edits to regenerate index, RSS, sitemap, `llms.txt` and the radar block of the home page.
 - The repos that are public besides this one are `maksymhs/maksymhs` (GitHub profile README) and `maksymhs/Citadel` (the project of the landing; keep its claims in line with its README). Do not link private repositories.
 
 ## Checks before pushing
