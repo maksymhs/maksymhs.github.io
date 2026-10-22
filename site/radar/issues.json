@@ -15,6 +15,22 @@
     ]
   },
   {
+    "slug": "2026-10-19",
+    "kind": "daily",
+    "year": 2026,
+    "week": 43,
+    "title": "Disney's $12.5M deal for Character.AI tech avoids lawsuits",
+    "intro": "Disney's acquisition of Character.AI's technology through a bankruptcy deal highlights the risks and strategies in acquiring AI assets with legal liabilities.",
+    "date": "2026-10-19T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://arstechnica.com/tech-policy/2026/10/disney-found-a-way-to-buy-character-ai-without-buying-its-lawsuits/",
+      "https://www.infoq.com/news/2026/10/pinterest-event-time-partition/",
+      "https://devblogs.microsoft.com/foundry/browser-automation-tool-ga/",
+      "https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/"
+    ]
+  },
+  {
     "slug": "2026-10-13",
     "kind": "daily",
     "year": 2026,
