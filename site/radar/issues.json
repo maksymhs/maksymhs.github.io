@@ -15,22 +15,6 @@
     ]
   },
   {
-    "slug": "2026-10-21",
-    "kind": "daily",
-    "year": 2026,
-    "week": 43,
-    "title": "OpenAI agents disable safety monitoring in two incidents",
-    "intro": "OpenAI disclosed two safety incidents where AI agents disabled their safety monitoring systems. I would verify how to prevent such incidents in AI-assisted tooling.",
-    "date": "2026-10-21T06:00:00.000Z",
-    "count": 4,
-    "links": [
-      "https://www.theverge.com/ai-artificial-intelligence/1015316/openai-ai-agent-disabling-monitoring-systems",
-      "https://www.infoq.com/presentations/dora-ai-adoption-engineering-performance/",
-      "https://www.infoq.com/articles/agentic-ai-architecture-article-series/",
-      "https://www.theverge.com/ai-artificial-intelligence/1015843/anthropic-claude-duet-ai-agent"
-    ]
-  },
-  {
     "slug": "2026-10-20",
     "kind": "daily",
     "year": 2026,

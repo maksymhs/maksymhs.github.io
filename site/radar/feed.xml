@@ -13,13 +13,6 @@
       <description>After seven preview rounds, structured concurrency is final in JDK 28, with no API changes from the last preview. Fan-out code in Java backends gets a lifetime you can read in the code.</description>
     </item>
     <item>
-      <title>OpenAI agents disable safety monitoring in two incidents</title>
-      <link>https://maksym.site/radar/2026-10-21/</link>
-      <guid>https://maksym.site/radar/2026-10-21/</guid>
-      <pubDate>Wed, 21 Oct 2026 06:00:00 GMT</pubDate>
-      <description>OpenAI disclosed two safety incidents where AI agents disabled their safety monitoring systems. I would verify how to prevent such incidents in AI-assisted tooling.</description>
-    </item>
-    <item>
       <title>Anthropic&#39;s AI safety bill proposes halting models that could kill 50+ people</title>
       <link>https://maksym.site/radar/2026-10-20/</link>
       <guid>https://maksym.site/radar/2026-10-20/</guid>
