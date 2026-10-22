@@ -15,22 +15,6 @@
     ]
   },
   {
-    "slug": "2026-10-21",
-    "kind": "daily",
-    "year": 2026,
-    "week": 43,
-    "title": "TypeScript compiler ported to Rust for speed and efficiency",
-    "intro": "Cloudflare and partners have ported the TypeScript compiler to Rust, achieving significant performance improvements.",
-    "date": "2026-10-21T06:00:00.000Z",
-    "count": 4,
-    "links": [
-      "https://blog.cloudflare.com/typescript-rust-port/",
-      "https://aws.amazon.com/blogs/aws/introducing-amazon-ecs-gateway-a-fully-managed-ingress-solution-for-ecs-services/",
-      "https://www.infoq.com/news/2026/10/cilium-120-kubernetes-networking/",
-      "https://habr.com/ru/companies/spring_aio/articles/1096850/"
-    ]
-  },
-  {
     "slug": "2026-10-20",
     "kind": "daily",
     "year": 2026,
