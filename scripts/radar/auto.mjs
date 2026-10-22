@@ -63,6 +63,14 @@ function json(text) {
 const words = (s) => s.trim().split(/\s+/).filter(Boolean).length;
 const nums = (s) => [...s.matchAll(/\d+(?:[.,]\d+)*/g)].map((m) => m[0].replace(/[.,]+$/, '')).filter((n) => !/^\d$/.test(n) && n !== '10');
 
+function paragraphs(html) {
+  const body = html.match(/<article\b[\s\S]*?<\/article>/i)?.[0] || html.match(/<main\b[\s\S]*?<\/main>/i)?.[0] || html;
+  return [...body.matchAll(/<(p|li|h[1-4])\b[^>]*>([\s\S]*?)<\/\1>/gi)]
+    .map((m) => htmlText(m[2]))
+    .filter((t) => t.length >= 50)
+    .join('\n');
+}
+
 function htmlText(html) {
   let h = html.replace(/<(script|style|noscript|svg|nav|header|footer|aside|form)\b[\s\S]*?<\/\1>/gi, ' ');
   h = h.match(/<article\b[\s\S]*?<\/article>/i)?.[0] || h.match(/<main\b[\s\S]*?<\/main>/i)?.[0] || h;
@@ -75,12 +83,17 @@ async function article(c, limit) {
   try {
     const res = await fetch(c.link, { headers: { 'User-Agent': UA, 'Accept-Language': 'en,ru;q=0.8' }, redirect: 'follow', signal: AbortSignal.timeout(25000) });
     if (res.ok) {
-      const t = htmlText(await res.text());
+      const page = await res.text();
+      const t = paragraphs(page);
       if (t.length > 1200) return t.slice(0, limit);
+      const full = htmlText(page);
+      if (full.length > 1200) return full.slice(0, limit);
     }
   } catch { }
   return c.snippet && c.snippet.length > 400 ? c.snippet : null;
 }
+
+const FACTS = `Extract the facts of this article for a tech radar. Write 5 to 8 short plain-English bullet points ("- ..."): what happened, names, versions, and numbers exactly as the text states them, plus any limitation the text mentions. Facts only: no opinion, no advice, nothing that is not in the text. If the text is in Russian, write the facts in English. Return only the bullets.`;
 
 const SELECT = `You choose what Maksym, a Senior Backend Engineer (Java, Spring Boot, distributed systems, AWS, observability, banking and fintech), should comment on in his tech radar today.
 From the numbered candidates return the ids ranked by substance and relevance for backend engineers and engineering managers: Java/Spring/JVM, distributed systems and architecture, resilience, observability, cloud, security, fintech and AI-assisted engineering. Skip marketing, funding news, listicles, job posts, release-note one-liners and anything without technical substance.
@@ -127,10 +140,14 @@ async function main() {
   const ru = (await withText(hids, 4000)).slice(0, 1);
   let more = [...others, ...ru].slice(0, 3);
 
+  await Promise.all([main, ...more].map(async (c) => {
+    c.facts = (await llm([{ role: 'system', content: FACTS }, { role: 'user', content: `Title: ${c.title}\n\n${c.text.slice(0, 7000)}` }], 700)).trim();
+  }));
+
   const style = await read('scripts/radar/STYLE.md');
   const profile = await read('site/llms-full.txt');
-  const system = `You write today's post for the tech radar of Maksym's personal site, in first person as Maksym. Follow this style guide for voice and honesty (ignore its publishing steps and file format):\n\n${style}\n\nPROFILE (the only source of facts about Maksym):\n${profile}\n\nRules for this job: use only facts that are in the ARTICLE text given for each item; if the article does not say something, do not say it. Do not copy sentences. Quote numbers exactly as the article states them and attribute them ("according to InfoQ"). Mention Maksym's experience only if it genuinely applies and only with facts from the PROFILE. The main_take is NOT a summary: use at most four sentences to say what happened (names and numbers from the article), then at least two sentences in first person ("I", "I would", "I would check") on why it matters in practice for backend teams and what you would verify before adopting it. For Russian articles write in English, mention naturally that the article is in Russian and what it contains. Speak only as Maksym, never as a company: do not use \"we\", \"our\" or \"us\". Never state or imply personal experience: do not say that you use, built, worked with or have experience with anything, do not name any employer, and do not mention \"my systems\", \"my team\" or \"my own\" anything; connections to Maksym's experience are added by hand, not here. Give your opinion instead: why it matters in practice and what you would verify or watch. Do not end every take with the same formula such as \"I would check\": vary the closing, and for the more_takes a plain remark on why the item is worth a look is enough. No emojis, no hype, no markdown, no bullet lists.\nReturn only JSON: {"title": "10-90 chars, specific headline, no date", "intro": "30-400 chars", "main_take": "100-170 words", "more_takes": [${more.map(() => '"1-3 sentences (60-500 characters)"').join(', ')}]}`;
-  const block = (c, label) => `### ${label}\nSource: ${c.source}\nTitle: ${c.title}\nDate: ${c.date}\nARTICLE TEXT:\n${c.text}`;
+  const system = `You write today's post for the tech radar of Maksym's personal site, in first person as Maksym. Follow this style guide for voice and honesty (ignore its publishing steps and file format):\n\n${style}\n\nPROFILE (the only source of facts about Maksym):\n${profile}\n\nRules for this job: use only the FACTS given for each item; if they do not say something, do not say it. Do not copy sentences. Quote numbers exactly as the article states them and attribute them ("according to InfoQ"). Mention Maksym's experience only if it genuinely applies and only with facts from the PROFILE. The main_take is NOT a summary: use at most four sentences to say what happened (names and numbers from the article), then at least two sentences in first person ("I", "I would", "I would check") on why it matters in practice for backend teams and what you would verify before adopting it. For Russian articles write in English, mention naturally that the article is in Russian and what it contains. Speak only as Maksym, never as a company: do not use \"we\", \"our\" or \"us\". Never state or imply personal experience: do not say that you use, built, worked with or have experience with anything, do not name any employer, and do not mention \"my systems\", \"my team\" or \"my own\" anything; connections to Maksym's experience are added by hand, not here. Give your opinion instead: why it matters in practice and what you would verify or watch. Do not end every take with the same formula such as \"I would check\": vary the closing, and for the more_takes a plain remark on why the item is worth a look is enough. No emojis, no hype, no markdown, no bullet lists.\nReturn only JSON: {"title": "10-90 chars, specific headline, no date", "intro": "30-400 chars", "main_take": "120-150 words", "more_takes": [${more.map(() => '"1-3 sentences (60-500 characters)"').join(', ')}]}`;
+  const block = (c, label) => `### ${label}\nSource: ${c.source}\nTitle: ${c.title}\nDate: ${c.date}\nFACTS:\n${c.facts}`;
   const user = [block(main, 'MAIN'), ...more.map((c, i) => block(c, `MORE ${i + 1}`))].join('\n\n');
 
   let sources = [main, ...more];
@@ -158,7 +175,7 @@ async function main() {
     });
     takes.forEach((t, i) => {
       if (typeof t !== 'string') return;
-      const src = sources[i]?.text.replace(/(\d),(\d)/g, '$1.$2') || '';
+      const src = `${sources[i]?.text || ''} ${sources[i]?.facts || ''}`.replace(/(\d),(\d)/g, '$1.$2');
       const missing = nums(t).filter((n) => !src.includes(n) && !profileNums.has(n));
       if (missing.length) bad.push(`${i ? `more_takes[${i - 1}]` : 'main_take'} has numbers that are not in its article: ${missing.join(', ')}. Remove them or state only what the article says`);
       if (/[\u{1F300}-\u{1FAFF}☀-➿]/u.test(t)) bad.push('no emojis');
