@@ -15,22 +15,6 @@
     ]
   },
   {
-    "slug": "2026-10-19",
-    "kind": "daily",
-    "year": 2026,
-    "week": 43,
-    "title": "Meta's Thin Orchestrator: A New Pattern for AI Agent Reliability",
-    "intro": "Meta's new thin orchestrator pattern improves AI agent reliability by simplifying the router's role, a practical approach for backend teams managing complex workflows.",
-    "date": "2026-10-19T06:00:00.000Z",
-    "count": 4,
-    "links": [
-      "https://engineering.fb.com/2026/10/19/ml-applications/thin-orchestrator-ai-agent-architecture/",
-      "https://arstechnica.com/tech-policy/2026/10/disney-found-a-way-to-buy-character-ai-without-buying-its-lawsuits/",
-      "https://blog.cloudflare.com/clairic-extraction-model/",
-      "https://www.technologyreview.com/2026/10/19/1147186/making-the-internet-better-for-ai-agents-might-make-it-worse-for-everyone-else/"
-    ]
-  },
-  {
     "slug": "2026-10-13",
     "kind": "daily",
     "year": 2026,
