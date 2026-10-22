@@ -6,6 +6,13 @@
     <description>Daily backend, cloud and fintech engineering picks with commentary.</description>
     <language>en</language>
     <item>
+      <title>JEP 543 makes structured concurrency final in JDK 28</title>
+      <link>https://maksym.site/radar/2026-10-22/</link>
+      <guid>https://maksym.site/radar/2026-10-22/</guid>
+      <pubDate>Thu, 22 Oct 2026 06:00:00 GMT</pubDate>
+      <description>After seven preview rounds, structured concurrency is final in JDK 28, with no API changes from the last preview. Fan-out code in Java backends gets a lifetime you can read in the code.</description>
+    </item>
+    <item>
       <title>Spring AI 2.1 milestone: tool calls and reasoning become typed message parts</title>
       <link>https://maksym.site/radar/2026-10-13/</link>
       <guid>https://maksym.site/radar/2026-10-13/</guid>

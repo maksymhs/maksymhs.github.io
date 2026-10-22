@@ -1,5 +1,20 @@
 [
   {
+    "slug": "2026-10-22",
+    "kind": "daily",
+    "year": 2026,
+    "week": 43,
+    "title": "JEP 543 makes structured concurrency final in JDK 28",
+    "intro": "After seven preview rounds, structured concurrency is final in JDK 28, with no API changes from the last preview. Fan-out code in Java backends gets a lifetime you can read in the code.",
+    "date": "2026-10-22T06:00:00.000Z",
+    "count": 3,
+    "links": [
+      "https://www.infoq.com/news/2026/10/jep-543-jdk-28/",
+      "https://www.infoq.com/articles/spring-batch-without-broker/",
+      "https://www.infoq.com/news/2026/10/netflix-workload-attestation-aws/"
+    ]
+  },
+  {
     "slug": "2026-10-13",
     "kind": "daily",
     "year": 2026,
