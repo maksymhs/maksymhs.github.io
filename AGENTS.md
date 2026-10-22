@@ -5,10 +5,10 @@ Personal site of Maksym (https://maksym.site), a Senior Backend Engineer. Static
 ## Layout
 
 - `site/`: the published site (HTML, CSS, JS, `llms.txt`, `llms-full.txt`, `persona.txt`, `cv.pdf`, `radar/`). Pages: `index.html` (minimal hub), `about/` (CV, chat, contact), `citadel/` (landing of the Citadel project, with its screenshots) and `radar/`. Pushing to `main` deploys it (`.github/workflows/deploy.yml`).
-- `worker/`: Cloudflare Worker `api` at `api.maksym.site`: `/chat` (Ask me), `/lead` (contact form to Telegram) and `/mcp` (public MCP server). Deploy with `cd worker && npx wrangler deploy`.
-- `scripts/radar/`: daily radar generator. `STYLE.md` is the writing guide used by the scheduled routine.
+- `worker/`: Cloudflare Worker `api` at `api.maksym.site`: `/chat` (Ask me), `/lead` (contact form to Telegram), `/mcp` (public MCP server) and, behind the `RADAR_TOKEN` bearer, `/draft` (the chat's LLM without streaming) and `/radar-notify` (Telegram report) for the radar. Deploy with `cd worker && npx wrangler deploy`.
+- `scripts/radar/`: radar. `auto.mjs` is the autonomous daily publisher run by `radar-daily.yml`; `generate.mjs` validates and renders; `STYLE.md` is the writing guide the LLM follows.
 - `cv/cv.tex`: LaTeX source of the public CV. Compile with pdflatex or xelatex, then replace `site/cv.pdf`.
-- `.github/workflows/`: `deploy.yml` (Pages, adds asset hashes), `radar-automerge.yml` (merges `radar/*` PRs that only touch radar files, then triggers the deploy).
+- `.github/workflows/`: `deploy.yml` (Pages, adds asset hashes), `radar-daily.yml` (publishes the daily post and starts the deploy), `radar-automerge.yml` (merges hand-made `radar/*` PRs that only touch radar files, then triggers the deploy).
 
 ## Sources of truth (edit once, everything follows)
 
@@ -22,7 +22,7 @@ Personal site of Maksym (https://maksym.site), a Senior Backend Engineer. Static
 - The surname appears only in the CV (`cv/cv.tex`, `site/cv.pdf`) and inside the LinkedIn URL. Use "Maksym" everywhere else, and keep the chat and MCP rule that never states or infers it.
 - No phone or email on the site or in the public CV. Contact goes through the form, Calendly and LinkedIn.
 - Assistants speaking as Maksym must say they are an AI version of his CV.
-- No secrets in the repo. Worker secrets: `LLM_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (set with `pbpaste | npx wrangler secret put NAME`; typing into `!` prompts uploads an empty value). The chat uses Workers AI first (`CF_MODEL`) and OpenRouter (`LLM_MODEL`) as fallback.
+- No secrets in the repo. Worker secrets: `LLM_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `RADAR_TOKEN` (also a GitHub Actions secret with the same value) (set with `pbpaste | npx wrangler secret put NAME`; typing into `!` prompts uploads an empty value). The chat uses Workers AI first (`CF_MODEL`) and OpenRouter (`LLM_MODEL`) as fallback.
 - Radar posts: first person, honest, sources linked; never copy article text. Run `node scripts/radar/generate.mjs --render-only` after hand edits to regenerate index, RSS, sitemap, `llms.txt` and the radar block of the About page.
 - The repos that are public besides this one are `maksymhs/maksymhs` (GitHub profile README) and `maksymhs/Citadel` (the project of the landing; keep its claims in line with its README). Do not link private repositories.
 

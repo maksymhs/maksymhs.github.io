@@ -1,6 +1,6 @@
 # Daily radar: how to write a post
 
-Used by the scheduled agent that publishes one post per day to https://maksym.site/radar/. Read it fully before writing.
+Used by whoever writes the daily post for https://maksym.site/radar/: normally `scripts/radar/auto.mjs` (run by `.github/workflows/radar-daily.yml`, the LLM gets this file as its guide), or a human or agent publishing by hand. Read it fully before writing.
 
 ## Goal
 

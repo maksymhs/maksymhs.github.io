@@ -141,6 +141,7 @@ export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (url.pathname === '/mcp') return mcp(req, env, url);
+    if (url.pathname === '/draft' || url.pathname === '/radar-notify') return radarApi(req, env, url);
 
     const origin = req.headers.get('Origin') || '';
     const allowed = (env.ALLOWED_ORIGINS || 'https://maksym.site').split(',').map((s) => s.trim());
@@ -187,6 +188,71 @@ async function chat(body, env, ctx, cors) {
   return new Response(toClient, {
     headers: { ...cors, 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-store' },
   });
+}
+
+// Used by the radar GitHub Action (scripts/radar/auto.mjs). Server-to-server, so it skips the browser Origin
+// check and is protected by a shared bearer token (secret RADAR_TOKEN, also stored as a GitHub secret).
+async function radarApi(req, env, url) {
+  if (req.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, {});
+  const sent = (req.headers.get('Authorization') || '').replace(/^Bearer /, '');
+  if (!env.RADAR_TOKEN || !(await sameSecret(sent, env.RADAR_TOKEN))) return json({ error: 'unauthorized' }, 401, {});
+  let body;
+  try { body = await req.json(); } catch { return json({ error: 'bad_json' }, 400, {}); }
+
+  if (url.pathname === '/radar-notify') {
+    const text = typeof body.text === 'string' ? body.text.slice(0, 3500) : '';
+    if (!text) return json({ error: 'bad_request' }, 400, {});
+    return json({ ok: await telegram(env, text) }, 200, {});
+  }
+
+  const messages = (Array.isArray(body.messages) ? body.messages : [])
+    .filter((m) => ['system', 'user', 'assistant'].includes(m?.role) && typeof m.content === 'string' && m.content.trim())
+    .map((m) => ({ role: m.role, content: m.content.slice(0, 60000) }));
+  if (!messages.length) return json({ error: 'bad_request' }, 400, {});
+  const maxTokens = Math.min(Math.max(Number(body.max_tokens) || 1500, 100), 3000);
+  const temperature = Math.min(Math.max(Number(body.temperature ?? 0.3), 0), 1);
+
+  const out = (await completeWorkersAi(env, messages, maxTokens, temperature)) || (await completeOpenRouter(env, messages, maxTokens, temperature));
+  if (!out) return json({ error: 'upstream_error' }, 502, {});
+  return json(out, 200, {});
+}
+
+async function sameSecret(a, b) {
+  const enc = new TextEncoder();
+  const [x, y] = await Promise.all([a, b].map((v) => crypto.subtle.digest('SHA-256', enc.encode(v))));
+  const ax = new Uint8Array(x);
+  const ay = new Uint8Array(y);
+  let diff = 0;
+  for (let i = 0; i < ax.length; i++) diff |= ax[i] ^ ay[i];
+  return diff === 0;
+}
+
+async function completeWorkersAi(env, messages, max_tokens, temperature) {
+  if (!env.AI) return null;
+  const model = env.CF_MODEL || '@cf/meta/llama-3.1-8b-instruct-fp8';
+  try {
+    const out = await env.AI.run(model, { messages, max_tokens, temperature });
+    const text = out?.response ?? out?.choices?.[0]?.message?.content;
+    return typeof text === 'string' && text.trim() ? { text, model } : null;
+  } catch (e) {
+    console.log(JSON.stringify({ workers_ai_error: String(e).slice(0, 300) }));
+    return null;
+  }
+}
+
+async function completeOpenRouter(env, messages, max_tokens, temperature) {
+  if (!env.LLM_API_KEY) return null;
+  const res = await fetch(env.LLM_URL, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${env.LLM_API_KEY}`, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://maksym.site', 'X-Title': 'maksym.site' },
+    body: JSON.stringify({ model: env.LLM_MODEL, temperature, max_tokens, messages }),
+  });
+  if (!res.ok) {
+    console.log(JSON.stringify({ upstream_status: res.status, upstream_body: (await res.text()).slice(0, 500) }));
+    return null;
+  }
+  const text = (await res.json())?.choices?.[0]?.message?.content;
+  return typeof text === 'string' && text.trim() ? { text, model: env.LLM_MODEL } : null;
 }
 
 async function workersAi(env, messages) {

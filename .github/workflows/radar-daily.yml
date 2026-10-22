@@ -1,0 +1,69 @@
+name: Radar daily
+
+# Publishes one radar post per day without a human or a Claude session: scripts/radar/auto.mjs picks the articles,
+# reads them, asks the Worker's LLM (the one behind "Ask me") to write the take, validates it and publishes.
+# Secret needed: RADAR_TOKEN, the same value as the Worker secret of that name.
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: radar-daily
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      RADAR_TOKEN: ${{ secrets.RADAR_TOKEN }}
+      RADAR_SUMMARY: ${{ runner.temp }}/radar-summary.txt
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Write the post
+        id: post
+        run: node scripts/radar/auto.mjs
+
+      - name: Only radar files changed
+        run: |
+          files=$(git status --porcelain | awk '{print $2}')
+          [ -z "$files" ] && { echo "Nothing to publish."; exit 0; }
+          echo "$files"
+          bad=$(echo "$files" | grep -vE '^(site/radar/|site/sitemap\.xml$|site/llms\.txt$|site/about/index\.html$)' || true)
+          if [ -n "$bad" ]; then
+            echo "::error::The run touched files outside the radar:"; echo "$bad"; exit 1
+          fi
+
+      - name: Commit and deploy
+        run: |
+          [ -z "$(git status --porcelain)" ] && exit 0
+          date=$(TZ=Europe/Madrid date +%F)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A site
+          git commit -m "radar: $date"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          # Pushes made with GITHUB_TOKEN do not trigger other workflows, so start the deploy explicitly.
+          gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Telegram report
+        if: always()
+        run: |
+          [ -s "$RADAR_SUMMARY" ] || exit 0
+          [ -n "$RADAR_TOKEN" ] || exit 0
+          jq -n --rawfile t "$RADAR_SUMMARY" '{text: $t}' | curl -sS -m 30 -X POST https://api.maksym.site/radar-notify \
+            -H "Authorization: Bearer $RADAR_TOKEN" -H 'Content-Type: application/json' -d @- || true

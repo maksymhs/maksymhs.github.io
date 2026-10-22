@@ -48,7 +48,15 @@ The chat and the forms call `https://api.maksym.site` (Cloudflare Worker), which
 
 A daily post at `/radar/<YYYY-MM-DD>/`: one main pick with a take plus up to three short ones, in Maksym's voice, drafted with AI assistance. Only titles, links and original commentary are published.
 
-A scheduled Claude routine writes `/tmp/post.json` following `scripts/radar/STYLE.md`, runs the publisher and opens a PR from `radar/<date>`. `.github/workflows/radar-automerge.yml` merges it if it only touches radar files and then starts the deploy.
+The post is written by `.github/workflows/radar-daily.yml` (every day, 05:17 UTC): `scripts/radar/auto.mjs` collects the feeds, asks the Worker's LLM (the one behind "Ask me", route `POST /draft`) to rank the candidates, reads the chosen articles, asks it for the headline and the takes following `scripts/radar/STYLE.md`, validates them and publishes through `generate.mjs --publish`. Links, titles, sources and dates always come from the feeds; every number in a take must appear in the article it comments on; one slot is reserved for the best Habr article (Russian, summarised in English). If nothing passes validation it publishes nothing and reports to Telegram through the Worker (`POST /radar-notify`). The workflow commits straight to `main` and starts the deploy.
+
+Secret: `RADAR_TOKEN`, the same random value as a Worker secret and a GitHub Actions secret:
+
+```bash
+T=$(openssl rand -hex 32); echo "$T" | (cd worker && npx wrangler secret put RADAR_TOKEN); echo "$T" | gh secret set RADAR_TOKEN -R maksymhs/maksymhs.github.io
+```
+
+Run it by hand: Actions → "Radar daily" → Run workflow, or `RADAR_TOKEN=... node scripts/radar/auto.mjs --dry-run` to print the post without publishing. Humans and agents can still publish a post written by hand with `--publish`; `radar-automerge.yml` merges `radar/*` PRs that only touch radar files.
 
 ```bash
 node scripts/radar/generate.mjs --dry-run --json            # candidate articles from feeds.json (last DAYS days)
@@ -56,7 +64,7 @@ node scripts/radar/generate.mjs --publish post.json         # validate, check li
 node scripts/radar/generate.mjs --render-only               # rebuild radar index, RSS and sitemap
 ```
 
-Setup: the repo must allow Actions to merge PRs into `main` (no required reviews or status checks on it). The old weekly generator (run without `--publish`) still works with `LLM_API_KEY` but no longer runs on a schedule.
+Setup: Actions must be allowed to push to `main` (no required reviews or status checks on it). The old weekly generator (run without `--publish`) still works with `LLM_API_KEY` but no longer runs on a schedule.
 
 ## Worker
 
