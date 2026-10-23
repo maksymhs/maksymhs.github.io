@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-10-23-agent-skills-standard-donated-agentic-ai-foundation",
+    "kind": "daily",
+    "year": 2026,
+    "week": 43,
+    "title": "Agent Skills standard donated to the Agentic AI Foundation",
+    "intro": "Anthropic has donated the Agent Skills open standard to the newly formed Agentic AI Foundation, a move that could shape how agentic tooling interoperates across platforms. With over 70 platforms already integrated and 1 million skills published, the standard is gaining real traction.",
+    "date": "2026-10-23T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.anthropic.com/news/donating-agent-skills-to-the-agentic-ai-foundation",
+      "https://thenewstack.io/openai-donates-open-responses/",
+      "https://www.infoq.com/presentations/actors-for-production-ai-agents/",
+      "https://inside.java/2026/10/23/confined-pools/"
+    ]
+  },
+  {
     "slug": "2026-10-22-jep-543-makes-structured-concurrency-final-jdk-28",
     "kind": "daily",
     "year": 2026,

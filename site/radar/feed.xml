@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Agent Skills standard donated to the Agentic AI Foundation</title>
+      <link>https://maksym.site/radar/2026-10-23-agent-skills-standard-donated-agentic-ai-foundation/</link>
+      <guid>https://maksym.site/radar/2026-10-23-agent-skills-standard-donated-agentic-ai-foundation/</guid>
+      <pubDate>Fri, 23 Oct 2026 06:00:00 GMT</pubDate>
+      <description>Anthropic has donated the Agent Skills open standard to the newly formed Agentic AI Foundation, a move that could shape how agentic tooling interoperates across platforms. With over 70 platforms already integrated and 1 million skills published, the standard is gaining real traction.</description>
+    </item>
+    <item>
       <title>JEP 543 makes structured concurrency final in JDK 28</title>
       <link>https://maksym.site/radar/2026-10-22-jep-543-makes-structured-concurrency-final-jdk-28/</link>
       <guid>https://maksym.site/radar/2026-10-22-jep-543-makes-structured-concurrency-final-jdk-28/</guid>

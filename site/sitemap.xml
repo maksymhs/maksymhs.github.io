@@ -20,15 +20,21 @@
   </url>
   <url>
     <loc>https://maksym.site/radar/</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://maksym.site/radar/page/2/</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://maksym.site/radar/2026-10-23-agent-skills-standard-donated-agentic-ai-foundation/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://maksym.site/radar/2026-10-22-jep-543-makes-structured-concurrency-final-jdk-28/</loc>
