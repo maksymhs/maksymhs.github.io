@@ -1,5 +1,18 @@
 [
   {
+    "slug": "2026-10-25-google-gemini-4-argon-optimizes-adk-codebase-40-session-overhead",
+    "kind": "daily",
+    "year": 2026,
+    "week": 43,
+    "title": "Google's Gemini 4 Argon optimizes ADK codebase with 40% session overhead reduction",
+    "intro": "Google's Gemini 4 Argon completed an 11-hour unattended optimization run on the Agent Development Kit codebase, producing two accepted changes that cut session-preparation overhead by 40% and cold import time by 21%. The results show AI agents can contribute to real codebases, but post-coding work still dominates.",
+    "date": "2026-10-25T06:00:00.000Z",
+    "count": 1,
+    "links": [
+      "https://www.infoq.com/news/2026/10/google-argon-optimizes-adk/"
+    ]
+  },
+  {
     "slug": "2026-10-24-openai-says-will-no-longer-train-ai-models-live-internet-citing",
     "kind": "daily",
     "year": 2026,

@@ -20,15 +20,21 @@
   </url>
   <url>
     <loc>https://maksym.site/radar/</loc>
-    <lastmod>2026-10-24</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://maksym.site/radar/page/2/</loc>
-    <lastmod>2026-10-24</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://maksym.site/radar/2026-10-25-google-gemini-4-argon-optimizes-adk-codebase-40-session-overhead/</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://maksym.site/radar/2026-10-24-openai-says-will-no-longer-train-ai-models-live-internet-citing/</loc>
