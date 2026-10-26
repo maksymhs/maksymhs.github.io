@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Java Champions on GitHub Copilot: agentic workflows and virtual-thread pitfalls</title>
+      <link>https://maksym.site/radar/2026-10-26-java-champions-github-copilot-agentic-workflows-virtual-thread/</link>
+      <guid>https://maksym.site/radar/2026-10-26-java-champions-github-copilot-agentic-workflows-virtual-thread/</guid>
+      <pubDate>Mon, 26 Oct 2026 06:00:00 GMT</pubDate>
+      <description>GitHub Copilot is moving from autocomplete to agentic workflows, and three Java Champions share how they actually use it in practice, including one case where it helped trace a virtual-thread pinning bug.</description>
+    </item>
+    <item>
       <title>Google&#39;s Gemini 4 Argon optimizes ADK codebase with 40% session overhead reduction</title>
       <link>https://maksym.site/radar/2026-10-25-google-gemini-4-argon-optimizes-adk-codebase-40-session-overhead/</link>
       <guid>https://maksym.site/radar/2026-10-25-google-gemini-4-argon-optimizes-adk-codebase-40-session-overhead/</guid>

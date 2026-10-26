@@ -1,5 +1,19 @@
 [
   {
+    "slug": "2026-10-26-java-champions-github-copilot-agentic-workflows-virtual-thread",
+    "kind": "daily",
+    "year": 2026,
+    "week": 44,
+    "title": "Java Champions on GitHub Copilot: agentic workflows and virtual-thread pitfalls",
+    "intro": "GitHub Copilot is moving from autocomplete to agentic workflows, and three Java Champions share how they actually use it in practice, including one case where it helped trace a virtual-thread pinning bug.",
+    "date": "2026-10-26T06:00:00.000Z",
+    "count": 2,
+    "links": [
+      "https://foojay.io/today/java-champions-github-copilot/",
+      "https://www.infoq.com/news/2026/10/MCP-CSharp-SDK-Stateless/"
+    ]
+  },
+  {
     "slug": "2026-10-25-google-gemini-4-argon-optimizes-adk-codebase-40-session-overhead",
     "kind": "daily",
     "year": 2026,
