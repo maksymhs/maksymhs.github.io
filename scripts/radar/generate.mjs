@@ -138,7 +138,7 @@ function page({ title, description, path, body, jsonld, head = '' }) {
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 ${head}  <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#11151b" media="(prefers-color-scheme: dark)">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=f1bc167">
   <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
   <meta property="og:type" content="article">
   <meta property="og:url" content="${ORIGIN}${path}">
@@ -155,7 +155,7 @@ ${head}  <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme
   <a class="skip" href="#content">Skip to content</a>
   <div class="wrap">
     <header class="top">
-      <a class="brand" href="/"><img class="brand-icon" src="/avatar.svg" width="28" height="28" alt="">Maksym</a>
+      <a class="brand" href="/"><img class="brand-icon" src="/avatar.svg?v=f1bc167" width="28" height="28" alt="">Maksym</a>
       <nav class="nav" aria-label="Site">
         <a href="/citadel/">Citadel</a>
         <a href="/about/">About</a>
