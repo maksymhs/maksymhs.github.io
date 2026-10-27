@@ -88,7 +88,19 @@ li::marker { color: var(--muted); }
 .nav { display: none; gap: 1.25rem; font-size: .875rem; }
 .nav a { color: var(--muted); text-decoration: none; }
 .nav a:hover { color: var(--fg); }
+.nav a[aria-current="page"] { color: var(--fg); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: .35em; }
 @media (min-width: 600px) { .nav { display: flex; } }
+@media (max-width: 599px) {
+  .top { flex-wrap: wrap; gap: .5rem 1rem; }
+  .top .brand { order: 1; }
+  .top .theme { order: 2; }
+  .top .nav {
+    display: flex; order: 3; flex: 0 0 100%; gap: 1.25rem;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .top .nav::-webkit-scrollbar { display: none; }
+  .top .nav a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+}
 
 .theme {
   display: inline-grid; place-items: center;
