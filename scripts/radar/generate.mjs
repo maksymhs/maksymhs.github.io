@@ -136,8 +136,8 @@ function page({ title, description, path, body, jsonld, head = '' }) {
   <meta name="description" content="${esc(description)}">
   <link rel="canonical" href="${ORIGIN}${path}">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-${head}  <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#131312" media="(prefers-color-scheme: dark)">
+${head}  <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#11151b" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
   <meta property="og:type" content="article">
