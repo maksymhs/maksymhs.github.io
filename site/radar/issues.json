@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-10-27-anthropic-files-s-1-sec-proposed-initial-public-offering",
+    "kind": "daily",
+    "year": 2026,
+    "week": 44,
+    "title": "Anthropic files S-1 with the SEC for proposed initial public offering",
+    "intro": "Today's picks start with Anthropic: Anthropic files S-1 with the SEC for proposed initial public offering",
+    "date": "2026-10-27T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.anthropic.com/news/s1-sec",
+      "https://thenewstack.io/claude-codes-enterprise-20-to-1/",
+      "https://latent.space/p/ainews-anthropic-s1/",
+      "https://foojay.io/today/what-jstack-misses-when-your-java-service-uses-virtual-threads/"
+    ]
+  },
+  {
     "slug": "2026-10-26-java-champions-github-copilot-agentic-workflows-virtual-thread",
     "kind": "daily",
     "year": 2026,
