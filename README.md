@@ -11,7 +11,6 @@ site/
 ├── index.html          # All content (semantic HTML, SEO, ProfilePage JSON-LD)
 ├── llms.txt            # llmstxt.org index for AI crawlers (radar block auto-updated)
 ├── llms-full.txt       # Full profile in Markdown: source of truth for the chat and MCP
-├── cv.pdf              # Generated from the print stylesheet (max 2 A4 pages)
 ├── radar/              # Weekly tech radar (generated, reviewed via PR)
 ├── 404.html
 ├── og.png              # Social preview (1200×630)
@@ -25,11 +24,11 @@ scripts/radar/          # Radar generator (Node, no dependencies) + feeds.json
 
 No framework and no build step: GitHub Actions publishes `site/` to GitHub Pages on every push to `main`.
 
-When you change your experience, update `index.html` (content, JSON-LD and FAQ), `llms-full.txt` (the chat and MCP read it, cached 5 min) and, if needed, the summary in `llms.txt`; then regenerate the CV (print stylesheet of `index.html`, must stay within 2 A4 pages):
+When you change your experience, update `index.html` (content, JSON-LD and FAQ), `llms-full.txt` (the chat and MCP read it, cached 5 min) and, if needed, the summary in `llms.txt`. The site does not publish a CV PDF.
 
 ```bash
 python3 -m http.server 8000 -d site &
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --no-pdf-header-footer --print-to-pdf=site/cv.pdf http://localhost:8000/
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --no-pdf-header-footer --print-to-pdf=/tmp/maksym-cv.pdf http://localhost:8000/
 ```
 
 ## Run locally
@@ -42,7 +41,7 @@ The chat and the forms call `https://api.maksym.site` (Cloudflare Worker), which
 
 ## CV
 
-`cv/cv.tex` is the LaTeX source of the public CV (no phone or email; contact goes through LinkedIn and the site). Compile it with pdflatex or xelatex (Overleaf: upload `cv.tex` and `perfil.jpg`), then replace `site/cv.pdf`. Facts must match `site/llms-full.txt`. Set `\photofalse` in `cv.tex` for ATS-only submissions.
+`cv/cv.tex` is the LaTeX source for a local CV PDF (no phone or email; contact goes through LinkedIn and the site). The PDF is not published on the site. Compile it locally with pdflatex or xelatex (Overleaf: upload `cv.tex` and `perfil.jpg`). Facts must match `site/llms-full.txt`. Set `\photofalse` in `cv.tex` for ATS-only submissions.
 
 ## Radar
 

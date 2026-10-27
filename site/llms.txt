@@ -12,7 +12,6 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [About](https://maksym.site/about/): human-readable profile with experience, selected work and FAQ
 - [Citadel](https://maksym.site/citadel/): his open-source, self-hosted command center for terminals and AI coding agents (https://github.com/maksymhs/Citadel)
 - [Home](https://maksym.site/): entry point to the sections
-- [CV (PDF)](https://maksym.site/cv.pdf): two-page CV
 
 ## Interact
 
