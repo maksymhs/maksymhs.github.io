@@ -20,15 +20,21 @@
   </url>
   <url>
     <loc>https://maksym.site/radar/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://maksym.site/radar/page/2/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://maksym.site/radar/2026-10-28-deepmind-genie-4-brings-realistic-physics-audio-world-models/</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://maksym.site/radar/2026-10-27-anthropic-files-s-1-sec-proposed-initial-public-offering/</loc>

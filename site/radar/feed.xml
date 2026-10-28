@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>DeepMind&#39;s Genie 4 brings realistic physics and audio to world models</title>
+      <link>https://maksym.site/radar/2026-10-28-deepmind-genie-4-brings-realistic-physics-audio-world-models/</link>
+      <guid>https://maksym.site/radar/2026-10-28-deepmind-genie-4-brings-realistic-physics-audio-world-models/</guid>
+      <pubDate>Wed, 28 Oct 2026 06:00:00 GMT</pubDate>
+      <description>DeepMind&#39;s new Genie 4 world model promises more realistic physics and audio, but it has limits. I would check how it handles long-term consistency before adopting it.</description>
+    </item>
+    <item>
       <title>Anthropic files S-1 with the SEC for proposed initial public offering</title>
       <link>https://maksym.site/radar/2026-10-27-anthropic-files-s-1-sec-proposed-initial-public-offering/</link>
       <guid>https://maksym.site/radar/2026-10-27-anthropic-files-s-1-sec-proposed-initial-public-offering/</guid>

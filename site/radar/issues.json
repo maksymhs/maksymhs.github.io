@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-10-28-deepmind-genie-4-brings-realistic-physics-audio-world-models",
+    "kind": "daily",
+    "year": 2026,
+    "week": 44,
+    "title": "DeepMind's Genie 4 brings realistic physics and audio to world models",
+    "intro": "DeepMind's new Genie 4 world model promises more realistic physics and audio, but it has limits. I would check how it handles long-term consistency before adopting it.",
+    "date": "2026-10-28T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://arstechnica.com/google/2026/10/deepminds-genie-4-world-model-adds-audio-and-more-realistic-people-to-simulations/",
+      "https://www.anthropic.com/research/early-progress-drug-development",
+      "https://inside.java/2026/10/27/quality-heads-up/",
+      "https://foojay.io/today/java-new-features-in-production/"
+    ]
+  },
+  {
     "slug": "2026-10-27-anthropic-files-s-1-sec-proposed-initial-public-offering",
     "kind": "daily",
     "year": 2026,
