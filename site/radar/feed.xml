@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Mistral&#39;s Le Chonk: open-weight model targets coding and cyber defense</title>
+      <link>https://maksym.site/radar/2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense/</link>
+      <guid>https://maksym.site/radar/2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense/</guid>
+      <pubDate>Fri, 30 Oct 2026 06:00:00 GMT</pubDate>
+      <description>Mistral released Mistral Large 4 (Le Chonk), a 1-trillion-parameter open-weight model trained on European infrastructure, claiming leads in coding and defensive cybersecurity benchmarks.</description>
+    </item>
+    <item>
       <title>Gemini 4 Carbon: Our next frontier model</title>
       <link>https://maksym.site/radar/2026-10-29-gemini-4-carbon-our-next-frontier-model/</link>
       <guid>https://maksym.site/radar/2026-10-29-gemini-4-carbon-our-next-frontier-model/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-05-aws-treats-digital-sovereignty-architecture-question/</guid>
       <pubDate>Mon, 05 Oct 2026 06:00:00 GMT</pubDate>
       <description>The new Well-Architected lens turns sovereignty into five design questions, a useful framing for regulated European workloads.</description>
-    </item>
-    <item>
-      <title>Cloudflare Traces puts the whole request path in one trace</title>
-      <link>https://maksym.site/radar/2026-10-02-cloudflare-traces-puts-whole-request-path-one-trace/</link>
-      <guid>https://maksym.site/radar/2026-10-02-cloudflare-traces-puts-whole-request-path-one-trace/</guid>
-      <pubDate>Fri, 02 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Tracing that starts at the edge and continues into your origin over W3C and OpenTelemetry standards closes a common blind spot.</description>
     </item>
   </channel>
 </rss>

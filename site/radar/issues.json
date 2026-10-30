@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense",
+    "kind": "daily",
+    "year": 2026,
+    "week": 44,
+    "title": "Mistral's Le Chonk: open-weight model targets coding and cyber defense",
+    "intro": "Mistral released Mistral Large 4 (Le Chonk), a 1-trillion-parameter open-weight model trained on European infrastructure, claiming leads in coding and defensive cybersecurity benchmarks.",
+    "date": "2026-10-30T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://mistral.ai/news/mistral-large-4-oss/",
+      "https://inside.java/2026/10/29/podcast-073/",
+      "https://latent.space/p/ainews-gemini-4-carbon/",
+      "https://www.wired.com/story/mistral-says-le-chonk-surpasses-chinese-models-cybersecurity/"
+    ]
+  },
+  {
     "slug": "2026-10-29-gemini-4-carbon-our-next-frontier-model",
     "kind": "daily",
     "year": 2026,
