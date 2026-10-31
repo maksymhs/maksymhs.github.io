@@ -26,11 +26,11 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [All issues](https://maksym.site/radar/): daily news from the LLM and AI world and backend engineering, with a short take on each (RSS and MCP available)
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
+- [BoxLang AI 3.6 Adds Browser, Audio, and MCP Modules for JVM Agents](https://maksym.site/radar/2026-10-31-boxlang-ai-3-6-adds-browser-audio-mcp-modules-jvm-agents/): Ortus Solutions released BoxLang AI 3.6, extending its JVM-based productivity platform with browser automation, audio processing, and a stdio MCP client. The update is relevant as teams look for ways to embed agentic capabilities directly into existing Java stacks without spinning up separate runtimes.
 - [Mistral's Le Chonk: open-weight model targets coding and cyber defense](https://maksym.site/radar/2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense/): Mistral released Mistral Large 4 (Le Chonk), a 1-trillion-parameter open-weight model trained on European infrastructure, claiming leads in coding and defensive cybersecurity benchmarks.
 - [Gemini 4 Carbon: Our next frontier model](https://maksym.site/radar/2026-10-29-gemini-4-carbon-our-next-frontier-model/): Today's picks start with Google DeepMind: Gemini 4 Carbon: Our next frontier model
 - [DeepMind's Genie 4 brings realistic physics and audio to world models](https://maksym.site/radar/2026-10-28-deepmind-genie-4-brings-realistic-physics-audio-world-models/): DeepMind's new Genie 4 world model promises more realistic physics and audio, but it has limits. I would check how it handles long-term consistency before adopting it.
 - [Anthropic files S-1 with the SEC for proposed initial public offering](https://maksym.site/radar/2026-10-27-anthropic-files-s-1-sec-proposed-initial-public-offering/): Today's picks start with Anthropic: Anthropic files S-1 with the SEC for proposed initial public offering
-- [Java Champions on GitHub Copilot: agentic workflows and virtual-thread pitfalls](https://maksym.site/radar/2026-10-26-java-champions-github-copilot-agentic-workflows-virtual-thread/): GitHub Copilot is moving from autocomplete to agentic workflows, and three Java Champions share how they actually use it in practice, including one case where it helped trace a virtual-thread pinning bug.
 <!-- radar:end -->
 
 ## Optional

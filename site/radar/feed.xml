@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>BoxLang AI 3.6 Adds Browser, Audio, and MCP Modules for JVM Agents</title>
+      <link>https://maksym.site/radar/2026-10-31-boxlang-ai-3-6-adds-browser-audio-mcp-modules-jvm-agents/</link>
+      <guid>https://maksym.site/radar/2026-10-31-boxlang-ai-3-6-adds-browser-audio-mcp-modules-jvm-agents/</guid>
+      <pubDate>Sat, 31 Oct 2026 06:00:00 GMT</pubDate>
+      <description>Ortus Solutions released BoxLang AI 3.6, extending its JVM-based productivity platform with browser automation, audio processing, and a stdio MCP client. The update is relevant as teams look for ways to embed agentic capabilities directly into existing Java stacks without spinning up separate runtimes.</description>
+    </item>
+    <item>
       <title>Mistral&#39;s Le Chonk: open-weight model targets coding and cyber defense</title>
       <link>https://maksym.site/radar/2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense/</link>
       <guid>https://maksym.site/radar/2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-06-opentelemetry-kubernetes-processor-hits-1-0-renames-plan/</guid>
       <pubDate>Tue, 06 Oct 2026 06:00:00 GMT</pubDate>
       <description>A stable release is good news for observability pipelines. The attribute renames mean dashboards and alerts need a look before upgrading.</description>
-    </item>
-    <item>
-      <title>AWS treats digital sovereignty as an architecture question</title>
-      <link>https://maksym.site/radar/2026-10-05-aws-treats-digital-sovereignty-architecture-question/</link>
-      <guid>https://maksym.site/radar/2026-10-05-aws-treats-digital-sovereignty-architecture-question/</guid>
-      <pubDate>Mon, 05 Oct 2026 06:00:00 GMT</pubDate>
-      <description>The new Well-Architected lens turns sovereignty into five design questions, a useful framing for regulated European workloads.</description>
     </item>
   </channel>
 </rss>
