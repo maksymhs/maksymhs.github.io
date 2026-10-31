@@ -27,7 +27,7 @@
 
   // Shared progressive enhancement: normal profile/contact links remain the fallback.
   try {
-    const response = await fetch('/assets/connect.html?v=12c576c7');
+    const response = await fetch('/assets/connect.html?v=9cad4f74');
     if (!response.ok) throw new Error('Panel unavailable');
     document.body.insertAdjacentHTML('beforeend', await response.text());
   } catch { /* Keep navigation and the LinkedIn contact alternative available. */ }
@@ -43,12 +43,35 @@
       tab.tabIndex = on ? 0 : -1;
       $(tab.getAttribute('aria-controls')).hidden = !on;
     });
-    $('connectTitle').textContent = mode === 'contact' ? 'Send a message' : 'Explore my profile';
+    $('connectTitle').textContent = mode === 'contact' ? 'Get in touch' : 'Ask about my work';
+  };
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let panelMotion;
+  let closing = false;
+  const frames = () => matchMedia('(max-width: 599px)').matches
+    ? [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'translateY(0)' }]
+    : [{ opacity: 0, transform: 'translateY(12px) scale(.97)' }, { opacity: 1, transform: 'translateY(0) scale(1)' }];
+  const closeConnect = () => {
+    if (!dialog?.open || closing) return;
+    closing = true;
+    panelMotion?.cancel();
+    if (reducedMotion.matches) { dialog.close(); return; }
+    dialog.classList.add('is-closing');
+    panelMotion = dialog.animate([...frames()].reverse(), { duration: 140, easing: 'ease-in', fill: 'both' });
+    panelMotion.finished.then(() => { dialog.close(); }).catch(() => {});
   };
   const openConnect = (mode = 'ask', focusInput = true) => {
     if (!dialog || typeof dialog.showModal !== 'function') return;
     selectConnect(mode);
-    if (!dialog.open) dialog.showModal();
+    if (closing) {
+      closing = false;
+      panelMotion?.cancel();
+      dialog.classList.remove('is-closing');
+    }
+    if (!dialog.open) {
+      dialog.showModal();
+      if (!reducedMotion.matches) panelMotion = dialog.animate(frames(), { duration: 220, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    }
     root.classList.add('connect-open');
     launcher.setAttribute('aria-expanded', 'true');
     if (focusInput) $(mode === 'contact' ? 'contactMessage' : 'chatInput').focus({ preventScroll: true });
@@ -57,7 +80,8 @@
   if (dialog && typeof dialog.showModal === 'function') {
     launcher.hidden = false;
     launcher.addEventListener('click', () => openConnect());
-    $('connectClose').addEventListener('click', () => dialog.close());
+    $('connectClose').addEventListener('click', closeConnect);
+    dialog.addEventListener('cancel', (event) => { event.preventDefault(); closeConnect(); });
     dialog.addEventListener('keydown', (event) => {
       if (event.key !== 'Tab') return;
       const controls = [...dialog.querySelectorAll('a[href], button, input, textarea, select, summary, [tabindex]')]
@@ -70,12 +94,15 @@
       }
     });
     dialog.addEventListener('close', () => {
+      closing = false;
+      panelMotion?.cancel();
+      dialog.classList.remove('is-closing');
       root.classList.remove('connect-open');
       launcher.setAttribute('aria-expanded', 'false');
     });
     dialog.addEventListener('click', (event) => { if (event.target === dialog) {
       const box = dialog.getBoundingClientRect();
-      if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
+      if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) closeConnect();
     } });
     connectTabs.forEach((tab, index) => {
       tab.addEventListener('click', () => selectConnect(index ? 'contact' : 'ask'));

@@ -1,15 +1,16 @@
 <button class="connect-launcher" id="connectLauncher" type="button" aria-haspopup="dialog" aria-controls="connectDialog" aria-expanded="false" hidden>
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-3 3V11.5A7.5 7.5 0 0 1 9.5 4h3A7.5 7.5 0 0 1 20 11.5Z"/><path d="M7 10h8M7 14h5"/></svg>
-  Ask / Contact
+  <span>Ask / Contact</span>
 </button>
 <dialog class="connect-dialog" id="connectDialog" aria-labelledby="connectTitle">
   <header class="connect-header">
-    <h2 id="connectTitle">Explore my profile</h2>
-    <button class="connect-close" id="connectClose" type="button" aria-label="Close panel">×</button>
+    <img class="connect-avatar" src="/avatar.svg?v=ce392533" width="32" height="32" alt="">
+    <div class="connect-heading"><p>Maksym</p><h2 id="connectTitle">Ask about my work</h2></div>
+    <button class="connect-close" id="connectClose" type="button" aria-label="Close panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
   </header>
   <div class="connect-tabs" role="tablist" aria-label="Conversation options">
     <button id="connectAskTab" type="button" role="tab" aria-controls="connectAskPanel" aria-selected="true">Ask AI</button>
-    <button id="connectMessageTab" type="button" role="tab" aria-controls="connectMessagePanel" aria-selected="false" tabindex="-1">Send a message</button>
+    <button id="connectMessageTab" type="button" role="tab" aria-controls="connectMessagePanel" aria-selected="false" tabindex="-1">Message</button>
   </div>
   <div class="connect-body">
     <div id="connectAskPanel" role="tabpanel" aria-labelledby="connectAskTab">
@@ -20,8 +21,8 @@
         <button type="button">What has Maksym built?</button>
       </div>
       <form class="chat-form" id="chatForm">
-        <textarea id="chatInput" rows="2" maxlength="6000" required placeholder="Ask about his work…" aria-label="Your question about Maksym’s work"></textarea>
-        <button class="btn primary" type="submit">Send</button>
+        <textarea id="chatInput" rows="1" maxlength="6000" required placeholder="Ask about his work…" aria-label="Your question about Maksym’s work"></textarea>
+        <button class="btn primary connect-send" type="submit" aria-label="Send question"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button>
       </form>
       <details class="connect-own">
         <summary>Use your own assistant</summary>
@@ -38,10 +39,10 @@
       <p class="connect-note">A direct message to Maksym. Add your email or LinkedIn if you’d like a reply.</p>
       <form class="form" id="contactForm" data-ok="Message sent. Thanks for getting in touch.">
         <label for="contactMessage">Your message</label>
-        <textarea id="contactMessage" name="message" rows="5" required maxlength="2000" placeholder="Hi Maksym…"></textarea>
+        <textarea id="contactMessage" name="message" rows="4" required maxlength="2000" placeholder="Hi Maksym…"></textarea>
         <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="btn primary" type="submit">Send message</button>
-        <p class="form-status" role="status"></p>
+        <p class="form-status" role="status" aria-live="polite"></p>
       </form>
       <p class="connect-note">Or <a href="https://www.linkedin.com/in/herasymenko" target="_blank" rel="noopener">connect on LinkedIn</a>.</p>
     </div>
