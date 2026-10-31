@@ -27,7 +27,7 @@
 
   // Shared progressive enhancement: normal profile/contact links remain the fallback.
   try {
-    const response = await fetch('/assets/connect.html?v=9cad4f74');
+    const response = await fetch('/assets/connect.html?v=ca3be74d');
     if (!response.ok) throw new Error('Panel unavailable');
     document.body.insertAdjacentHTML('beforeend', await response.text());
   } catch { /* Keep navigation and the LinkedIn contact alternative available. */ }
@@ -77,6 +77,15 @@
     if (focusInput) $(mode === 'contact' ? 'contactMessage' : 'chatInput').focus({ preventScroll: true });
     else $('connectClose').focus({ preventScroll: true });
   };
+  const openMcp = () => {
+    openConnect('ask', false);
+    const own = document.querySelector('.connect-own');
+    if (own) own.open = true;
+    if ($('mcp')) {
+      $('mcp').open = true;
+      requestAnimationFrame(() => $('mcp').scrollIntoView({ block: 'nearest', behavior: 'instant' }));
+    }
+  };
   if (dialog && typeof dialog.showModal === 'function') {
     launcher.hidden = false;
     launcher.addEventListener('click', () => openConnect());
@@ -122,14 +131,14 @@
       if (['#ask', '#contact'].includes(url.hash) && (url.pathname === '/about/' || url.pathname === location.pathname)) {
         event.preventDefault();
         openConnect(url.hash === '#contact' ? 'contact' : 'ask');
-      } else if (url.hash === '#mcp') {
-        if (dialog.contains(link)) dialog.close();
-        if (url.pathname === location.pathname && $('mcp')) $('mcp').open = true;
+      } else if (url.hash === '#mcp' && (url.pathname === '/about/' || url.pathname === location.pathname)) {
+        event.preventDefault();
+        openMcp();
       }
     });
     const fromHash = () => {
       if (['#ask', '#contact'].includes(location.hash)) openConnect(location.hash === '#contact' ? 'contact' : 'ask', false);
-      if (location.hash === '#mcp' && $('mcp')) $('mcp').open = true;
+      if (location.hash === '#mcp') openMcp();
     };
     window.addEventListener('hashchange', fromHash);
     fromHash();

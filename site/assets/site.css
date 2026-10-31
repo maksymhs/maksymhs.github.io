@@ -627,3 +627,9 @@ body:has(.connect-launcher) .foot { padding-bottom: 6rem; }
 }
 .connect-dialog .chat-form:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent); }
 .connect-dialog .chat-form textarea:focus-visible { outline: none; }
+.connect-own .mcp-dev { margin-top: 1rem; padding-top: .875rem; }
+.connect-own .mcp-dev > .muted { margin-top: .75rem; font-size: .8125rem; }
+.connect-own .tabs { gap: .25rem 1rem; }
+.connect-own .tabs button { min-height: 2.75rem; font-size: .8125rem; }
+.connect-own .panel { min-width: 0; font-size: .8125rem; }
+.connect-own .panel pre { max-width: 100%; }

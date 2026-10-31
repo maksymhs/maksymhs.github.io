@@ -32,7 +32,52 @@
           <a id="openChatGPT" href="https://chatgpt.com/" target="_blank" rel="noopener">Open in ChatGPT</a>
           <button class="connect-text-button" id="copyProfile" type="button">Copy as prompt</button>
         </div>
-        <p class="connect-note"><a href="/about/#mcp">MCP setup for developers <span aria-hidden="true">→</span></a></p>
+<details class="mcp-dev" id="mcp">
+            <summary>MCP setup for developers</summary>
+            <p class="muted">If you already use connectors, add my profile as a public MCP server. Your assistant can then read my experience and my daily radar, check my fit against a job description and even send me a message. It also adds ready-made prompts: <code>/talk_to_maksym</code> (answers as me, in the first person), <code>/ask_my_cv</code>, <code>/evaluate_fit</code> and <code>/interview_plan</code>. No sign-up, no API key.</p>
+            <div class="copy-row">
+              <code>https://api.maksym.site/mcp</code>
+              <button class="copy" type="button" data-copy="https://api.maksym.site/mcp">Copy</button>
+            </div>
+            <div class="tabs" role="tablist" aria-label="Setup instructions">
+              <button type="button" role="tab" id="tab-cd" aria-controls="panel-cd" aria-selected="true">Claude</button>
+              <button type="button" role="tab" id="tab-cu" aria-controls="panel-cu" aria-selected="false" tabindex="-1">Cursor</button>
+              <button type="button" role="tab" id="tab-ws" aria-controls="panel-ws" aria-selected="false" tabindex="-1">Windsurf</button>
+              <button type="button" role="tab" id="tab-vs" aria-controls="panel-vs" aria-selected="false" tabindex="-1">VS Code</button>
+              <button type="button" role="tab" id="tab-cc" aria-controls="panel-cc" aria-selected="false" tabindex="-1">Claude Code</button>
+            </div>
+            <div class="panel" role="tabpanel" id="panel-cd" aria-labelledby="tab-cd">
+              <p>In Claude (web or desktop): Settings → Connectors → <strong>Add custom connector</strong>, then paste the URL above. Availability of custom connectors depends on your plan.</p>
+            </div>
+            <div class="panel" role="tabpanel" id="panel-cu" aria-labelledby="tab-cu" hidden>
+              <p class="file">~/.cursor/mcp.json</p>
+              <pre><code>{
+    "mcpServers": {
+      "maksym": { "url": "https://api.maksym.site/mcp" }
+    }
+  }</code></pre>
+            </div>
+            <div class="panel" role="tabpanel" id="panel-ws" aria-labelledby="tab-ws" hidden>
+              <p class="file">~/.codeium/windsurf/mcp_config.json</p>
+              <pre><code>{
+    "mcpServers": {
+      "maksym": { "serverUrl": "https://api.maksym.site/mcp" }
+    }
+  }</code></pre>
+            </div>
+            <div class="panel" role="tabpanel" id="panel-vs" aria-labelledby="tab-vs" hidden>
+              <p class="file">.vscode/mcp.json</p>
+              <pre><code>{
+    "servers": {
+      "maksym": { "type": "http", "url": "https://api.maksym.site/mcp" }
+    }
+  }</code></pre>
+            </div>
+            <div class="panel" role="tabpanel" id="panel-cc" aria-labelledby="tab-cc" hidden>
+              <p>Run this in a terminal with Claude Code installed:</p>
+              <pre><code>claude mcp add --transport http maksym https://api.maksym.site/mcp</code></pre>
+            </div>
+            <p class="mcp-try">Then try <code>/talk_to_maksym</code>, or ask: <em>“Here's our job description. Is Maksym a good fit, and what would you ask him in an interview?”</em></p>          </details>
       </details>
     </div>
     <div id="connectMessagePanel" role="tabpanel" aria-labelledby="connectMessageTab" hidden>
