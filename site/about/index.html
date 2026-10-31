@@ -275,30 +275,11 @@
       </section>
 
       <section id="ask" aria-labelledby="ask-h">
-        <h2 id="ask-h">Ask me</h2>
-        <p class="muted">An AI assistant grounded on my profile. Ask anything about my experience, or paste a job description to see how I fit.</p>
-        <div class="chat-log" id="chatLog" aria-live="polite"></div>
-        <form class="chat-form" id="chatForm">
-          <textarea id="chatInput" rows="1" maxlength="6000" placeholder="Ask a question or paste a job description…" aria-label="Your question or a job description"></textarea>
-          <button class="btn primary" type="submit">Send</button>
-        </form>
-        <div class="suggest" id="chatSuggest">
-          <button type="button">What has he built at scale?</button>
-          <button type="button">Why hire him for a fintech backend role?</button>
-          <button type="button" data-jd>Paste a job description</button>
-        </div>
-        <div class="mcp" id="mcp">
-          <p class="kicker">Ask your own AI</p>
-          <h3>Or talk to me from your own assistant</h3>
-          <p class="muted">Ask me directly, as if you were talking to me: your assistant answers in the first person, based only on my profile. No sign-up and no setup.</p>
-          <div class="mcp-quick">
-            <a class="btn primary" id="openClaude" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
-            <a class="btn" id="openChatGPT" href="https://chatgpt.com/" target="_blank" rel="noopener">Open in ChatGPT</a>
-            <button class="btn" type="button" id="copyProfile">Copy as prompt</button>
-          </div>
-
-          <details class="mcp-dev">
-            <summary>For developers: connect my profile as an MCP server</summary>
+        <h2 id="ask-h">Explore my profile</h2>
+        <p>Ask the AI assistant about my work, or use your own assistant.</p>
+        <p><a class="explore" href="#ask">Ask AI <span aria-hidden="true">→</span></a></p>
+          <details class="mcp-dev" id="mcp">
+            <summary>Connect your own assistant</summary>
             <p class="muted">If you already use connectors, add my profile as a public MCP server. Your assistant can then read my experience and my daily radar, check my fit against a job description and even send me a message. It also adds ready-made prompts: <code>/talk_to_maksym</code> (answers as me, in the first person), <code>/ask_my_cv</code>, <code>/evaluate_fit</code> and <code>/interview_plan</code>. No sign-up, no API key.</p>
             <div class="copy-row">
               <code>https://api.maksym.site/mcp</code>
@@ -343,20 +324,12 @@
               <pre><code>claude mcp add --transport http maksym https://api.maksym.site/mcp</code></pre>
             </div>
             <p class="mcp-try">Then try <code>/talk_to_maksym</code>, or ask: <em>“Here's our job description. Is Maksym a good fit, and what would you ask him in an interview?”</em></p>          </details>
-        </div>
       </section>
 
       <section id="contact" aria-labelledby="contact-h">
         <h2 id="contact-h">Contact</h2>
-        <p><strong>Direct message.</strong> It reaches me in real time.</p>
-        <form class="dm" id="contactForm" data-ok="Sent. It reached me in real time.">
-          <textarea name="message" rows="6" required maxlength="2000" placeholder="Write your message. Add your email or LinkedIn if you want a reply." aria-label="Your message"></textarea>
-          <div class="dm-foot">
-            <button class="btn primary" type="submit">Send</button>
-          </div>
-          <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <p class="form-status" role="status"></p>
-        </form>
+        <p><a class="explore" href="#contact">Send a message <span aria-hidden="true">→</span></a> · <a href="https://www.linkedin.com/in/herasymenko" target="_blank" rel="noopener">LinkedIn</a></p>
+        <noscript><p>To send a message without JavaScript, use LinkedIn.</p></noscript>
       </section>
 
       <footer class="foot">
@@ -365,17 +338,6 @@
     </main>
   </div>
 
-  <template id="leadTpl">
-    <form class="form lead-form" data-ok="Thanks, Maksym will get back to you soon.">
-      <p>Want Maksym to follow up? Leave a way to reach you.</p>
-      <div class="lead-row">
-        <input name="contact" required placeholder="Email, LinkedIn or @telegram" aria-label="How can Maksym reach you?" autocomplete="email" maxlength="200">
-        <input name="company" placeholder="Company" aria-label="Company" autocomplete="organization" maxlength="100">
-        <button class="btn" type="submit">Send</button>
-      </div>
-      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <p class="form-status" role="status"></p>
-    </form>
-  </template>
+
 </body>
 </html>

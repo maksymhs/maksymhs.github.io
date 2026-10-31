@@ -519,3 +519,54 @@ h1, h2 { font-weight: 500; }
 .landing .chips li { border: 0; border-radius: 0; padding: 0; background: transparent; }
 .landing .chips li + li::before { content: "·"; margin-right: .5rem; color: var(--muted); }
 input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* One quiet entry point; native dialog provides focus trapping and Escape. */
+.connect-open { overflow: hidden; }
+.connect-launcher {
+  position: fixed; right: max(1.25rem, env(safe-area-inset-right)); bottom: calc(1.25rem + env(safe-area-inset-bottom)); z-index: 20;
+  display: inline-flex; align-items: center; gap: .625rem; min-height: 2.875rem; padding: .625rem 1rem;
+  border: 1px solid var(--muted); border-radius: 999px; background: var(--bg); color: var(--fg);
+  font: 500 .875rem/1.3 var(--sans); cursor: pointer; box-shadow: 0 2px 12px #0000000a;
+}
+.connect-launcher[hidden] { display: none; }
+.connect-launcher:hover { border-color: var(--accent); }
+.connect-launcher svg { width: 1.125rem; height: 1.125rem; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.connect-dialog {
+  position: fixed; inset: auto 1.25rem calc(5rem + env(safe-area-inset-bottom)) auto;
+  margin: 0; width: 27rem; max-width: calc(100vw - 2.5rem); max-height: min(44rem, calc(100dvh - 7rem));
+  padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--fg);
+  box-shadow: 0 16px 56px #00000024; font: 1rem/1.55 var(--sans); overflow: hidden;
+}
+.connect-dialog[open] { display: flex; flex-direction: column; }
+.connect-dialog::backdrop { background: #00000020; }
+.connect-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .875rem 1.25rem .5rem; }
+.connect-header h2 { margin: 0; font-size: 1.0625rem; font-weight: 600; }
+.connect-close { display: grid; place-items: center; flex: none; width: 2.75rem; height: 2.75rem; padding: 0; border: 0; background: transparent; color: var(--muted); font: 1.75rem/1 var(--sans); cursor: pointer; }
+.connect-tabs { display: flex; gap: 1.5rem; padding: 0 1.25rem; border-bottom: 1px solid var(--line); }
+.connect-tabs button { min-height: 2.75rem; padding: .5rem 0; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--muted); font: 500 .875rem/1.4 var(--sans); cursor: pointer; }
+.connect-tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+.connect-body { padding: 1.25rem; overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
+.connect-note { color: var(--muted); font-size: .875rem; margin: 0 0 1rem; }
+.connect-dialog .suggest { margin: 0 0 1rem; gap: .5rem 1rem; }
+.connect-dialog .suggest button { color: var(--fg); min-height: 2.75rem; text-align: left; }
+.connect-dialog .chat-log { max-height: min(22rem, 36dvh); margin-bottom: 1rem; }
+.connect-dialog .msg { overflow-wrap: anywhere; }
+.connect-dialog .chat-form { padding: .25rem; border-radius: 6px; }
+.connect-dialog textarea { font-size: 1rem; }
+.connect-dialog .chat-form textarea { min-width: 0; }
+.connect-dialog .btn { min-height: 2.75rem; height: auto; }
+.connect-dialog .form > .btn { justify-self: start; }
+.connect-dialog #contactForm + .connect-note { margin-top: 1rem; }
+.connect-dialog label { font-size: .875rem; }
+.connect-own { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .875rem; }
+.connect-own summary { color: var(--muted); cursor: pointer; }
+.connect-own[open] summary { margin-bottom: .75rem; }
+.connect-own .connect-note:last-child { margin: 1rem 0 0; }
+.connect-text-button { padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; text-underline-offset: .22em; cursor: pointer; }
+body:has(.connect-launcher) .foot { padding-bottom: 6rem; }
+@media (max-width: 599px) {
+  .connect-launcher { right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom)); }
+  .connect-dialog { inset: auto 0 0; width: 100%; max-width: none; max-height: calc(100dvh - 1rem); border-radius: 12px 12px 0 0; }
+  .connect-body { padding-bottom: calc(1.25rem + env(safe-area-inset-bottom)); }
+}
+@media print { .connect-launcher, .connect-dialog { display: none !important; } }

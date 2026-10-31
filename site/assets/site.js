@@ -1,6 +1,9 @@
-(() => {
+(async () => {
   const API = 'https://api.maksym.site';
-  const SESSION = Math.random().toString(36).slice(2, 8).toUpperCase();
+  const sessionRead = (key) => { try { return sessionStorage.getItem(key); } catch { return null; } };
+  const sessionWrite = (key, value) => { try { sessionStorage.setItem(key, value); } catch { } };
+  const SESSION = sessionRead('maksym-chat-session') || Math.random().toString(36).slice(2, 8).toUpperCase();
+  sessionWrite('maksym-chat-session', SESSION);
   const $ = (id) => document.getElementById(id);
   const root = document.documentElement;
 
@@ -21,6 +24,89 @@
   });
   dark.addEventListener?.('change', label);
   label();
+
+  // Shared progressive enhancement: normal profile/contact links remain the fallback.
+  try {
+    const response = await fetch('/assets/connect.html?v=12c576c7');
+    if (!response.ok) throw new Error('Panel unavailable');
+    document.body.insertAdjacentHTML('beforeend', await response.text());
+  } catch { /* Keep navigation and the LinkedIn contact alternative available. */ }
+
+  const dialog = $('connectDialog');
+  const launcher = $('connectLauncher');
+  const connectTabs = [...document.querySelectorAll('.connect-tabs [role="tab"]')];
+  const selectConnect = (mode) => {
+    const selected = mode === 'contact' ? $('connectMessageTab') : $('connectAskTab');
+    connectTabs.forEach((tab) => {
+      const on = tab === selected;
+      tab.setAttribute('aria-selected', String(on));
+      tab.tabIndex = on ? 0 : -1;
+      $(tab.getAttribute('aria-controls')).hidden = !on;
+    });
+    $('connectTitle').textContent = mode === 'contact' ? 'Send a message' : 'Explore my profile';
+  };
+  const openConnect = (mode = 'ask', focusInput = true) => {
+    if (!dialog || typeof dialog.showModal !== 'function') return;
+    selectConnect(mode);
+    if (!dialog.open) dialog.showModal();
+    root.classList.add('connect-open');
+    launcher.setAttribute('aria-expanded', 'true');
+    if (focusInput) $(mode === 'contact' ? 'contactMessage' : 'chatInput').focus({ preventScroll: true });
+    else $('connectClose').focus({ preventScroll: true });
+  };
+  if (dialog && typeof dialog.showModal === 'function') {
+    launcher.hidden = false;
+    launcher.addEventListener('click', () => openConnect());
+    $('connectClose').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab') return;
+      const controls = [...dialog.querySelectorAll('a[href], button, input, textarea, select, summary, [tabindex]')]
+        .filter((element) => !element.disabled && element.tabIndex >= 0 && element.getClientRects().length);
+      const first = controls[0];
+      const last = controls.at(-1);
+      if ((event.shiftKey && document.activeElement === first) || (!event.shiftKey && document.activeElement === last)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first)?.focus();
+      }
+    });
+    dialog.addEventListener('close', () => {
+      root.classList.remove('connect-open');
+      launcher.setAttribute('aria-expanded', 'false');
+    });
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) {
+      const box = dialog.getBoundingClientRect();
+      if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
+    } });
+    connectTabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => selectConnect(index ? 'contact' : 'ask'));
+      tab.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? 1 : 1 - index;
+        selectConnect(next ? 'contact' : 'ask');
+        connectTabs[next].focus();
+      });
+    });
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[href]');
+      if (!link || event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
+      const url = new URL(link.href);
+      if (url.origin !== location.origin) return;
+      if (['#ask', '#contact'].includes(url.hash) && (url.pathname === '/about/' || url.pathname === location.pathname)) {
+        event.preventDefault();
+        openConnect(url.hash === '#contact' ? 'contact' : 'ask');
+      } else if (url.hash === '#mcp') {
+        if (dialog.contains(link)) dialog.close();
+        if (url.pathname === location.pathname && $('mcp')) $('mcp').open = true;
+      }
+    });
+    const fromHash = () => {
+      if (['#ask', '#contact'].includes(location.hash)) openConnect(location.hash === '#contact' ? 'contact' : 'ask', false);
+      if (location.hash === '#mcp' && $('mcp')) $('mcp').open = true;
+    };
+    window.addEventListener('hashchange', fromHash);
+    fromHash();
+  }
 
   document.querySelectorAll('[data-print]').forEach((b) => b.addEventListener('click', () => window.print()));
   document.querySelectorAll('a[data-focus]').forEach((a) => a.addEventListener('click', () => {
@@ -53,8 +139,13 @@
   const openChatGPT = document.getElementById('openChatGPT');
   if (copyProfile || openClaude || openChatGPT) {
     const text = (path) => fetch(path).then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.text(); }).then((s) => s.trim());
-    const persona = text('/persona.txt');
-    const profile = text('/llms-full.txt');
+    const own = document.querySelector('.connect-own');
+    const requested = new Promise((resolve) => {
+      own?.addEventListener('toggle', () => { if (own.open) resolve(); });
+      copyProfile?.addEventListener('click', resolve, { once: true });
+    });
+    const persona = requested.then(() => text('/persona.txt'));
+    const profile = requested.then(() => text('/llms-full.txt'));
     const START = 'Now begin.';
     const withLink = persona.then((p) => `${p}\n\nHis profile is at https://maksym.site/llms-full.txt: read it first and use only that.`);
     const withProfile = Promise.all([persona, profile]).then(([p, prof]) => `${p}\n\n--- PROFILE ---\n${prof}\n--- END OF PROFILE ---\n\n${START}`);
@@ -80,7 +171,7 @@
     });
   }
 
-  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  const tabs = [...document.querySelectorAll('.mcp-dev [role="tab"]')];
   const select = (tab) => {
     tabs.forEach((t) => {
       const on = t === tab;
@@ -157,10 +248,14 @@
 
   const send = form.querySelector('button[type="submit"]');
   const placeholder = input.placeholder;
-  const history = [];
+  let restored = [];
+  try {
+    const saved = JSON.parse(sessionRead('maksym-chat-history') || '[]');
+    if (Array.isArray(saved)) restored = saved.filter((message) => message && ['user', 'assistant'].includes(message.role) && typeof message.content === 'string').slice(-12).map((message) => ({ role: message.role, content: message.content.slice(0, 12000) }));
+  } catch { }
+  const history = restored;
+  const saveHistory = () => sessionWrite('maksym-chat-history', JSON.stringify(history.slice(-12)));
   let busy = false;
-  let answers = 0;
-  let leadOffered = false;
 
   const grow = () => { input.style.height = 'auto'; input.style.height = `${Math.min(input.scrollHeight + 2, 240)}px`; };
   const toBottom = () => { log.scrollTop = log.scrollHeight; };
@@ -173,19 +268,8 @@
     return el;
   }
 
-  function offerLead() {
-    const tpl = $('leadTpl');
-    if (!tpl || leadOffered) return;
-    leadOffered = true;
-    const node = tpl.content.firstElementChild.cloneNode(true);
-    node.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const context = history.filter((m) => m.role === 'user').slice(-3).map((m) => m.content.slice(0, 300)).join('\n---\n');
-      sendLead(node, { source: 'chat', context });
-    });
-    log.appendChild(node);
-    toBottom();
-  }
+  history.forEach((message) => add(message.role === 'user' ? 'me' : 'bot', message.role === 'user' ? esc(message.content) : md(message.content)));
+  if (history.length && suggest) suggest.hidden = true;
 
   async function ask(question) {
     if (busy || !question) return;
@@ -224,8 +308,7 @@
       const answer = full.trim();
       if (!answer) throw new Error('empty');
       history.push({ role: 'assistant', content: answer });
-      answers++;
-      if (question.length >= 400 || answers === 2) offerLead();
+      saveHistory();
     } catch {
       history.pop();
       out.classList.add('err');
@@ -238,6 +321,7 @@
 
   function submit() {
     const q = input.value.trim();
+    if (busy || !q) return;
     input.value = '';
     grow();
     ask(q);
@@ -258,5 +342,4 @@
     }
     ask(b.textContent.trim());
   });
-  document.querySelectorAll('a[href="#ask"]').forEach((a) => a.addEventListener('click', () => setTimeout(() => input.focus({ preventScroll: true }), 300)));
 })();

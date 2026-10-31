@@ -1,0 +1,49 @@
+<button class="connect-launcher" id="connectLauncher" type="button" aria-haspopup="dialog" aria-controls="connectDialog" aria-expanded="false" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-3 3V11.5A7.5 7.5 0 0 1 9.5 4h3A7.5 7.5 0 0 1 20 11.5Z"/><path d="M7 10h8M7 14h5"/></svg>
+  Ask / Contact
+</button>
+<dialog class="connect-dialog" id="connectDialog" aria-labelledby="connectTitle">
+  <header class="connect-header">
+    <h2 id="connectTitle">Explore my profile</h2>
+    <button class="connect-close" id="connectClose" type="button" aria-label="Close panel">×</button>
+  </header>
+  <div class="connect-tabs" role="tablist" aria-label="Conversation options">
+    <button id="connectAskTab" type="button" role="tab" aria-controls="connectAskPanel" aria-selected="true">Ask AI</button>
+    <button id="connectMessageTab" type="button" role="tab" aria-controls="connectMessagePanel" aria-selected="false" tabindex="-1">Send a message</button>
+  </div>
+  <div class="connect-body">
+    <div id="connectAskPanel" role="tabpanel" aria-labelledby="connectAskTab">
+      <p class="connect-note">An AI assistant based on Maksym’s profile. Not Maksym himself.</p>
+      <div class="chat-log" id="chatLog" role="log" aria-label="Conversation with the AI assistant" aria-live="polite" aria-relevant="additions text"></div>
+      <div class="suggest" id="chatSuggest">
+        <button type="button">What is Citadel?</button>
+        <button type="button">What has Maksym built?</button>
+      </div>
+      <form class="chat-form" id="chatForm">
+        <textarea id="chatInput" rows="2" maxlength="6000" required placeholder="Ask about his work…" aria-label="Your question about Maksym’s work"></textarea>
+        <button class="btn primary" type="submit">Send</button>
+      </form>
+      <details class="connect-own">
+        <summary>Use your own assistant</summary>
+        <p class="connect-note">Explore an AI version of Maksym’s CV in your preferred assistant.</p>
+        <div class="text-links">
+          <a id="openClaude" href="https://claude.ai/new" target="_blank" rel="noopener">Open in Claude</a>
+          <a id="openChatGPT" href="https://chatgpt.com/" target="_blank" rel="noopener">Open in ChatGPT</a>
+          <button class="connect-text-button" id="copyProfile" type="button">Copy as prompt</button>
+        </div>
+        <p class="connect-note"><a href="/about/#mcp">MCP setup for developers <span aria-hidden="true">→</span></a></p>
+      </details>
+    </div>
+    <div id="connectMessagePanel" role="tabpanel" aria-labelledby="connectMessageTab" hidden>
+      <p class="connect-note">A direct message to Maksym. Add your email or LinkedIn if you’d like a reply.</p>
+      <form class="form" id="contactForm" data-ok="Message sent. Thanks for getting in touch.">
+        <label for="contactMessage">Your message</label>
+        <textarea id="contactMessage" name="message" rows="5" required maxlength="2000" placeholder="Hi Maksym…"></textarea>
+        <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn primary" type="submit">Send message</button>
+        <p class="form-status" role="status"></p>
+      </form>
+      <p class="connect-note">Or <a href="https://www.linkedin.com/in/herasymenko" target="_blank" rel="noopener">connect on LinkedIn</a>.</p>
+    </div>
+  </div>
+</dialog>

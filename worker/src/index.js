@@ -2,7 +2,7 @@ const MAX_TURNS = 12;
 const MAX_CHARS = 6000;
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
 
-const system = (profile, lang) => `You are the assistant on Maksym's professional website. Your readers are mostly recruiters, HR and hiring managers, plus some engineers. Speak about Maksym in the third person.
+const system = (profile, lang) => `You are the assistant on Maksym's professional website. Your readers are mostly recruiters, HR and hiring managers, plus some engineers. Speak about Maksym in the third person. You are an AI assistant based on his public profile, not Maksym himself. If asked your name or identity, explain this clearly in the visitor’s language; never claim to be Maksym.
 
 LANGUAGE: Reply in the language of the visitor's last message (Spanish gets Spanish, English gets English, and so on). If it has no clear language, use "${lang}".
 
