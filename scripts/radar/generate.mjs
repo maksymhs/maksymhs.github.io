@@ -126,7 +126,7 @@ const TOGGLE = `<button class="theme" id="themeToggle" type="button" aria-label=
 
 const PAGE_SIZE = 10;
 
-function page({ title, description, path, body, jsonld, head = '' }) {
+function page({ title, description, path, body, jsonld, head = '', ogType = 'article' }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,12 +140,16 @@ ${head}  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme
   <meta name="theme-color" content="#1d201d" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=ce392533">
   <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
-  <meta property="og:type" content="article">
+  <meta property="og:type" content="${ogType}">
   <meta property="og:url" content="${ORIGIN}${path}">
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(description)}">
-  <meta property="og:image" content="${ORIGIN}/og.png">
+  <meta property="og:image" content="${ORIGIN}/og.png?v=bb9981a9">
+  <meta property="og:image:width" content="1730">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="Maksym — Backend systems, tools and engineering notes. Madrid, Spain.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="Maksym — Backend systems, tools and engineering notes. Madrid, Spain.">
   <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
   ${THEME}
   <link rel="stylesheet" href="/assets/site.css">
@@ -198,7 +202,7 @@ function issuePage(issue, items, prev) {
       articleSection: 'AI and backend engineering',
       url: `${ORIGIN}${path}`,
       mainEntityOfPage: `${ORIGIN}${path}`,
-      image: `${ORIGIN}/og.png`,
+      image: `${ORIGIN}/og.png?v=bb9981a9`,
       isPartOf: { '@type': 'Blog', name: 'Radar', url: `${ORIGIN}/radar/` },
       author: { '@type': 'Person', name: 'Maksym', url: ORIGIN },
       publisher: { '@type': 'Person', name: 'Maksym', url: ORIGIN },
@@ -240,6 +244,7 @@ function indexPage(all, pageNo = 1) {
     title: pageNo > 1 ? `Radar, page ${pageNo} · AI, LLM and backend news · Maksym` : 'Radar · AI, LLM and backend engineering news · Maksym',
     description,
     path: at(pageNo),
+    ogType: 'website',
     head: `${pageNo > 1 ? `  <link rel="prev" href="${ORIGIN}${at(pageNo - 1)}">\n` : ''}${pageNo < pages ? `  <link rel="next" href="${ORIGIN}${at(pageNo + 1)}">\n` : ''}`,
     jsonld: { '@context': 'https://schema.org', '@type': 'Blog', name: 'Radar', url: `${ORIGIN}${at(pageNo)}`, inLanguage: 'en', description, author: { '@type': 'Person', name: 'Maksym', url: ORIGIN }, blogPost: issues.slice(0, 10).map((i) => ({ '@type': 'BlogPosting', headline: i.title, url: `${ORIGIN}/radar/${i.slug}/`, datePublished: i.date })) },
     body: `      <article class="post">
@@ -276,14 +281,20 @@ ${items}
 
 async function sitemapXml(issues) {
   const current = await readFile(new URL('sitemap.xml', SITE), 'utf8').catch(() => '');
-  const today = new Date().toISOString().slice(0, 10);
-  const stamp = (path) => current.match(new RegExp(`<loc>https://maksym\\.site${path}</loc>\\s*<lastmod>([^<]+)</lastmod>`))?.[1] || today;
-  const home = stamp('/');
-  const url = (loc, lastmod, freq, prio) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${prio}</priority>\n  </url>`;
+  // Static pages declare their real edit dates in JSON-LD. Never stamp every
+  // page with the render date: daily Radar generation is not an edit to About.
+  const stamp = async (path) => {
+    const html = await readFile(new URL(`${path.slice(1)}index.html`, SITE), 'utf8').catch(() => '');
+    const declared = html.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})/i)?.[1];
+    return declared || current.match(new RegExp(`<loc>https://maksym\\.site${path}</loc>\\s*<lastmod>([^<]+)</lastmod>`))?.[1];
+  };
+  const [homeEdited, aboutEdited, citadelEdited] = await Promise.all([stamp('/'), stamp('/about/'), stamp('/citadel/')]);
+  const home = [homeEdited, issues[0]?.date.slice(0, 10)].filter(Boolean).sort().at(-1);
+  const url = (loc, lastmod, freq, prio) => `  <url>\n    <loc>${loc}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}\n    <changefreq>${freq}</changefreq>\n    <priority>${prio}</priority>\n  </url>`;
   const latest = issues[0]?.date.slice(0, 10) || home;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, stamp('/citadel/'), 'monthly', '0.9'), url(`${ORIGIN}/about/`, stamp('/about/'), 'monthly', '0.9'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...Array.from({ length: Math.max(0, Math.ceil(issues.length / PAGE_SIZE) - 1) }, (_, k) => url(`${ORIGIN}/radar/page/${k + 2}/`, latest, 'daily', '0.4')), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
+${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, citadelEdited, 'monthly', '0.9'), url(`${ORIGIN}/about/`, aboutEdited, 'monthly', '0.9'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...Array.from({ length: Math.max(0, Math.ceil(issues.length / PAGE_SIZE) - 1) }, (_, k) => url(`${ORIGIN}/radar/page/${k + 2}/`, latest, 'daily', '0.4')), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
 </urlset>
 `;
 }
@@ -309,7 +320,22 @@ async function updateHome(issues) {
   await writeFile(file, current.replace(/<!-- radar-home:start -->[\s\S]*?<!-- radar-home:end -->/, block));
 }
 
+// Keep navigation tied to the published issue list, including after removals.
+async function updatePreviousLinks(issues) {
+  const ordered = [...issues].sort((a, b) => a.date.localeCompare(b.date));
+  for (let n = 1; n < ordered.length; n++) {
+    const file = new URL(`${ordered[n].slug}/index.html`, RADAR);
+    const html = await readFile(file, 'utf8');
+    const prev = ordered[n - 1];
+    const updated = html
+      .replace(/<link rel="prev" href="[^"]+">/, () => `<link rel="prev" href="${ORIGIN}/radar/${prev.slug}/">`)
+      .replace(/<a href="\/radar\/[^"]+" rel="prev">Previous:[\s\S]*?<\/a>/, () => `<a href="/radar/${prev.slug}/" rel="prev">Previous: ${esc(prev.title)}</a>`);
+    if (updated !== html) await writeFile(file, updated);
+  }
+}
+
 async function renderShared(issues) {
+  await updatePreviousLinks(issues);
   await mkdir(RADAR, { recursive: true });
   await writeFile(ISSUES, `${JSON.stringify(issues, null, 2)}\n`);
   await writeFile(new URL('index.html', RADAR), indexPage(issues, 1));
