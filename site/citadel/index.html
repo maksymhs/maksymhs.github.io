@@ -31,6 +31,7 @@
     "@type": "SoftwareApplication",
     "@id": "https://maksym.site/citadel/#app",
     "name": "Citadel",
+    "softwareVersion": "0.67.0",
     "url": "https://maksym.site/citadel/",
     "description": "Open-source, self-hosted command center for projects, persistent terminals and AI coding agents.",
     "applicationCategory": "DeveloperApplication",
@@ -97,9 +98,23 @@
         </figure>
       </section>
 
+      <section id="latest" aria-labelledby="latest-h">
+        <h2 id="latest-h">A clearer panel, from dashboard to workspace</h2>
+        <p>Current release: <a href="https://github.com/maksymhs/Citadel/releases/tag/v0.67.0" target="_blank" rel="noopener">v0.67.0</a>. A minimal machine selector, matching System and Settings hubs, and direct dashboard shortcuts keep everyday controls close without getting in the way of your work.</p>
+        <dl class="rows">
+          <dt>CPU &amp; memory</dt><dd>Open System processes sorted by the resource you clicked. Process rows stay on one line on mobile, with horizontal scrolling when needed.</dd>
+          <dt>Terminals</dt><dd>Open System → Terminals &amp; VS Code to review persistent sessions and stop them with confirmation.</dd>
+          <dt>Disk</dt><dd>Open Files → Analyze at “Find what is taking space”. No scan starts until you ask.</dd>
+          <dt>Availability</dt><dd>Both 24-hour and 7-day cards open Audit under System → Activity &amp; Audit, alongside Activity and Service log.</dd>
+          <dt>Version</dt><dd>Open Settings → Updates. Checking is read-only; applying an update is a separate action.</dd>
+          <dt>Workspace</dt><dd>Choose Terminal or optional browser VS Code, remember your mode and go Back without stopping work. VS Code loads on a black background; keyboard-specific sizing no longer shrinks the panel during desktop or pinch zoom.</dd>
+        </dl>
+        <p class="muted more">Shortcuts target the selected machine. Browsing these views does not stop sessions, scan disks or apply updates. <a href="https://github.com/maksymhs/Citadel/blob/main/docs/installation.md#system-management" target="_blank" rel="noopener">Panel controls and limitations →</a></p>
+      </section>
+
       <section id="agents" aria-labelledby="agents-h">
         <h2 id="agents-h">Agents</h2>
-        <p>Launch the coding agent you prefer from the same panel. Missing agents install with one click, once for every user.</p>
+        <p>Launch the coding agent you prefer from the same panel. Missing agents install with one click, once for every user. Manage their launchers in <strong>System → AI coding agents</strong>; <strong>Installed tools</strong> is a separate inventory.</p>
         <ul class="chips agents">
           <li>Claude Code</li>
           <li>Codex CLI</li>
@@ -117,12 +132,32 @@
           <article>
             <p class="kicker">Terminals</p>
             <h3>Persistent sessions</h3>
-            <p>xterm.js, node-pty and tmux. Sessions survive closing the browser or restarting the panel. Phone-friendly, with on-screen keys and clipboard copy.</p>
+            <p>xterm.js, node-pty and tmux. Sessions survive closing the browser or restarting the panel. Phone-friendly, with on-screen keys, native text selection, clipboard copy and image paste for AI coding tools.</p>
           </article>
           <article>
             <p class="kicker">Projects</p>
             <h3>Projects &amp; Git</h3>
-            <p>Register, create, import and clone repositories with live branch status. Connect GitHub or GitLab and clone private repos in one click.</p>
+            <p>Register, create, import and clone repositories with live branch status. Connect GitHub or GitLab and clone private repos in one click. Each workspace offers Terminal or optional browser VS Code, with remembered modes and a non-destructive Back arrow.</p>
+          </article>
+          <article>
+            <p class="kicker">Workspace</p>
+            <h3>Browser VS Code</h3>
+            <p>Open the optional editor without SSH and return to Citadel with one button. Terminal sessions keep running when you switch modes or leave the editor. Shared VS Code controls live under System.</p>
+          </article>
+          <article>
+            <p class="kicker">System</p>
+            <h3>Focused machine controls</h3>
+            <p>Five sections: Processes, Terminals &amp; VS Code, AI coding agents, Installed tools and Activity &amp; Audit. Sort processes by CPU or memory; destructive administrator controls require confirmation. Protected processes and unsupported platforms remain read-only.</p>
+          </article>
+          <article>
+            <p class="kicker">Optional AI Gateway</p>
+            <h3>Your connected providers</h3>
+            <p>Connect Claude and ChatGPT separately, discover models for planning, execution and background work, and route new conversations to Claude, ChatGPT or opt-in Auto fallback. Provider-reported usage windows appear when available. Experimental: account access and model compatibility are not guaranteed. <a href="https://github.com/maksymhs/Citadel/blob/main/docs/ai-gateway.md" target="_blank" rel="noopener">Setup and limitations →</a></p>
+          </article>
+          <article>
+            <p class="kicker">Updates</p>
+            <h3>Check, then update</h3>
+            <p>Settings → Updates follows stable releases. Check is read-only; Update applies to the selected machine first, then its paired machines one at a time after a healthy restart. Progress survives panel reloads and reports partial or halted outcomes.</p>
           </article>
           <article>
             <p class="kicker">Secrets</p>
@@ -132,12 +167,12 @@
           <article>
             <p class="kicker">Machines</p>
             <h3>Paired Citadels</h3>
-            <p>Pair machines with a QR code and switch between them from one URL. Survives rotating Cloudflare Quick Tunnel addresses and propagates updates.</p>
+            <p>Pair machines with a QR code and switch between them from one URL using a minimal selector with a status dot. Survives rotating Cloudflare Quick Tunnel addresses, mesh-pairs automatically and supports sequential updates.</p>
           </article>
           <article>
             <p class="kicker">Health</p>
             <h3>Monitoring &amp; alerts</h3>
-            <p>CPU, memory, disk, latency and 24 h / 7 d availability for every machine. Alerts to webhook, ntfy or Telegram, including security events.</p>
+            <p>CPU, memory, disk, latency and 24 h / 7 d availability for every machine, with dashboard shortcuts to the corresponding controls. Alerts to webhook, ntfy or Telegram, including security events.</p>
           </article>
           <article>
             <p class="kicker">Orchestration</p>
@@ -147,12 +182,12 @@
           <article>
             <p class="kicker">Host</p>
             <h3>Files &amp; disk cleanup</h3>
-            <p>Browse and edit the host filesystem, analyse disk usage and run quick cleanups with per-item selection.</p>
+            <p>Start in the selected machine's configured projects directory, browse and edit files, analyse disk usage and run quick cleanups with per-item selection. Opening Analyze does not start a scan.</p>
           </article>
           <article>
             <p class="kicker">Insight</p>
             <h3>Observability</h3>
-            <p>Event trace plus periodic resource samples, a live sparkline, a filterable timeline and JSON/CSV export.</p>
+            <p>Event trace plus periodic resource samples, a live sparkline, a filterable timeline and JSON/CSV export. Activity, Audit and Service log are grouped under System → Activity &amp; Audit.</p>
           </article>
         </div>
         <p class="muted more">Also: a command palette (<kbd>Ctrl/Cmd</kbd>+<kbd>K</kbd>), light, dark and system themes, an installable web app, and optional domain publishing through Caddy with automatic HTTPS.</p>
