@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Maksym — Senior Backend Engineer</title>
-  <meta name="description" content="Maksym, Senior Backend Engineer in Madrid. Author of Citadel, an open-source command center for terminals and AI coding agents. CV, daily radar and contact.">
+  <meta name="description" content="Maksym, Senior Backend Engineer in Madrid. Author of Citadel, an open-source command center for terminals and AI coding agents. Projects, experience, daily radar and contact.">
   <meta name="author" content="Maksym">
   <link rel="canonical" href="https://maksym.site/">
-  <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#11151b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1d201d" media="(prefers-color-scheme: dark)">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="alternate" type="text/markdown" href="/llms.txt" title="llms.txt">
   <link rel="alternate" type="text/markdown" href="/llms-full.txt" title="Full profile for LLMs">
@@ -81,64 +81,83 @@
     <main id="content">
       <section class="hero" aria-labelledby="name">
         <h1 id="name">Maksym<span class="dot-accent" aria-hidden="true">.</span></h1>
-        <p class="role">Senior Backend Engineer · Java &amp; Spring Boot</p>
-        <p class="intro">I build backend systems for banking and telco, and open-source tools for working with AI coding agents. Based in Madrid.</p>
-
-        <div class="actions">
-          <a class="btn primary" href="https://calendly.com/maksymhe" target="_blank" rel="noopener">Book a 20-minute call</a>
-          <a class="btn" href="/about/#contact">Send message</a>
+        <p class="intro">I build backend systems for banking and telco, and open-source tools for working with AI coding agents.</p>
+        <p class="meta">Based in Madrid.</p>
+        <div class="text-links">
+          <a class="explore" href="#work">Explore my work <span aria-hidden="true">↓</span></a>
+          <a href="/about/">About me <span aria-hidden="true">→</span></a>
         </div>
-
-        <ul class="hub" aria-label="Sections">
-          <li>
-            <a class="hub-card" href="/citadel/">
-              <span class="kicker">Project</span>
-              <span class="hub-title">Citadel</span>
-              <span class="hub-desc">Open-source, self-hosted command center for projects, terminals and AI coding agents.</span>
-              <span class="hub-go" aria-hidden="true">Explore →</span>
-            </a>
-          </li>
-          <li>
-            <a class="hub-card" href="/about/">
-              <span class="kicker">About me</span>
-              <span class="hub-title">Profile</span>
-              <span class="hub-desc">10 years in banking and telco. Selected work, an AI assistant and contact.</span>
-              <span class="hub-go" aria-hidden="true">Read →</span>
-            </a>
-          </li>
-          <li>
-            <a class="hub-card" href="/radar/">
-              <span class="kicker">Writing</span>
-              <span class="hub-title">Radar</span>
-              <span class="hub-desc">Daily news from the LLM and AI world and backend engineering, with a short take.</span>
-              <span class="hub-go" aria-hidden="true">Read →</span>
-            </a>
-          </li>
-        </ul>
       </section>
 
-      <section id="radar" aria-labelledby="radar-h">
-        <h2 id="radar-h">Latest from the radar</h2>
-        <p class="muted">Daily news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take. <a href="/radar/">All posts</a> · <a href="/radar/feed.xml">RSS</a></p>
+      <section class="home-project" id="work" aria-labelledby="project-h">
+        <div class="section-heading">
+          <p class="eyebrow">Project</p>
+          <h2 id="project-h">Citadel</h2>
+        </div>
+        <div class="project-layout">
+          <figure class="project-shot">
+            <a href="/citadel/" aria-label="Explore Citadel">
+              <img class="shot-light" src="/citadel/dashboard-light.png" width="2160" height="1350" alt="Citadel dashboard showing machine health, resource usage and persistent terminals" fetchpriority="high">
+              <img class="shot-dark" src="/citadel/dashboard-dark.png" width="2160" height="1350" alt="Citadel dashboard showing machine health, resource usage and persistent terminals" loading="lazy">
+            </a>
+            <figcaption>Citadel dashboard · v0.42.0</figcaption>
+          </figure>
+          <div class="project-copy">
+            <p class="project-intro">A self-hosted command center for projects, persistent terminals and AI coding agents.</p>
+            <p class="muted">Keep terminal sessions running beyond the browser and manage projects from one place.</p>
+            <div class="text-links">
+              <a class="explore" href="/citadel/">Explore Citadel <span aria-hidden="true">→</span></a>
+              <a href="https://github.com/maksymhs/Citadel" target="_blank" rel="noopener">Source on GitHub <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-profile" aria-labelledby="profile-h">
+        <h2 id="profile-h">Behind the work</h2>
+        <div>
+          <p>10 years of backend engineering in banking and telco. Architecture migrations, observability, and internal tools.</p>
+          <a class="explore" href="/about/#work">Experience and selected work <span aria-hidden="true">→</span></a>
+          <p class="assistant-note">You can also explore my profile with the AI assistant.<br><a href="/about/#ask">Ask a question <span aria-hidden="true">→</span></a></p>
+        </div>
+      </section>
+
+      <section id="radar" class="home-radar" aria-labelledby="radar-h">
+        <div class="section-heading radar-heading">
+          <h2 id="radar-h">Radar</h2>
+          <div class="text-links"><a class="explore" href="/radar/">All entries <span aria-hidden="true">→</span></a><a href="/radar/feed.xml">RSS</a></div>
+        </div>
+        <p class="muted">AI and backend engineering, with a short take.</p>
         <!-- radar-home:start -->
-        <ol class="radar-items issues">
+        <ol class="radar-items issues radar-compact">
             <li>
-              <p class="radar-src">31 Oct 2026</p>
-              <h3><a href="/radar/2026-10-31-boxlang-ai-3-6-adds-browser-audio-mcp-modules-jvm-agents/">BoxLang AI 3.6 Adds Browser, Audio, and MCP Modules for JVM Agents</a></h3>
-              <p>Ortus Solutions released BoxLang AI 3.6, extending its JVM-based productivity platform with browser automation, audio processing, and a stdio MCP client. The update is relevant as teams look for ways to embed agentic capabilities directly into existing Java stacks without spinning up separate runtimes.</p>
+              <p class="radar-src"><time datetime="2026-10-31">31 Oct 2026</time></p>
+              <h3><a href="/radar/2026-10-31-boxlang-ai-3-6-adds-browser-audio-mcp-modules-jvm-agents/">BoxLang AI 3.6 Adds Browser, Audio, and MCP Modules for JVM Agents <span aria-hidden="true">→</span></a></h3>
             </li>
             <li>
-              <p class="radar-src">30 Oct 2026</p>
-              <h3><a href="/radar/2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense/">Mistral&#39;s Le Chonk: open-weight model targets coding and cyber defense</a></h3>
-              <p>Mistral released Mistral Large 4 (Le Chonk), a 1-trillion-parameter open-weight model trained on European infrastructure, claiming leads in coding and defensive cybersecurity benchmarks.</p>
+              <p class="radar-src"><time datetime="2026-10-30">30 Oct 2026</time></p>
+              <h3><a href="/radar/2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense/">Mistral&#39;s Le Chonk: open-weight model targets coding and cyber defense <span aria-hidden="true">→</span></a></h3>
             </li>
             <li>
-              <p class="radar-src">29 Oct 2026</p>
-              <h3><a href="/radar/2026-10-29-gemini-4-carbon-our-next-frontier-model/">Gemini 4 Carbon: Our next frontier model</a></h3>
-              <p>Today&#39;s picks start with Google DeepMind: Gemini 4 Carbon: Our next frontier model</p>
+              <p class="radar-src"><time datetime="2026-10-29">29 Oct 2026</time></p>
+              <h3><a href="/radar/2026-10-29-gemini-4-carbon-our-next-frontier-model/">Gemini 4 Carbon: Our next frontier model <span aria-hidden="true">→</span></a></h3>
             </li>
         </ol>
         <!-- radar-home:end -->
+        <aside class="radar-selection" aria-label="Selected Radar entry">
+          <p class="eyebrow">Selected entry · <time datetime="2026-10-28">28 Oct 2026</time></p>
+          <a href="/radar/2026-10-28-deepmind-genie-4-brings-realistic-physics-audio-world-models/">DeepMind’s Genie 4 brings realistic physics and audio to world models <span aria-hidden="true">→</span></a>
+          <blockquote>“I would check how it handles long-term consistency before adopting it.”</blockquote>
+        </aside>
+        <p class="radar-note">Drafted with AI assistance · Original sources linked</p>
+      </section>
+
+      <section class="home-contact" aria-labelledby="contact-h">
+        <h2 id="contact-h">Contact</h2>
+        <div class="text-links">
+          <a class="explore" href="/about/#contact">Send a message <span aria-hidden="true">→</span></a>
+          <a href="https://www.linkedin.com/in/herasymenko" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">→</span></a>
+        </div>
       </section>
 
       <footer class="foot">

@@ -136,8 +136,8 @@ function page({ title, description, path, body, jsonld, head = '' }) {
   <meta name="description" content="${esc(description)}">
   <link rel="canonical" href="${ORIGIN}${path}">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-${head}  <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#11151b" media="(prefers-color-scheme: dark)">
+${head}  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1d201d" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=f1bc167">
   <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
   <meta property="og:type" content="article">
@@ -302,11 +302,10 @@ async function updateHome(issues) {
   const current = await readFile(file, 'utf8').catch(() => null);
   if (!current || !current.includes('<!-- radar-home:start -->')) return;
   const items = issues.slice(0, 3).map((i) => `            <li>
-              <p class="radar-src">${i.kind === 'daily' ? fmtDate(i.date) : `Week ${i.week}, ${i.year}`}</p>
-              <h3><a href="/radar/${i.slug}/">${esc(i.title)}</a></h3>
-              <p>${esc(i.intro)}</p>
+              <p class="radar-src"><time datetime="${esc(new Date(i.date).toISOString().slice(0, 10))}">${i.kind === 'daily' ? fmtDate(i.date) : `Week ${i.week}, ${i.year}`}</time></p>
+              <h3><a href="/radar/${i.slug}/">${esc(i.title)} <span aria-hidden="true">→</span></a></h3>
             </li>`).join('\n');
-  const block = `<!-- radar-home:start -->\n${items ? `        <ol class="radar-items issues">\n${items}\n        </ol>\n` : ''}        <!-- radar-home:end -->`;
+  const block = `<!-- radar-home:start -->\n${items ? `        <ol class="radar-items issues radar-compact">\n${items}\n        </ol>\n` : ''}        <!-- radar-home:end -->`;
   await writeFile(file, current.replace(/<!-- radar-home:start -->[\s\S]*?<!-- radar-home:end -->/, block));
 }
 

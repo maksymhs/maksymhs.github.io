@@ -1,7 +1,6 @@
 (() => {
   const API = 'https://api.maksym.site';
   const SESSION = Math.random().toString(36).slice(2, 8).toUpperCase();
-  const CALENDLY = 'https://calendly.com/maksymhe';
   const $ = (id) => document.getElementById(id);
   const root = document.documentElement;
 
@@ -101,19 +100,6 @@
     });
   });
 
-  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const items = document.querySelectorAll('main section:not(.hero), .job, .case, .mcp');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        if (!en.isIntersecting) return;
-        en.target.classList.add('in');
-        io.unobserve(en.target);
-      });
-    }, { rootMargin: '0px 0px -8% 0px' });
-    items.forEach((el) => { el.classList.add('reveal'); io.observe(el); });
-    root.classList.add('motion');
-  }
-
   const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const inline = (s) => esc(s)
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -152,7 +138,7 @@
       form.reset();
       status.textContent = form.dataset.ok || 'Thanks, message sent.';
     } catch {
-      status.innerHTML = `Could not send it. Please <a href="${CALENDLY}" target="_blank" rel="noopener">book a call</a> or message on LinkedIn.`;
+      status.innerHTML = `Could not send it. Please <a href="https://www.linkedin.com/in/herasymenko" target="_blank" rel="noopener">message on LinkedIn</a>.`;
     } finally {
       btn.disabled = false;
     }
@@ -243,7 +229,7 @@
     } catch {
       history.pop();
       out.classList.add('err');
-      out.innerHTML = `<p>Sorry, the assistant is unavailable right now. You can <a href="${CALENDLY}" target="_blank" rel="noopener">book a call</a> or use the <a href="#contact">contact form</a>.</p>`;
+      out.innerHTML = `<p>Sorry, the assistant is unavailable right now. You can use the <a href="#contact">contact form</a> instead.</p>`;
     } finally {
       busy = false;
       send.disabled = false;
