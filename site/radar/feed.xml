@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Docusign&#39;s contract agents and Spring&#39;s AI push</title>
+      <link>https://maksym.site/radar/2026-11-01-docusign-contract-agents-spring-ai-push/</link>
+      <guid>https://maksym.site/radar/2026-11-01-docusign-contract-agents-spring-ai-push/</guid>
+      <pubDate>Sun, 01 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Docusign&#39;s new contract agents and the latest Spring releases highlight the growing integration of AI in backend systems.</description>
+    </item>
+    <item>
       <title>BoxLang AI 3.6 Adds Browser, Audio, and MCP Modules for JVM Agents</title>
       <link>https://maksym.site/radar/2026-10-31-boxlang-ai-3-6-adds-browser-audio-mcp-modules-jvm-agents/</link>
       <guid>https://maksym.site/radar/2026-10-31-boxlang-ai-3-6-adds-browser-audio-mcp-modules-jvm-agents/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-07-grab-halves-p99-latency-redesigning-counter-storage/</guid>
       <pubDate>Wed, 07 Oct 2026 06:00:00 GMT</pubDate>
       <description>A careful storage migration at about a billion requests a day: an abstraction layer, shadow traffic and a data model that needs fewer round trips.</description>
-    </item>
-    <item>
-      <title>OpenTelemetry&#39;s Kubernetes processor hits 1.0, with renames to plan for</title>
-      <link>https://maksym.site/radar/2026-10-06-opentelemetry-kubernetes-processor-hits-1-0-renames-plan/</link>
-      <guid>https://maksym.site/radar/2026-10-06-opentelemetry-kubernetes-processor-hits-1-0-renames-plan/</guid>
-      <pubDate>Tue, 06 Oct 2026 06:00:00 GMT</pubDate>
-      <description>A stable release is good news for observability pipelines. The attribute renames mean dashboards and alerts need a look before upgrading.</description>
     </item>
   </channel>
 </rss>

@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-01-docusign-contract-agents-spring-ai-push",
+    "kind": "daily",
+    "year": 2026,
+    "week": 44,
+    "title": "Docusign's contract agents and Spring's AI push",
+    "intro": "Docusign's new contract agents and the latest Spring releases highlight the growing integration of AI in backend systems.",
+    "date": "2026-11-01T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://thenewstack.io/docusign-contract-ai-agents/",
+      "https://latent.space/p/arca/",
+      "https://www.infoq.com/news/2026/10/spring-news-roundup-oct19-2026/",
+      "https://foojay.io/today/rewrite-everything-in-java-not-rust/"
+    ]
+  },
+  {
     "slug": "2026-10-31-boxlang-ai-3-6-adds-browser-audio-mcp-modules-jvm-agents",
     "kind": "daily",
     "year": 2026,
