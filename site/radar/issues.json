@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-02-agentic-web-new-frontier-ai",
+    "kind": "daily",
+    "year": 2026,
+    "week": 45,
+    "title": "Agentic web: the new frontier for AI",
+    "intro": "The agentic web is here, transforming how AI interacts with online content. This shift brings new opportunities and challenges for backend engineering teams.",
+    "date": "2026-11-02T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.technologyreview.com/2026/11/02/1147846/the-agentic-web-is-here/",
+      "https://www.infoq.com/articles/agentic-ai-context-memory-knowledge/",
+      "https://www.infoq.com/news/2026/11/aws-s3-file-transfer/",
+      "https://aws.amazon.com/blogs/machine-learning/how-worldwide-express-automated-freight-exceptions-with-amazon-bedrock/"
+    ]
+  },
+  {
     "slug": "2026-11-01-docusign-contract-agents-spring-ai-push",
     "kind": "daily",
     "year": 2026,
