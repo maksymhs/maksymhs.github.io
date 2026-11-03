@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-03-llms-can-edit-neural-network-weights-weight-space-programming",
+    "kind": "daily",
+    "year": 2026,
+    "week": 45,
+    "title": "LLMs can edit neural network weights: Weight Space Programming",
+    "intro": "A new method lets LLMs read and edit neural network weights, potentially streamlining model training and debugging. I would verify the method's robustness before adopting it in production.",
+    "date": "2026-11-03T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://latent.space/p/ainews-llms-can-read-write-neural-network-weights-weight-space-programming-cuts-autoresearch-out-of/",
+      "https://www.technologyreview.com/2026/11/02/1147660/raising-the-quality-of-insights-in-agentic-analytics/",
+      "https://www.infoq.com/news/2026/11/uber-mcp-gateway-ai-agents/",
+      "https://foojay.io/today/context-is-a-budget-ai-coding-agents-team-process/"
+    ]
+  },
+  {
     "slug": "2026-11-02-agentic-web-new-frontier-ai",
     "kind": "daily",
     "year": 2026,
