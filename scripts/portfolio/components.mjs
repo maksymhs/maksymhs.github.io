@@ -39,7 +39,7 @@ export function Header(current = '') {
 }
 
 export function Footer() {
-  return `<footer class="foot p-footer"><nav aria-label="Footer"><a href="/radar/">Radar</a><a href="/llms.txt" aria-label="LLM — machine-readable profile">LLM</a><a href="/radar/feed.xml" aria-label="RSS — Radar feed">RSS</a></nav></footer>`;
+  return `<footer class="foot p-footer"><nav aria-label="Footer"><a href="/radar/">Radar</a><a href="/contact/#mcp" aria-label="MCP — connection instructions">MCP</a><a href="/radar/feed.xml" aria-label="RSS — Radar feed">RSS</a></nav></footer>`;
 }
 
 export function Page({ title, description, path, body, current = '', home = false }) {
