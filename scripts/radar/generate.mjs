@@ -166,7 +166,7 @@ ${head}  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme
         <a href="/about/">About</a>
         <a href="/experience/">Experience</a>
         <a href="/projects/">Projects</a>
-        <a href="/about/#contact">Contact</a>
+        <a href="/contact/#contact">Contact</a>
       </nav>
       ${TOGGLE}
     </header>
@@ -219,7 +219,7 @@ function issuePage(issue, items, prev) {
         <ol class="radar-items">
 ${list}
         </ol>
-        <p class="post-end"><a href="/radar/">← All issues</a>${prev ? ` · <a href="/radar/${prev.slug}/" rel="prev">Previous: ${esc(prev.title)}</a>` : ''} · <a href="/about/#ask">Ask me</a></p>
+        <p class="post-end"><a href="/radar/">← All issues</a>${prev ? ` · <a href="/radar/${prev.slug}/" rel="prev">Previous: ${esc(prev.title)}</a>` : ''} · <a href="/contact/#ask">Ask me</a></p>
       </article>`,
   });
 }
@@ -252,7 +252,7 @@ function indexPage(all, pageNo = 1) {
     body: `      <article class="post">
         <p class="kicker">Radar</p>
         <h1>What I'm reading<span class="dot-accent" aria-hidden="true">.</span></h1>
-        <p class="post-intro">A daily selection of news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a> or read it from your assistant through the <a href="/about/#mcp">MCP server</a>.</p>
+        <p class="post-intro">A daily selection of news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a> or read it from your assistant through the <a href="/contact/#mcp">MCP server</a>.</p>
         <ol class="radar-items issues">
 ${list}
         </ol>${pager}

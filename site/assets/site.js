@@ -25,133 +25,65 @@
   dark.addEventListener?.('change', label);
   label();
 
-  // Shared progressive enhancement: normal profile/contact links remain the fallback.
-  try {
-    const response = await fetch('/assets/connect.html?v=message-only-v1');
-    if (!response.ok) throw new Error('Panel unavailable');
-    document.body.insertAdjacentHTML('beforeend', await response.text());
-  } catch { /* Keep navigation and the LinkedIn contact alternative available. */ }
-
-  const dialog = $('connectDialog');
-  const launcher = $('connectLauncher');
+  // All conversations live on Contact. Preserve old fragment entry points.
+  const modes = ['#ask', '#contact', '#mcp'];
   const inlineConversation = $('contactConversation');
-  if (inlineConversation && dialog) {
-    const draft = $('directMessage')?.value || '';
-    inlineConversation.replaceChildren(dialog.querySelector('.connect-tabs'), dialog.querySelector('.connect-body'));
-    $('contactMessage').value = draft;
+  if (!inlineConversation && modes.includes(location.hash)) {
+    location.replace('/contact/' + location.hash);
+    return;
   }
+  document.addEventListener('click', (event) => {
+    const anchor = event.target.closest('a[href]');
+    if (!anchor || event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || anchor.target === '_blank') return;
+    const url = new URL(anchor.href);
+    if (url.origin !== location.origin || !modes.includes(url.hash)) return;
+    event.preventDefault();
+    if (inlineConversation) {
+      if (location.hash !== url.hash) location.hash = url.hash;
+      else window.dispatchEvent(new Event('hashchange'));
+    } else location.assign('/contact/' + url.hash);
+  });
 
+  if (inlineConversation) {
+    try {
+      const response = await fetch('/assets/connect.html?v=inline-only-v1');
+      if (!response.ok) throw new Error('Conversation unavailable');
+      const draft = $('directMessage')?.value || '';
+      inlineConversation.innerHTML = await response.text();
+      $('contactMessage').value = draft;
+    } catch { /* Keep the direct form and LinkedIn fallback available. */ }
+  }
   const connectTabs = [...document.querySelectorAll('.connect-tabs [role="tab"]')];
   const selectConnect = (mode) => {
     const selected = mode === 'contact' ? $('connectMessageTab') : $('connectAskTab');
+    if (!selected) return;
     connectTabs.forEach((tab) => {
       const on = tab === selected;
       tab.setAttribute('aria-selected', String(on));
       tab.tabIndex = on ? 0 : -1;
       $(tab.getAttribute('aria-controls')).hidden = !on;
     });
-    $('connectTitle').textContent = mode === 'contact' ? 'Message Maksym' : 'Ask my AI CV';
   };
-  if (inlineConversation) selectConnect(location.hash === '#ask' ? 'ask' : 'contact');
-
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  let panelMotion;
-  let closing = false;
-  const frames = () => matchMedia('(max-width: 599px)').matches
-    ? [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'translateY(0)' }]
-    : [{ opacity: 0, transform: 'translateY(12px) scale(.97)' }, { opacity: 1, transform: 'translateY(0) scale(1)' }];
-  const closeConnect = () => {
-    if (!dialog?.open || closing) return;
-    closing = true;
-    panelMotion?.cancel();
-    if (reducedMotion.matches) { dialog.close(); return; }
-    dialog.classList.add('is-closing');
-    panelMotion = dialog.animate([...frames()].reverse(), { duration: 140, easing: 'ease-in', fill: 'both' });
-    panelMotion.finished.then(() => { dialog.close(); }).catch(() => {});
-  };
-  const openConnect = (mode = 'ask', focusInput = true) => {
-    if (!dialog || typeof dialog.showModal !== 'function') return;
-    selectConnect(mode);
-    if (inlineConversation) {
-      if (focusInput) $(mode === 'contact' ? 'contactMessage' : 'chatInput').focus({ preventScroll: true });
-      return;
-    }
-    if (closing) {
-      closing = false;
-      panelMotion?.cancel();
-      dialog.classList.remove('is-closing');
-    }
-    if (!dialog.open) {
-      dialog.showModal();
-      if (!reducedMotion.matches) panelMotion = dialog.animate(frames(), { duration: 220, easing: 'cubic-bezier(.2,.8,.2,1)' });
-    }
-    root.classList.add('connect-open');
-    launcher.setAttribute('aria-expanded', 'true');
-    if (focusInput) $(mode === 'contact' ? 'contactMessage' : 'chatInput').focus({ preventScroll: true });
-    else $('connectClose').focus({ preventScroll: true });
-  };
-  const openMcp = () => {
-    openConnect('ask', false);
-    const own = document.querySelector('.connect-own');
-    if (own) own.open = true;
-    if ($('mcp')) {
-      $('mcp').open = true;
-      requestAnimationFrame(() => $('mcp').scrollIntoView({ block: 'nearest', behavior: 'instant' }));
-    }
-  };
-  if (dialog && typeof dialog.showModal === 'function') {
-    launcher.hidden = false;
-    launcher.addEventListener('click', () => openConnect());
-    $('connectClose').addEventListener('click', closeConnect);
-    dialog.addEventListener('cancel', (event) => { event.preventDefault(); closeConnect(); });
-    dialog.addEventListener('keydown', (event) => {
-      if (event.key !== 'Tab') return;
-      const controls = [...dialog.querySelectorAll('a[href], button, input, textarea, select, summary, [tabindex]')]
-        .filter((element) => !element.disabled && element.tabIndex >= 0 && element.getClientRects().length);
-      const first = controls[0];
-      const last = controls.at(-1);
-      if ((event.shiftKey && document.activeElement === first) || (!event.shiftKey && document.activeElement === last)) {
-        event.preventDefault();
-        (event.shiftKey ? last : first)?.focus();
-      }
-    });
-    dialog.addEventListener('close', () => {
-      closing = false;
-      panelMotion?.cancel();
-      dialog.classList.remove('is-closing');
-      root.classList.remove('connect-open');
-      launcher.setAttribute('aria-expanded', 'false');
-    });
-    dialog.addEventListener('click', (event) => { if (event.target === dialog) {
-      const box = dialog.getBoundingClientRect();
-      if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) closeConnect();
-    } });
+  if (connectTabs.length) {
     connectTabs.forEach((tab, index) => {
-      tab.addEventListener('click', () => selectConnect(index ? 'contact' : 'ask'));
+      tab.addEventListener('click', () => {
+        location.hash = index ? 'contact' : 'ask';
+        selectConnect(index ? 'contact' : 'ask');
+      });
       tab.addEventListener('keydown', (event) => {
         if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
         event.preventDefault();
         const next = event.key === 'Home' ? 0 : event.key === 'End' ? 1 : 1 - index;
-        selectConnect(next ? 'contact' : 'ask');
+        connectTabs[next].click();
         connectTabs[next].focus();
       });
     });
-    document.addEventListener('click', (event) => {
-      const link = event.target.closest('a[href]');
-      if (!link || event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
-      const url = new URL(link.href);
-      if (url.origin !== location.origin) return;
-      if (['#ask', '#contact'].includes(url.hash) && (url.pathname === '/about/' || url.pathname === location.pathname)) {
-        event.preventDefault();
-        openConnect(url.hash === '#contact' ? 'contact' : 'ask');
-      } else if (url.hash === '#mcp' && (url.pathname === '/about/' || url.pathname === location.pathname)) {
-        event.preventDefault();
-        openMcp();
-      }
-    });
     const fromHash = () => {
-      if (['#ask', '#contact'].includes(location.hash)) openConnect(location.hash === '#contact' ? 'contact' : 'ask', false);
-      if (location.hash === '#mcp') openMcp();
+      selectConnect(location.hash === '#ask' || location.hash === '#mcp' ? 'ask' : 'contact');
+      if (location.hash === '#mcp') {
+        document.querySelector('.connect-own').open = true;
+        $('mcp').open = true;
+      }
     };
     window.addEventListener('hashchange', fromHash);
     fromHash();

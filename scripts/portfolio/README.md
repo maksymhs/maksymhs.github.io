@@ -38,7 +38,7 @@ existing GitHub Pages workflow, which versions shared JS/CSS assets.
 `portfolio.js` progressively enhances the mobile menu (Tab, ArrowDown and Escape).
 Without JavaScript the navigation stays visible. `site.js` handles theme choice,
 AI conversation and contact forms. The contact page uses unique form IDs, so it
-can coexist with the historical dialog. Owner email/phone and a CV PDF are not
+works as a standalone fallback before the conversation panels load. Owner email/phone and a CV PDF are not
 published; contact goes through the form or LinkedIn.
 
 ## Validation
@@ -57,7 +57,8 @@ On `/contact/`, the shared conversation panels render inline, with tabs for a
 message to Maksym or questions to his AI CV. The direct form asks only for a
 message. Visitors can include a reply address in that message if they wish; the
 existing Worker accepts the established anonymous-contact marker. Historical
-About fragment links still use the dialog on other pages.
+About fragment links redirect to the corresponding view on Contact. No popup or
+floating launcher is created; the shared fragment loads only on Contact.
 
 The Technical toolkit is an always-visible section. Experience uses one timeline
 card per role, with dates, role description and technology badges.

@@ -46,7 +46,7 @@ export const projects = [
     stack: ['Cloudflare Workers', 'LLMs', 'MCP'],
     image: '/assets/projects/profile-assistant-glass.png', width: 480, height: 380,
     alt: 'Ask my CV interface with AI disclosure, suggested questions and a message input',
-    repository: 'https://github.com/maksymhs/maksymhs.github.io/tree/main/worker', demo: '/about/#ask', demoLabel: 'Try the assistant',
+    repository: 'https://github.com/maksymhs/maksymhs.github.io/tree/main/worker', demo: '/contact/#ask', demoLabel: 'Try the assistant',
     summary: 'Turn a static profile into a conversation, without inventing the person behind it.',
     context: 'Recruiters often need a specific answer: which technology appears in which role, whether the work model fits, or how experience maps to a job description. The assistant lets them ask directly, while the MCP endpoint makes that profile available to their own AI tools.',
     decisions: [

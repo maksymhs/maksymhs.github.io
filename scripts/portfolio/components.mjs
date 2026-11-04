@@ -37,7 +37,7 @@ export function Header(current = '') {
 }
 
 export function Footer() {
-  return `<footer class="foot p-footer"><span>© <span id="year">2026</span> Maksym</span><nav aria-label="Footer"><a href="/radar/">Radar / Blog</a><a href="/about/#ask">Ask my AI CV</a></nav></footer>`;
+  return `<footer class="foot p-footer"><span>© <span id="year">2026</span> Maksym</span><nav aria-label="Footer"><a href="/radar/">Radar / Blog</a><a href="/contact/#ask">Ask my AI CV</a></nav></footer>`;
 }
 
 export function Page({ title, description, path, body, current = '', home = false }) {
@@ -67,7 +67,7 @@ export function Hero() {
   <h1 id="home-title">Senior Java<br>Backend Engineer<span>.</span></h1>
   <p class="p-lead">I'm Maksym. 10+ years building reliable backend systems for banking and telecommunications.</p>
   <div class="p-actions"><a class="p-cta" href="/experience/">View experience <span aria-hidden="true">→</span></a><a class="p-cta outline" href="/contact/">Let's talk</a></div>
-  <div class="p-social">${link(profile.linkedin, 'LinkedIn')}${link(profile.github, 'GitHub')}<a href="/about/#ask">Ask my AI CV →</a></div>
+  <div class="p-social">${link(profile.linkedin, 'LinkedIn')}${link(profile.github, 'GitHub')}<a href="/contact/#ask">Ask my AI CV →</a></div>
   </div><div class="entry-art"><img class="entry-illustration theme-dark-art" src="/assets/backend-stack.svg" alt="Backend architecture: Java, Spring Boot, microservices and event-driven systems" width="540" height="400"><img class="entry-illustration theme-light-art" src="/assets/backend-stack-light.svg" alt="Backend architecture: Java, Spring Boot, microservices and event-driven systems" width="540" height="400"></div></section>`;
 }
 
@@ -89,8 +89,8 @@ export function SkillsCloud(groups) {
 
 export function ContactCTA() {
   return `<section class="portfolio-contact" id="connect" aria-labelledby="contact-title"><div class="contact-heading"><p class="p-kicker">LET'S CONNECT</p><h2 id="contact-title">Start a conversation.</h2><p>Get to know my work, or tell me what you have in mind.</p></div><div class="contact-options">
-  <a class="contact-option" href="/about/#ask"><span class="contact-mode">AI ASSISTANT</span><strong>Ask my CV <span aria-hidden="true">→</span></strong><span>Explore my experience or the fit for a role. An AI assistant based on my profile.</span></a>
-  <a class="contact-option contact-direct" href="/about/#contact"><span class="contact-mode">DIRECT MESSAGE</span><strong>Talk to Maksym <span aria-hidden="true">→</span></strong><span>A role, a project or a collaboration. Send me a message directly.</span></a>
+  <a class="contact-option" href="/contact/#ask"><span class="contact-mode">AI ASSISTANT</span><strong>Ask my CV <span aria-hidden="true">→</span></strong><span>Explore my experience or the fit for a role. An AI assistant based on my profile.</span></a>
+  <a class="contact-option contact-direct" href="/contact/#contact"><span class="contact-mode">DIRECT MESSAGE</span><strong>Talk to Maksym <span aria-hidden="true">→</span></strong><span>A role, a project or a collaboration. Send me a message directly.</span></a>
   </div></section>`;
 }
 
@@ -128,10 +128,10 @@ export function RepositoryList() {
 
 export function ContactPage() {
   return `<section class="p-intro"><p class="p-kicker">CONTACT</p><h1>Let's talk.</h1><p class="p-lead">A backend role, a developer tool or an idea for a collaboration.</p></section>
-  <div class="direct-contact-layout"><div id="contactConversation"><nav class="contact-fallback-modes" aria-label="Conversation options"><span>Message Maksym</span><a href="/about/#ask">Ask about me · AI →</a></nav><form class="form direct-contact-form" id="directContactForm" data-ok="Message sent. Thanks for getting in touch.">
+  <div class="direct-contact-layout"><div id="contactConversation"><nav class="contact-fallback-modes" aria-label="Conversation options"><span>Message Maksym</span><a href="/contact/#ask">Ask about me · AI →</a></nav><form class="form direct-contact-form" id="directContactForm" data-ok="Message sent. Thanks for getting in touch.">
   <label for="directMessage">Your message</label><textarea id="directMessage" name="message" rows="4" required maxlength="2000" placeholder="Your message… Include a way to reply if you’d like."></textarea>
   <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="p-cta" type="submit">Send message →</button><p class="form-status" role="status" aria-live="polite"></p></form></div>
-  <aside class="contact-aside"><h2>Connect directly</h2><p>${link(profile.linkedin,'LinkedIn')}</p><h2>A question about my experience?</h2><p><a href="/about/#ask">Ask my AI CV →</a></p><p class="muted">An AI assistant based on my professional profile, not Maksym himself.</p></aside></div>`;
+  <aside class="contact-aside"><h2>Connect directly</h2><p>${link(profile.linkedin,'LinkedIn')}</p><h2>A question about my experience?</h2><p><a href="/contact/#ask">Ask my AI CV →</a></p><p class="muted">An AI assistant based on my professional profile, not Maksym himself.</p></aside></div>`;
 }
 
 export function Contributions() {
