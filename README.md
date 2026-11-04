@@ -90,3 +90,7 @@ Vars in `wrangler.toml`: `LLM_URL` / `LLM_MODEL` (any OpenAI-compatible endpoint
 ## License
 
 MIT © 2026 Maksym
+
+## Minimal portfolio
+
+Home is intentionally minimal, with separate `/about/`, `/experience/` and `/projects/` pages. Their scoped styles live in `site/assets/portfolio.css`. The existing Ask/Contact dialog, Citadel, Radar and Worker are preserved. No CV PDF is published: do not add a broken download link.
