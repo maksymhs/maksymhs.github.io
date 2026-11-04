@@ -123,7 +123,7 @@ export function RepositoryList() {
     { name: 'Citadel', icon: '>_', description: 'A lightweight, self-hosted workspace for projects, persistent terminals and AI coding agents.', stack: 'Node.js · Fastify · SQLite · tmux', url: 'https://github.com/maksymhs/Citadel' },
     { name: 'maksymhs.github.io', icon: '{ }', description: 'This portfolio, its AI profile assistant, public MCP endpoint and daily engineering Radar.', stack: 'HTML · CSS · JavaScript · Cloudflare Workers', url: 'https://github.com/maksymhs/maksymhs.github.io' },
   ];
-  return `<ul class="repository-list">${repos.map(r => `<li><article><span class="repository-icon" aria-hidden="true">${esc(r.icon)}</span><div><h2>${link(r.url,r.name)}</h2><p>${esc(r.description)}</p><p class="p-stack">${esc(r.stack)}</p></div></article></li>`).join('')}</ul><p class="repository-profile">${link(profile.github, 'View GitHub profile')}</p>`;
+  return `<ul class="repository-list">${repos.map(r => `<li><article><span class="repository-icon" aria-hidden="true">${esc(r.icon)}</span><div><h2>${link(r.url,r.name)}</h2><p>${esc(r.description)}</p><p class="p-stack">${esc(r.stack)}</p></div></article></li>`).join('')}</ul>`;
 }
 
 export function ContactPage() {
@@ -135,5 +135,5 @@ export function ContactPage() {
 }
 
 export function Contributions() {
-  return `<section class="contribution-section" aria-labelledby="contribution-title"><div class="contribution-heading"><h2 id="contribution-title">Contribution activity</h2>${link(profile.github,'View on GitHub')}</div><div class="contribution-scroll" tabindex="0" role="region" aria-label="GitHub contribution calendar, scroll horizontally on smaller screens"><img class="theme-dark-art" src="/assets/contributions.svg" alt="Maksym's public GitHub contribution activity over the last year; open GitHub for the latest activity" width="778" height="174" loading="lazy"><img class="theme-light-art" src="/assets/contributions-light.svg" alt="Maksym’s public GitHub contribution activity over the last year" width="778" height="174" loading="lazy"></div><p>Public GitHub activity · Refreshed daily when GitHub is available · ${link(profile.github+'?tab=overview','Explore contributions')}</p></section>`;
+  return `<section class="contribution-section" aria-label="GitHub contribution calendar"><div class="contribution-scroll" tabindex="0" role="region" aria-label="GitHub contribution calendar, scroll horizontally on smaller screens"><img class="theme-dark-art" src="/assets/contributions.svg" alt="Maksym's public GitHub contribution activity over the last year; open GitHub for the latest activity" width="778" height="174" loading="lazy"><img class="theme-light-art" src="/assets/contributions-light.svg" alt="Maksym’s public GitHub contribution activity over the last year" width="778" height="174" loading="lazy"></div><p>Public GitHub activity · Refreshed daily when GitHub is available · ${link(profile.github+'?tab=overview','Explore contributions')}</p></section>`;
 }
