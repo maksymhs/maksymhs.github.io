@@ -358,3 +358,17 @@ html[data-theme="light"] body.portfolio .theme-light-art{display:block}
 html[data-theme="light"] body.portfolio .theme-dark-art{display:none}
 html[data-theme="light"] .contribution-scroll{background:#fafbfd}
 @media(max-width:730px){.entry-art{max-width:350px;justify-self:center}}
+body.portfolio main section.contact-intro:not(.hero){max-width:720px;margin:0 auto;padding:48px 0 30px;text-align:center}
+.contact-intro .p-lead{margin:0 auto;font-size:.96rem}
+.direct-contact-layout{display:flex;flex-direction:column;align-items:stretch;gap:0;max-width:720px;margin:0 auto;padding-bottom:45px}
+#contactConversation{width:100%;min-width:0}
+#contactConversation .connect-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;background:var(--soft);border:1px solid var(--line);border-radius:12px;margin:0 0 27px}
+#contactConversation .connect-tabs button{border:1px solid transparent;border-radius:8px;min-height:48px;padding:10px 14px;color:var(--muted);font-size:.84rem;font-weight:550;line-height:1.4}
+#contactConversation .connect-tabs button[aria-selected="true"]{background:var(--bg);color:var(--accent);border-color:var(--line);box-shadow:0 2px 5px #0000000d}
+#contactConversation .connect-tabs button:hover{color:var(--fg)}
+#contactConversation .connect-note{line-height:1.8;margin-bottom:20px}
+#contactConversation .chat-log{max-height:350px;overflow-x:hidden;overflow-y:auto;padding-right:7px;scrollbar-width:thin;overflow-wrap:anywhere}
+#contactConversation .form textarea{min-height:160px}
+.contact-links{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin-top:28px;padding-top:22px;border-top:1px solid var(--line);font-size:.78rem;color:var(--muted)}
+.contact-links a{text-decoration:none;color:var(--accent)}
+@media(max-width:730px){body.portfolio main section.contact-intro:not(.hero){padding:32px 0 26px}.contact-intro .p-lead{font-size:.88rem}#contactConversation .connect-tabs button{font-size:.76rem;min-height:46px;padding:9px 8px}.contact-links{font-size:.72rem;gap:8px}.contact-links>span:first-child{display:none}}
