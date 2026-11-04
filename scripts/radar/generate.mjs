@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir, access, appendFile } from 'node:fs/promises';
 import { projects as portfolioProjects } from '../portfolio/data.mjs';
+import { RadarHomeBlock, RefreshRadarShell } from '../portfolio/components.mjs';
 
 const ROOT = new URL('../../', import.meta.url);
 const SITE = new URL('site/', ROOT);
@@ -128,7 +129,7 @@ const TOGGLE = `<button class="theme" id="themeToggle" type="button" aria-label=
 const PAGE_SIZE = 10;
 
 function page({ title, description, path, body, jsonld, head = '', ogType = 'article' }) {
-  return `<!DOCTYPE html>
+  return RefreshRadarShell(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -178,7 +179,7 @@ ${body}
   </div>
 </body>
 </html>
-`;
+`);
 }
 
 function issuePage(issue, items, prev) {
@@ -317,11 +318,7 @@ async function updateHome(issues) {
   const file = new URL('index.html', SITE);
   const current = await readFile(file, 'utf8').catch(() => null);
   if (!current || !current.includes('<!-- radar-home:start -->')) return;
-  const items = issues.slice(0, 3).map((i) => `            <li>
-              <p class="radar-src"><time datetime="${esc(new Date(i.date).toISOString().slice(0, 10))}">${i.kind === 'daily' ? fmtDate(i.date) : `Week ${i.week}, ${i.year}`}</time></p>
-              <h3><a href="/radar/${i.slug}/">${esc(i.title)} <span aria-hidden="true">→</span></a></h3>
-            </li>`).join('\n');
-  const block = `<!-- radar-home:start -->\n${items ? `        <ol class="radar-items issues radar-compact">\n${items}\n        </ol>\n` : ''}        <!-- radar-home:end -->`;
+  const block = RadarHomeBlock(issues);
   await writeFile(file, current.replace(/<!-- radar-home:start -->[\s\S]*?<!-- radar-home:end -->/, block));
 }
 

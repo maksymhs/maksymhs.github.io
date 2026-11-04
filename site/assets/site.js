@@ -18,7 +18,7 @@
   const store = (v) => { try { v ? localStorage.setItem('theme', v) : localStorage.removeItem('theme'); } catch { } };
   toggle?.addEventListener('click', () => {
     const next = current() === 'dark' ? 'light' : 'dark';
-    if (next === system()) { delete root.dataset.theme; store(null); }
+    if (next === system() && !document.body.classList.contains('portfolio')) { delete root.dataset.theme; store(null); }
     else { root.dataset.theme = next; store(next); }
     label();
   });
@@ -27,7 +27,7 @@
 
   // Shared progressive enhancement: normal profile/contact links remain the fallback.
   try {
-    const response = await fetch('/assets/connect.html?v=portfolio-contact-v2');
+    const response = await fetch('/assets/connect.html?v=glass-connect-v1');
     if (!response.ok) throw new Error('Panel unavailable');
     document.body.insertAdjacentHTML('beforeend', await response.text());
   } catch { /* Keep navigation and the LinkedIn contact alternative available. */ }
@@ -43,7 +43,7 @@
       tab.tabIndex = on ? 0 : -1;
       $(tab.getAttribute('aria-controls')).hidden = !on;
     });
-    $('connectTitle').textContent = mode === 'contact' ? 'Get in touch' : 'Ask about my work';
+    $('connectTitle').textContent = mode === 'contact' ? 'Message Maksym' : 'Ask my AI CV';
   };
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let panelMotion;

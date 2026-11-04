@@ -1,9 +1,10 @@
 // Dependency-free static components: generated pages work without JavaScript.
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, readdir } from 'node:fs/promises';
 import { projects, skills } from './data.mjs';
-import { Page, Hero, ProjectGrid, SkillsCloud, ContactCTA, CaseStudy, Header } from './components.mjs';
+import { Page, Hero, ProjectGrid, SkillsCloud, ContactCTA, CaseStudy, Header, RadarPreview, Footer, RefreshRadarShell } from './components.mjs';
 
 const site = new URL('../../site/', import.meta.url);
+const issues = JSON.parse(await readFile(new URL('radar/issues.json', site), 'utf8'));
 const save = async (path, html) => {
   const file = new URL(path, site);
   await mkdir(new URL('./', file), { recursive: true });
@@ -15,8 +16,8 @@ await save('index.html', Page({
   description: 'Java backend engineer in Madrid. 10+ years in banking and telecom, open-source developer tools, AI interfaces and selected project case studies.',
   path: '/', home: true,
   body: `${Hero()}
-  <section class="portfolio-section" id="selected-projects" aria-labelledby="projects-title"><div class="section-heading"><div><p class="p-kicker">SELECTED WORK</p><h2 id="projects-title">Things I build.</h2></div><a class="home-secondary" href="/projects/">All projects →</a></div>${ProjectGrid(projects)}</section>
-  <div class="portfolio-context"><p>My day-to-day: Java, Spring Boot and production systems.</p><div><a href="/about/#skills">Explore my stack →</a><a href="/experience/">See the track record →</a></div></div>
+  <section class="portfolio-section" id="selected-projects" aria-labelledby="projects-title"><div class="section-heading"><div><p class="p-kicker">SELECTED PROJECTS</p><h2 id="projects-title">Built beyond the day job.</h2></div><a class="home-secondary" href="/projects/">All projects →</a></div>${ProjectGrid(projects.filter((project) => project.slug !== 'radar'))}</section>
+  ${RadarPreview(issues)}
   ${ContactCTA()}`,
 }));
 
@@ -42,6 +43,8 @@ for (const [i, project] of projects.entries()) {
 for (const path of ['about/index.html', 'experience/index.html']) {
   let html = await readFile(new URL(path, site), 'utf8');
   html = html.replace(/<header class="top p-top">[\s\S]*?<\/header>/, Header(`/${path.split('/')[0]}/`));
+  html = html.replace(/<footer class="foot p-footer">[\s\S]*?<\/footer>/, Footer());
+  html = html.replace("t==='light'?'light':'dark'", "t==='dark'?'dark':'light'").replace("dataset.theme='dark'", "dataset.theme='light'");
   if (!html.includes('src="/assets/portfolio.js"')) html = html.replace('</head>', '<script src="/assets/portfolio.js" defer></script>\n</head>');
   if (path.startsWith('about/')) {
     html = html.replace('<span id="skills" class="p-anchor"></span>', '');
@@ -52,4 +55,12 @@ for (const path of ['about/index.html', 'experience/index.html']) {
   }
   await save(path, html);
 }
-console.log('Rendered home, projects, 3 case studies, shared navigation and skills.');
+
+for (const path of await readdir(new URL('radar/', site), { recursive: true })) {
+  if (!path.endsWith('.html')) continue;
+  const relative = `radar/${path}`;
+  const html = await readFile(new URL(relative, site), 'utf8');
+  const updated = RefreshRadarShell(html);
+  if (updated !== html) await save(relative, updated);
+}
+console.log('Rendered portfolio and refreshed shared navigation, skills and Radar shell.');

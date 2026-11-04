@@ -34,37 +34,4 @@
     });
   }
 
-  const output = document.querySelector('[data-roles]');
-  if (!output) return;
-  const roles = JSON.parse(output.dataset.roles);
-  const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  let timer;
-  let role = 0;
-  let deleting = true;
-  let length = roles[0].length;
-  const tick = () => {
-    length += deleting ? -1 : 1;
-    output.textContent = roles[role].slice(0, length) || '\u00a0';
-    let delay = deleting ? 35 : 65;
-    if (length === 0) {
-      role = (role + 1) % roles.length;
-      deleting = false;
-      delay = 220;
-    } else if (length === roles[role].length && !deleting) {
-      deleting = true;
-      delay = 2400;
-    }
-    timer = setTimeout(tick, delay);
-  };
-  const reset = () => {
-    clearTimeout(timer);
-    role = 0;
-    length = roles[0].length;
-    deleting = true;
-    output.textContent = roles[0];
-    if (!motion.matches && !document.hidden) timer = setTimeout(tick, 2600);
-  };
-  motion.addEventListener('change', reset);
-  document.addEventListener('visibilitychange', reset);
-  reset();
 })();
