@@ -1,4 +1,5 @@
 import { profile } from './data.mjs';
+import { EnhanceSEO } from './seo.mjs';
 
 export const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const external = (url) => url.startsWith('https:') ? ' target="_blank" rel="noopener"' : '';
@@ -23,7 +24,8 @@ export function RefreshRadarShell(html) {
   result = result.replace(/\s*<footer class="foot(?: p-footer)?">[\s\S]*?<\/footer>/, '')
     .replace(/\s*<p class="radar-disclosure">[\s\S]*?<\/p>/, '')
     .replace('</main>', `</main>\n${RadarFooter()}`);
-  return result;
+  const path = new URL(result.match(/rel="canonical" href="([^"]+)"/)[1]).pathname;
+  return EnhanceSEO(result, path);
 }
 
 export function Header(current = '') {
@@ -48,7 +50,7 @@ export function Page({ title, description, path, body, current = '', home = fals
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="author" content="Maksym">
-<link rel="canonical" href="${url}"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="canonical" href="${url}"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=wordmark-v1"><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=wordmark-v1"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=wordmark-v1">
 <link rel="alternate" type="text/markdown" href="/llms.txt" title="llms.txt"><link rel="alternate" type="text/markdown" href="/llms-full.txt" title="Full profile"><link rel="alternate" type="application/rss+xml" href="/radar/feed.xml" title="Radar">
 <meta name="theme-color" content="#0d1219"><meta property="og:type" content="website"><meta property="og:url" content="${url}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:image" content="https://maksym.site/og.png"><meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>
@@ -67,7 +69,7 @@ export function Hero() {
   <h1 id="home-title">Senior Java<br>Backend Engineer<span>.</span></h1>
   <p class="p-lead">I'm Maksym. 10+ years building reliable backend systems for banking and telecommunications.</p>
   <div class="p-actions"><a class="p-cta" href="/experience/">View experience <span aria-hidden="true">→</span></a><a class="p-cta outline" href="/contact/">Let's talk</a></div>
-  <div class="p-social">${link(profile.linkedin, 'LinkedIn')}${link(profile.github, 'GitHub')}<a href="/contact/#ask">Ask my AI CV →</a></div>
+  <div class="p-social">${link(profile.linkedin, 'LinkedIn')}${link(profile.github, 'GitHub')}<a href="/contact/#ask">Ask about me →</a></div>
   </div><div class="entry-art"><img class="entry-illustration theme-dark-art" src="/assets/backend-layers.svg" alt="Layered backend architecture illustration" width="540" height="400"><img class="entry-illustration theme-light-art" src="/assets/backend-layers-light.svg" alt="Layered backend architecture illustration" width="540" height="400"></div></section>`;
 }
 
@@ -89,7 +91,7 @@ export function SkillsCloud(groups) {
 
 export function ContactCTA() {
   return `<section class="portfolio-contact" id="connect" aria-labelledby="contact-title"><div class="contact-heading"><p class="p-kicker">LET'S CONNECT</p><h2 id="contact-title">Start a conversation.</h2><p>Get to know my work, or tell me what you have in mind.</p></div><div class="contact-options">
-  <a class="contact-option" href="/contact/#ask"><span class="contact-mode">AI ASSISTANT</span><strong>Ask my CV <span aria-hidden="true">→</span></strong><span>Explore my experience or the fit for a role. An AI assistant based on my profile.</span></a>
+  <a class="contact-option" href="/contact/#ask"><span class="contact-mode">AI ASSISTANT</span><strong>Ask about me <span aria-hidden="true">→</span></strong><span>Explore my experience or the fit for a role. An AI assistant based on my profile.</span></a>
   <a class="contact-option contact-direct" href="/contact/#contact"><span class="contact-mode">DIRECT MESSAGE</span><strong>Talk to Maksym <span aria-hidden="true">→</span></strong><span>A role, a project or a collaboration. Send me a message directly.</span></a>
   </div></section>`;
 }

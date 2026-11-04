@@ -1,5 +1,6 @@
 // Dependency-free static components: generated pages work without JavaScript.
 import { mkdir, readFile, writeFile, readdir } from 'node:fs/promises';
+import { EnhanceSEO } from './seo.mjs';
 import { projects, skills } from './data.mjs';
 import { Page, Hero, SkillsCloud, CaseStudy, Header, Footer, RefreshRadarShell, RepositoryList, ContactPage, Contributions } from './components.mjs';
 
@@ -7,7 +8,7 @@ const site = new URL('../../site/', import.meta.url);
 const save = async (path, html) => {
   const file = new URL(path, site);
   await mkdir(new URL('./', file), { recursive: true });
-  await writeFile(file, html);
+  await writeFile(file, EnhanceSEO(html, '/' + path.replace(/index\.html$/, '')));
 };
 
 await save('index.html', Page({
@@ -61,3 +62,5 @@ for (const path of await readdir(new URL('radar/', site), { recursive: true })) 
   if (updated !== html) await save(relative, updated);
 }
 console.log('Rendered portfolio and refreshed shared navigation, skills and Radar shell.');
+
+await save('citadel/index.html', await readFile(new URL('citadel/index.html', site), 'utf8'));
