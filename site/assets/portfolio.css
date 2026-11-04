@@ -314,3 +314,47 @@ body.portfolio .connect-dialog{backdrop-filter:none;border-radius:10px;box-shado
  html.portfolio-nav-ready body.portfolio .p-nav a{padding:10px 0}
  body.portfolio .connect-dialog{border-radius:14px 14px 0 0}
 }
+#contactConversation .connect-tabs{padding:0;gap:25px;margin-bottom:24px}
+#contactConversation .connect-body{padding:0;overflow:visible}
+#contactConversation .connect-note{font-size:.83rem}
+#contactConversation .connect-tabs button{font-size:.83rem}
+#contactConversation input,#contactConversation textarea{background:var(--card);color:var(--fg);border-color:var(--line);border-radius:5px}
+#contactConversation .btn.primary{background:#3078e8;color:#fff;border-color:#3078e8}
+#contactConversation .chat-form{background:var(--card);border-color:var(--line)}
+#contactConversation .chat-log{max-height:350px;overflow-y:auto}
+.contact-fallback-modes{display:flex;gap:25px;margin-bottom:25px;font-size:.83rem}
+/* Experience: distinct milestones with readable dates and stack badges. */
+body.portfolio .p-timeline{margin:8px 0 0 7px}
+body.portfolio .p-timeline>li{padding:0 0 27px 32px;border-left-color:var(--line)}
+body.portfolio .p-timeline>li:before{top:28px;width:11px;height:11px;left:-6px;background:var(--muted);box-shadow:0 0 0 5px var(--bg)}
+body.portfolio .p-timeline>li:first-child:before{background:#438df5;box-shadow:0 0 0 5px var(--bg),0 0 0 6px #438df530}
+body.portfolio .p-timeline>li:last-child{border-left-color:transparent;padding-bottom:0}
+body.portfolio .p-timeline>li:last-child:after{content:'';position:absolute;left:-1px;top:0;height:28px;border-left:1px solid var(--line)}
+body.portfolio .p-job{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:24px 27px;grid-template-columns:140px minmax(0,1fr);gap:27px}
+body.portfolio .p-job time{color:var(--accent);font-size:.78rem;line-height:1.8}
+body.portfolio .p-job h3{font-size:1.2rem;margin-bottom:9px}
+body.portfolio .p-job .p-role{font-size:.83rem;letter-spacing:.01em;margin-bottom:14px}
+body.portfolio .p-job p:not(.p-role){font-size:.91rem;margin-bottom:18px}
+.experience-tags{display:flex;flex-wrap:wrap;gap:7px;list-style:none;padding:0;margin:0}
+.experience-tags li{border:1px solid var(--line);background:var(--soft);border-radius:5px;padding:4px 9px;font-size:.71rem;color:var(--fg);margin:0}
+body.portfolio .toolkit>h2{font-size:1.65rem;margin-bottom:30px}
+.toolkit .skills-grid{gap:32px 40px}
+.toolkit .skill-group{padding:24px;border:1px solid var(--line);border-radius:9px;background:var(--card)}
+body.portfolio .toolkit .skill-group h3{font-size:1.08rem;margin-bottom:21px}
+.toolkit .skill-icon{width:38px;height:38px;font-size:.98rem}
+.toolkit .skill-group ul{gap:10px}
+.toolkit .skill-group li{font-size:.9rem;padding:9px 13px;border-radius:5px}
+.contribution-section{margin:40px 0 45px!important;padding-top:30px!important;border-top:1px solid var(--line)!important}
+.contribution-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:20px}
+body.portfolio .contribution-heading h2{font-size:1.35rem;margin:0}
+.contribution-heading a,.contribution-section>p{font-size:.77rem;color:var(--muted)}
+.contribution-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:9px;padding:16px;background:#0d1219}
+.contribution-scroll img{display:block;width:100%;min-width:700px;height:auto}
+.contribution-section>p{margin:15px 0 0}
+@media(max-width:730px){body.portfolio .p-timeline>li{padding-left:22px}body.portfolio .p-job{grid-template-columns:1fr;padding:20px;gap:8px}body.portfolio .p-job h3{font-size:1.08rem}.toolkit .skill-group{padding:21px}.toolkit .skill-group li{font-size:.86rem}.contribution-scroll{padding:10px}}
+.entry-art{min-width:0;width:100%}
+body.portfolio .theme-light-art{display:none}
+html[data-theme="light"] body.portfolio .theme-light-art{display:block}
+html[data-theme="light"] body.portfolio .theme-dark-art{display:none}
+html[data-theme="light"] .contribution-scroll{background:#fafbfd}
+@media(max-width:730px){.entry-art{max-width:350px;justify-self:center}}

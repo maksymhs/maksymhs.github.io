@@ -68,7 +68,7 @@ export function Hero() {
   <p class="p-lead">I'm Maksym. 10+ years building reliable backend systems for banking and telecommunications.</p>
   <div class="p-actions"><a class="p-cta" href="/experience/">View experience <span aria-hidden="true">→</span></a><a class="p-cta outline" href="/contact/">Let's talk</a></div>
   <div class="p-social">${link(profile.linkedin, 'LinkedIn')}${link(profile.github, 'GitHub')}<a href="/about/#ask">Ask my AI CV →</a></div>
-  </div><img class="entry-illustration" src="/assets/backend-stack.svg" alt="Backend architecture: Java, Spring Boot, microservices and event-driven systems" width="540" height="400"></section>`;
+  </div><div class="entry-art"><img class="entry-illustration theme-dark-art" src="/assets/backend-stack.svg" alt="Backend architecture: Java, Spring Boot, microservices and event-driven systems" width="540" height="400"><img class="entry-illustration theme-light-art" src="/assets/backend-stack-light.svg" alt="Backend architecture: Java, Spring Boot, microservices and event-driven systems" width="540" height="400"></div></section>`;
 }
 
 export function ProjectCard(project) {
@@ -128,10 +128,12 @@ export function RepositoryList() {
 
 export function ContactPage() {
   return `<section class="p-intro"><p class="p-kicker">CONTACT</p><h1>Let's talk.</h1><p class="p-lead">A backend role, a developer tool or an idea for a collaboration.</p></section>
-  <div class="direct-contact-layout"><form class="form direct-contact-form" id="directContactForm" data-ok="Message sent. Thanks for getting in touch.">
-  <label for="directName">Your name <span class="muted">(optional)</span></label><input id="directName" name="name" autocomplete="name" maxlength="100">
-  <label for="directEmail">Your email</label><input id="directEmail" name="email" type="email" autocomplete="email" required maxlength="254">
-  <label for="directMessage">Your message</label><textarea id="directMessage" name="message" rows="4" required maxlength="2000"></textarea>
-  <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="p-cta" type="submit">Send message →</button><p class="form-status" role="status" aria-live="polite"></p></form>
+  <div class="direct-contact-layout"><div id="contactConversation"><nav class="contact-fallback-modes" aria-label="Conversation options"><span>Message Maksym</span><a href="/about/#ask">Ask about me · AI →</a></nav><form class="form direct-contact-form" id="directContactForm" data-ok="Message sent. Thanks for getting in touch.">
+  <label for="directMessage">Your message</label><textarea id="directMessage" name="message" rows="4" required maxlength="2000" placeholder="Your message… Include a way to reply if you’d like."></textarea>
+  <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="p-cta" type="submit">Send message →</button><p class="form-status" role="status" aria-live="polite"></p></form></div>
   <aside class="contact-aside"><h2>Connect directly</h2><p>${link(profile.linkedin,'LinkedIn')}</p><h2>A question about my experience?</h2><p><a href="/about/#ask">Ask my AI CV →</a></p><p class="muted">An AI assistant based on my professional profile, not Maksym himself.</p></aside></div>`;
+}
+
+export function Contributions() {
+  return `<section class="contribution-section" aria-labelledby="contribution-title"><div class="contribution-heading"><h2 id="contribution-title">Contribution activity</h2>${link(profile.github,'View on GitHub')}</div><div class="contribution-scroll" tabindex="0" role="region" aria-label="GitHub contribution calendar, scroll horizontally on smaller screens"><img class="theme-dark-art" src="/assets/contributions.svg" alt="Maksym's public GitHub contribution activity over the last year; open GitHub for the latest activity" width="778" height="174" loading="lazy"><img class="theme-light-art" src="/assets/contributions-light.svg" alt="Maksym’s public GitHub contribution activity over the last year" width="778" height="174" loading="lazy"></div><p>Public GitHub activity · Refreshed daily when GitHub is available · ${link(profile.github+'?tab=overview','Explore contributions')}</p></section>`;
 }

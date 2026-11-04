@@ -27,13 +27,20 @@
 
   // Shared progressive enhancement: normal profile/contact links remain the fallback.
   try {
-    const response = await fetch('/assets/connect.html?v=glass-connect-v1');
+    const response = await fetch('/assets/connect.html?v=message-only-v1');
     if (!response.ok) throw new Error('Panel unavailable');
     document.body.insertAdjacentHTML('beforeend', await response.text());
   } catch { /* Keep navigation and the LinkedIn contact alternative available. */ }
 
   const dialog = $('connectDialog');
   const launcher = $('connectLauncher');
+  const inlineConversation = $('contactConversation');
+  if (inlineConversation && dialog) {
+    const draft = $('directMessage')?.value || '';
+    inlineConversation.replaceChildren(dialog.querySelector('.connect-tabs'), dialog.querySelector('.connect-body'));
+    $('contactMessage').value = draft;
+  }
+
   const connectTabs = [...document.querySelectorAll('.connect-tabs [role="tab"]')];
   const selectConnect = (mode) => {
     const selected = mode === 'contact' ? $('connectMessageTab') : $('connectAskTab');
@@ -45,6 +52,8 @@
     });
     $('connectTitle').textContent = mode === 'contact' ? 'Message Maksym' : 'Ask my AI CV';
   };
+  if (inlineConversation) selectConnect(location.hash === '#ask' ? 'ask' : 'contact');
+
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let panelMotion;
   let closing = false;
@@ -63,6 +72,10 @@
   const openConnect = (mode = 'ask', focusInput = true) => {
     if (!dialog || typeof dialog.showModal !== 'function') return;
     selectConnect(mode);
+    if (inlineConversation) {
+      if (focusInput) $(mode === 'contact' ? 'contactMessage' : 'chatInput').focus({ preventScroll: true });
+      return;
+    }
     if (closing) {
       closing = false;
       panelMotion?.cancel();

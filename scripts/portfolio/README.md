@@ -50,3 +50,24 @@ Validate both contact forms with intercepted requests, including the reply email
 and preserve the AI identity disclosure. Do not send test messages externally.
 Run JS syntax checks and `git diff --check`; rerunning both generators should be
 idempotent. The original Citadel landing remains separate from portfolio styling.
+
+## Contact, contributions and presentation
+
+On `/contact/`, the shared conversation panels render inline, with tabs for a
+message to Maksym or questions to his AI CV. The direct form asks only for a
+message. Visitors can include a reply address in that message if they wish; the
+existing Worker accepts the established anonymous-contact marker. Historical
+About fragment links still use the dialog on other pages.
+
+The Technical toolkit is an always-visible section. Experience uses one timeline
+card per role, with dates, role description and technology badges.
+
+`node scripts/portfolio/contributions.mjs` fetches the official public GitHub
+calendar without credentials and renders dark/light SVG snapshots. Use Node 24;
+when the runtime requires the inherited HTTP proxy, run it with
+`NODE_USE_ENV_PROXY=1`. The script checks that a full calendar and contribution
+total were returned before writing files. The Pages workflow refreshes the chart
+on deploy and on a daily schedule; a failed fetch retains the checked-in snapshot.
+Both variants get content-versioned asset URLs during publication. The chart links
+to GitHub for current details. The backend illustration also has explicit light
+and dark variants, selected by the site's theme rather than the OS preference.

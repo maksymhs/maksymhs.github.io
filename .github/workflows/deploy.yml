@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '35 6 * * *'
 
 permissions:
   contents: read
@@ -25,11 +27,21 @@ jobs:
 
       - uses: actions/configure-pages@v5
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # Keep the checked-in snapshot if GitHub is temporarily unavailable.
+      - name: Refresh public GitHub contribution calendar
+        continue-on-error: true
+        run: node scripts/portfolio/contributions.mjs
+
       # Cloudflare serves /assets with a 4 hour browser cache: version the URLs so a new deploy is picked up at once.
       - name: Cache-bust assets
         run: |
-          v=$(cat site/assets/site.js site/assets/site.css site/assets/portfolio.css site/assets/portfolio.js | sha256sum | cut -c1-8)
+          v=$(cat site/assets/site.js site/assets/site.css site/assets/portfolio.css site/assets/portfolio.js site/assets/contributions.svg site/assets/contributions-light.svg | sha256sum | cut -c1-8)
           find site -name '*.html' -exec sed -i -E "s#/assets/((site|portfolio)\.(js|css))(\?v=[a-z0-9]+)?\"#/assets/\1?v=$v\"#g" {} +
+          find site -name '*.html' -exec sed -i -E "s#/assets/contributions(-light)?\.svg(\?v=[a-z0-9]+)?\"#/assets/contributions\1.svg?v=$v\"#g" {} +
           grep -o "/assets/site\.[a-z]*?v=$v" site/index.html | sort -u
 
       - uses: actions/upload-pages-artifact@v3

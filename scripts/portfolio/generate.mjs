@@ -1,7 +1,7 @@
 // Dependency-free static components: generated pages work without JavaScript.
 import { mkdir, readFile, writeFile, readdir } from 'node:fs/promises';
 import { projects, skills } from './data.mjs';
-import { Page, Hero, SkillsCloud, CaseStudy, Header, Footer, RefreshRadarShell, RepositoryList, ContactPage } from './components.mjs';
+import { Page, Hero, SkillsCloud, CaseStudy, Header, Footer, RefreshRadarShell, RepositoryList, ContactPage, Contributions } from './components.mjs';
 
 const site = new URL('../../site/', import.meta.url);
 const save = async (path, html) => {
@@ -21,7 +21,7 @@ await save('projects/index.html', Page({
   title: 'Projects — Maksym | Open Source',
   description: 'Public GitHub repositories by Maksym: Citadel and this portfolio.',
   path: '/projects/', current: '/projects/',
-  body: `<section class="p-intro"><p class="p-kicker">PROJECTS</p><h1>Things I build.</h1><p class="p-lead">Open-source tools and experiments around developer productivity and AI.</p></section>${RepositoryList()}`,
+  body: `<section class="p-intro"><p class="p-kicker">PROJECTS</p><h1>Things I build.</h1><p class="p-lead">Open-source tools and experiments around developer productivity and AI.</p></section>${RepositoryList()}${Contributions()}`,
 
 }));
 
@@ -45,7 +45,7 @@ for (const path of ['about/index.html', 'experience/index.html']) {
   if (!html.includes('src="/assets/portfolio.js"')) html = html.replace('</head>', '<script src="/assets/portfolio.js" defer></script>\n</head>');
   if (path.startsWith('about/')) {
     html = html.replace('<span id="skills" class="p-anchor"></span>', '');
-    const section = `<!-- portfolio-skills:start -->\n<details class="compact-skills" id="skills"><summary>Technical toolkit</summary>${SkillsCloud(skills)}</details>\n<!-- portfolio-skills:end -->`;
+    const section = `<!-- portfolio-skills:start -->\n<section class="p-block toolkit" id="skills" aria-labelledby="skills-title"><h2 id="skills-title">Technical toolkit</h2>${SkillsCloud(skills)}</section>\n<!-- portfolio-skills:end -->`;
     html = html.includes('<!-- portfolio-skills:start -->')
       ? html.replace(/<!-- portfolio-skills:start -->[\s\S]*?<!-- portfolio-skills:end -->/, section)
       : html.replace('<section class="p-block"><h2>Education', `${section}\n<section class="p-block"><h2>Education`);
