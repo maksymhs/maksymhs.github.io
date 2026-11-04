@@ -409,3 +409,4 @@ body.portfolio .p-timeline:before{display:none}
 body.portfolio .p-timeline>li:not(:last-child):after{content:'';display:block;position:absolute;left:157px;top:41px;bottom:-28px;width:1px;border:0;background:var(--line);z-index:-1}
 @media(max-width:730px){body.portfolio .p-timeline>li:not(:last-child):after{left:6px;top:35px;bottom:-22px}}
 body.portfolio main section.p-block:not(.hero):has(>.p-timeline){border-top:0;padding-top:8px}
+@media(max-width:730px){.entry-hero .entry-art{grid-row:1;margin-bottom:10px}.entry-hero .entry-copy{grid-row:2}}
