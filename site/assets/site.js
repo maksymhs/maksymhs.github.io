@@ -46,7 +46,7 @@
 
   if (inlineConversation) {
     try {
-      const response = await fetch('/assets/connect.html?v=compact-contact-v1');
+      const response = await fetch('/assets/connect.html?v=segmented-contact-v2');
       if (!response.ok) throw new Error('Conversation unavailable');
       const draft = $('directMessage')?.value || '';
       inlineConversation.innerHTML = await response.text();
@@ -67,8 +67,9 @@
   if (connectTabs.length) {
     connectTabs.forEach((tab, index) => {
       tab.addEventListener('click', () => {
-        location.hash = index ? 'contact' : 'ask';
-        selectConnect(index ? 'contact' : 'ask');
+        const mode = tab.id === 'connectMessageTab' ? 'contact' : 'ask';
+        location.hash = mode;
+        selectConnect(mode);
       });
       tab.addEventListener('keydown', (event) => {
         if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
