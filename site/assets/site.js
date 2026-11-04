@@ -27,7 +27,7 @@
 
   // Shared progressive enhancement: normal profile/contact links remain the fallback.
   try {
-    const response = await fetch('/assets/connect.html?v=ca3be74d');
+    const response = await fetch('/assets/connect.html?v=portfolio-contact-v2');
     if (!response.ok) throw new Error('Panel unavailable');
     document.body.insertAdjacentHTML('beforeend', await response.text());
   } catch { /* Keep navigation and the LinkedIn contact alternative available. */ }
@@ -273,7 +273,8 @@
 
   $('contactForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    sendLead(e.currentTarget, { source: 'contact', contact: '(not provided, direct message)' });
+    const email = new FormData(e.currentTarget).get('email');
+    sendLead(e.currentTarget, { source: 'contact', contact: email || '(not provided, direct message)' });
   });
 
   const log = $('chatLog');

@@ -1,4 +1,5 @@
 import { readFile, writeFile, mkdir, access, appendFile } from 'node:fs/promises';
+import { projects as portfolioProjects } from '../portfolio/data.mjs';
 
 const ROOT = new URL('../../', import.meta.url);
 const SITE = new URL('site/', ROOT);
@@ -292,9 +293,13 @@ async function sitemapXml(issues) {
   const home = [homeEdited, issues[0]?.date.slice(0, 10)].filter(Boolean).sort().at(-1);
   const url = (loc, lastmod, freq, prio) => `  <url>\n    <loc>${loc}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}\n    <changefreq>${freq}</changefreq>\n    <priority>${prio}</priority>\n  </url>`;
   const latest = issues[0]?.date.slice(0, 10) || home;
+  const caseStudies = await Promise.all(portfolioProjects.map(async (project) => {
+    const path = `/projects/${project.slug}/`;
+    return url(`${ORIGIN}${path}`, await stamp(path), 'monthly', '0.7');
+  }));
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, citadelEdited, 'monthly', '0.9'), url(`${ORIGIN}/about/`, aboutEdited, 'monthly', '0.9'), url(`${ORIGIN}/experience/`, experienceEdited, 'monthly', '0.9'), url(`${ORIGIN}/projects/`, projectsEdited, 'monthly', '0.8'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...Array.from({ length: Math.max(0, Math.ceil(issues.length / PAGE_SIZE) - 1) }, (_, k) => url(`${ORIGIN}/radar/page/${k + 2}/`, latest, 'daily', '0.4')), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
+${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, citadelEdited, 'monthly', '0.9'), url(`${ORIGIN}/about/`, aboutEdited, 'monthly', '0.9'), url(`${ORIGIN}/experience/`, experienceEdited, 'monthly', '0.9'), url(`${ORIGIN}/projects/`, projectsEdited, 'monthly', '0.8'), ...caseStudies, url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...Array.from({ length: Math.max(0, Math.ceil(issues.length / PAGE_SIZE) - 1) }, (_, k) => url(`${ORIGIN}/radar/page/${k + 2}/`, latest, 'daily', '0.4')), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
 </urlset>
 `;
 }

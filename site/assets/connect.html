@@ -81,8 +81,12 @@
       </details>
     </div>
     <div id="connectMessagePanel" role="tabpanel" aria-labelledby="connectMessageTab" hidden>
-      <p class="connect-note">A direct message to Maksym. Add your email or LinkedIn if you’d like a reply.</p>
+      <p class="connect-note">A direct message to Maksym about a role, project or collaboration.</p>
       <form class="form" id="contactForm" data-ok="Message sent. Thanks for getting in touch.">
+        <label for="contactName">Your name <span class="muted">(optional)</span></label>
+        <input id="contactName" name="name" type="text" autocomplete="name" maxlength="100">
+        <label for="contactEmail">Your email</label>
+        <input id="contactEmail" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="Where Maksym can reply">
         <label for="contactMessage">Your message</label>
         <textarea id="contactMessage" name="message" rows="4" required maxlength="2000" placeholder="Hi Maksym…"></textarea>
         <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
