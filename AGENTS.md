@@ -31,3 +31,7 @@ Personal site of Maksym (https://maksym.site), a Senior Backend Engineer. Static
 - `node --check worker/src/index.js site/assets/site.js scripts/radar/generate.mjs`
 - Look at the page in a browser for layout changes. `site/assets` is cached 4 hours by Cloudflare; the deploy versions the URLs.
 - After a worker deploy, test `/chat` and `/mcp` for real (`tools/list`, `prompts/get`).
+
+## Minimal portfolio
+
+`site/index.html` is a minimal no-photo landing page. `/about/`, `/experience/`, `/projects/` are separate pages using scoped `site/assets/portfolio.css`. The shared Ask/Contact dialog is injected by `site/assets/site.js`; preserve `/about/#ask`, `/about/#contact`, `/about/#mcp`. Radar generator maintains sitemap entries for the new pages. Do not publish a CV PDF or add an unresolvable download link.

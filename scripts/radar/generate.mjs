@@ -161,9 +161,9 @@ ${head}  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme
     <header class="top">
       <a class="brand" href="/"><img class="brand-icon" src="/avatar.svg?v=ce392533" width="28" height="28" alt="">Maksym</a>
       <nav class="nav" aria-label="Site">
-        <a href="/citadel/">Citadel</a>
         <a href="/about/">About</a>
-        <a href="/radar/">Radar</a>
+        <a href="/experience/">Experience</a>
+        <a href="/projects/">Projects</a>
         <a href="/about/#contact">Contact</a>
       </nav>
       ${TOGGLE}
@@ -288,13 +288,13 @@ async function sitemapXml(issues) {
     const declared = html.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})/i)?.[1];
     return declared || current.match(new RegExp(`<loc>https://maksym\\.site${path}</loc>\\s*<lastmod>([^<]+)</lastmod>`))?.[1];
   };
-  const [homeEdited, aboutEdited, citadelEdited] = await Promise.all([stamp('/'), stamp('/about/'), stamp('/citadel/')]);
+  const [homeEdited, aboutEdited, citadelEdited, experienceEdited, projectsEdited] = await Promise.all([stamp('/'), stamp('/about/'), stamp('/citadel/'), stamp('/experience/'), stamp('/projects/')]);
   const home = [homeEdited, issues[0]?.date.slice(0, 10)].filter(Boolean).sort().at(-1);
   const url = (loc, lastmod, freq, prio) => `  <url>\n    <loc>${loc}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}\n    <changefreq>${freq}</changefreq>\n    <priority>${prio}</priority>\n  </url>`;
   const latest = issues[0]?.date.slice(0, 10) || home;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, citadelEdited, 'monthly', '0.9'), url(`${ORIGIN}/about/`, aboutEdited, 'monthly', '0.9'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...Array.from({ length: Math.max(0, Math.ceil(issues.length / PAGE_SIZE) - 1) }, (_, k) => url(`${ORIGIN}/radar/page/${k + 2}/`, latest, 'daily', '0.4')), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
+${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, citadelEdited, 'monthly', '0.9'), url(`${ORIGIN}/about/`, aboutEdited, 'monthly', '0.9'), url(`${ORIGIN}/experience/`, experienceEdited, 'monthly', '0.9'), url(`${ORIGIN}/projects/`, projectsEdited, 'monthly', '0.8'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...Array.from({ length: Math.max(0, Math.ceil(issues.length / PAGE_SIZE) - 1) }, (_, k) => url(`${ORIGIN}/radar/page/${k + 2}/`, latest, 'daily', '0.4')), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
 </urlset>
 `;
 }
