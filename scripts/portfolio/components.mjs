@@ -68,7 +68,7 @@ export function Hero() {
   <p class="p-lead">I'm Maksym. 10+ years building reliable backend systems for banking and telecommunications.</p>
   <div class="p-actions"><a class="p-cta" href="/experience/">View experience <span aria-hidden="true">→</span></a><a class="p-cta outline" href="/contact/">Let's talk</a></div>
   <div class="p-social">${link(profile.linkedin, 'LinkedIn')}${link(profile.github, 'GitHub')}<a href="/contact/#ask">Ask my AI CV →</a></div>
-  </div><div class="entry-art"><img class="entry-illustration theme-dark-art" src="/assets/backend-stack.svg" alt="Backend architecture: Java, Spring Boot, microservices and event-driven systems" width="540" height="400"><img class="entry-illustration theme-light-art" src="/assets/backend-stack-light.svg" alt="Backend architecture: Java, Spring Boot, microservices and event-driven systems" width="540" height="400"></div></section>`;
+  </div><div class="entry-art"><img class="entry-illustration theme-dark-art" src="/assets/backend-layers.svg" alt="Layered backend architecture illustration" width="540" height="400"><img class="entry-illustration theme-light-art" src="/assets/backend-layers-light.svg" alt="Layered backend architecture illustration" width="540" height="400"></div></section>`;
 }
 
 export function ProjectCard(project) {

@@ -32,7 +32,7 @@ existing GitHub Pages workflow, which versions shared JS/CSS assets.
   Daily Radar generation keeps the contact page and historical case-study routes
   in the sitemap. Old case-study URLs are retained for existing inbound links;
   they are not listed as separate projects on the new Projects page.
-- `site/assets/backend-stack.svg` is a small static vector diagram. It contains
+- `site/assets/backend-layers.svg` is a small static vector diagram. It contains
   no photograph, animation or external dependencies.
 
 `portfolio.js` progressively enhances the mobile menu (Tab, ArrowDown and Escape).
