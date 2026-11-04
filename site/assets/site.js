@@ -271,11 +271,13 @@
     }
   }
 
-  $('contactForm')?.addEventListener('submit', (e) => {
+  const handleContactSubmit = (e) => {
     e.preventDefault();
     const email = new FormData(e.currentTarget).get('email');
     sendLead(e.currentTarget, { source: 'contact', contact: email || '(not provided, direct message)' });
-  });
+  };
+  $('contactForm')?.addEventListener('submit', handleContactSubmit);
+  $('directContactForm')?.addEventListener('submit', handleContactSubmit);
 
   const log = $('chatLog');
   const form = $('chatForm');

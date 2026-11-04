@@ -1,10 +1,12 @@
-# Portfolio components
+# Minimal multipage portfolio
 
-This Glass-inspired portfolio keeps the existing static GitHub Pages deployment. Node.js renders
-reusable HTML components at authoring time; no React runtime, package installation
-or client-side router is needed. Generated pages remain usable without JavaScript.
+The homepage is a single introduction with a small backend SVG illustration.
+It links to About, Experience, Projects and Contact. Radar/blog and the AI CV
+assistant are secondary footer links. There are no project grids or news feeds
+on the homepage. The dark neutral theme is the default; an explicit theme choice
+is retained in local storage.
 
-From the repository root:
+The static site needs no package installation or runtime framework:
 
 ```sh
 node scripts/portfolio/generate.mjs
@@ -12,70 +14,39 @@ node scripts/radar/generate.mjs --render-only
 python3 -m http.server 8000 --directory site
 ```
 
-The first command renders home, the project index and the three case studies. It
-also refreshes navigation on About/Experience, the marked skills region on
-About, and the shared shell of archived Radar pages, preserving their content. The second refreshes the
-sitemap and Radar outputs without calling the LLM or publishing a new post.
-Commit the generated HTML alongside the generator changes.
+Commit generated HTML together with the source changes. A push to `main` runs the
+existing GitHub Pages workflow, which versions shared JS/CSS assets.
 
-## Content and component boundaries
+## Sources and ownership
 
-- `data.mjs`: profile, skills and project/case-study data. Keep professional
-  facts aligned with `site/llms-full.txt`; only add documented results and links.
-- `components.mjs`: `Hero`, `ProjectGrid`, `ProjectCard`, `SkillsCloud`,
-  `CaseStudy`, `ContactCTA`, `RadarPreview`, and shared page, navigation and footer templates.
-  `ProjectCard` is used on both home and Projects. Content is HTML-escaped.
-- `site/experience/index.html`: the existing semantic experience timeline and
-  quantified professional results, kept separate from personal project outcomes.
-- `site/assets/portfolio.css`: shared glass surfaces, light default theme, an
-  explicit dark-theme option, and responsive layouts. Home has two featured
-  project columns; Projects has three above 730px, and mobile uses one column.
-  Radar shares the palette and navigation; the Citadel landing remains separate.
-- `site/assets/portfolio.js`: progressive mobile navigation. The menu supports
-  Tab, ArrowDown and Escape. With JavaScript disabled, navigation stays visible.
-  Reduced-motion preferences disable hover movement. The hero is static, with no
-  avatar, terminal decoration or typing effect.
-- `RadarHomeBlock` is shared by both generators: the daily Radar workflow updates
-  the latest three home entries inside `radar-home` markers. Home separates this
-  reading list from project case studies. No new external news request is made
-  when rendering the portfolio; it reads the published `issues.json`.
-- `ContactCTA` separates the AI profile assistant from direct messages. The
-  header and hero also link to those modes. Both use the existing shared dialog;
-  the AI identity disclosure remains visible, and no response time is promised.
+- `components.mjs`: page shell, navigation, hero, repository list and contact page.
+- `data.mjs`: documented professional facts, skills and historical case studies.
+  Keep facts aligned with `site/llms-full.txt`; do not invent metrics or projects.
+- The Projects page is a short manually curated list of verified public GitHub
+  repositories, without screenshots, star counts, API calls or case-study cards.
+- About and Experience remain hand-authored. The generator refreshes their shared
+  header/footer, theme initialization and the marked, collapsible skills region.
+- `/contact/` has an inline form using the existing Worker lead endpoint. The
+  existing dialog and `/about/#ask`, `#contact` and `#mcp` links remain supported.
+- The shared shell refreshes Radar pages without changing their editorial content.
+  Daily Radar generation keeps the contact page and historical case-study routes
+  in the sitemap. Old case-study URLs are retained for existing inbound links;
+  they are not listed as separate projects on the new Projects page.
+- `site/assets/backend-stack.svg` is a small static vector diagram. It contains
+  no photograph, animation or external dependencies.
 
-## Routes and metadata
+`portfolio.js` progressively enhances the mobile menu (Tab, ArrowDown and Escape).
+Without JavaScript the navigation stays visible. `site.js` handles theme choice,
+AI conversation and contact forms. The contact page uses unique form IDs, so it
+can coexist with the historical dialog. Owner email/phone and a CV PDF are not
+published; contact goes through the form or LinkedIn.
 
-Case-study routes are `/projects/<slug>/index.html`, giving stable directory URLs
-and working direct links without SPA fallback rules. Add projects to `data.mjs`,
-then run both generators: the Radar sitemap builder imports the same project list
-so its daily run retains case-study routes. Every generated page has a unique
-title, description, canonical URL, social metadata and JSON-LD. SEO describes
-Maksym's actual backend portfolio rather than unrelated framework keywords.
+## Validation
 
-## Images
-
-`site/assets/projects/` contains small, real interface captures, not fabricated
-product mockups. The current 840px-wide previews and 480px assistant capture total
-under 260 KB. Images declare their native dimensions, have descriptive alt text,
-and cards reserve a fixed aspect ratio to avoid layout shift. Below-fold previews
-are lazy-loaded; case-study images load immediately. When replacing a capture,
-keep it compact, update dimensions/alt text in the data, and change the filename
-to invalidate any cached copy. Do not expose private sessions or credentials.
-
-## Deployment and validation
-
-Pushing to `main` runs `.github/workflows/deploy.yml`. It publishes `site/`,
-including nested case-study routes, and versions both shared scripts and styles.
-The generator outputs are committed; production needs no extra build service.
-
-Validate desktop, tablet and mobile layouts, dark/light themes, direct case-study
-routes, keyboard menu navigation, reduced-motion behavior, and both modes of the
-Ask/Contact dialog. Inspect JS syntax with `node --check`, and run
-`git diff --check`. Do not send test contact messages or publish Radar posts as
-part of a layout check. Production AI and contact behavior still depend on the
-existing Cloudflare Worker configuration and allowed origins.
-
-The portfolio links to the existing contact dialog and LinkedIn. It does not
-publish a CV PDF, an email address, invented response times, GitHub star counts
-or unverified contributions. Citadel's link is a product tour rather than a
-claim that a public, writable installation is available.
+Check desktop, tablet and mobile routes, no horizontal overflow, active navigation,
+light/dark themes and keyboard menu behavior. The homepage should fit a normal
+900px-tall desktop viewport; mobile may scroll briefly to show the illustration.
+Validate both contact forms with intercepted requests, including the reply email,
+and preserve the AI identity disclosure. Do not send test messages externally.
+Run JS syntax checks and `git diff --check`; rerunning both generators should be
+idempotent. The original Citadel landing remains separate from portfolio styling.

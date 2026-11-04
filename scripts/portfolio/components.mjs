@@ -4,7 +4,7 @@ export const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&': '
 const external = (url) => url.startsWith('https:') ? ' target="_blank" rel="noopener"' : '';
 const externalIcon = '<svg class="external-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg>';
 export const link = (url, label, cls = '') => `<a href="${esc(url)}"${cls ? ` class="${cls}"` : ''}${external(url)}>${esc(label)} ${externalIcon}</a>`;
-export const ThemeInit = "<script>try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='dark'?'dark':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>";
+export const ThemeInit = "<script>try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='light'?'light':'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>";
 
 export function RadarFooter() {
   return `<p class="radar-disclosure">Links point to original sources. Commentary is drafted with AI assistance and published automatically.</p>${Footer()}`;
@@ -17,7 +17,7 @@ export function RefreshRadarShell(html) {
     .replace('<div class="wrap">', '<div class="wrap p-wrap">')
     .replace(/<header class="top(?: p-top)?">[\s\S]*?<\/header>/, Header('/radar/'))
     .replace(/<script>try\{var t=localStorage\.getItem\('theme'\);[\s\S]*?<\/script>/, ThemeInit)
-    .replace('content="#f4f1ea"', 'content="#f6f8fc"').replace('content="#1d201d"', 'content="#111722"');
+    .replace('content="#f4f1ea"', 'content="#0d1219"').replace('content="#1d201d"', 'content="#111722"');
   if (!result.includes('href="/assets/portfolio.css"')) result = result.replace('</head>', '<link rel="stylesheet" href="/assets/portfolio.css"><script src="/assets/portfolio.js" defer></script>\n</head>');
   // Both old and current Radar shells place the footer after the article.
   result = result.replace(/\s*<footer class="foot(?: p-footer)?">[\s\S]*?<\/footer>/, '')
@@ -27,17 +27,17 @@ export function RefreshRadarShell(html) {
 }
 
 export function Header(current = '') {
-  const items = [['/about/', 'About'], ['/experience/', 'Experience'], ['/projects/', 'Projects'], ['/radar/', 'Radar'], ['/about/#ask', 'Ask AI'], ['/about/#contact', 'Contact']];
+  const items = [['/about/', 'About'], ['/experience/', 'Experience'], ['/projects/', 'Projects'], ['/contact/', 'Contact']];
   return `<header class="top p-top">
   <a class="brand p-logo" href="/" aria-label="Maksym home">M<span>.</span></a>
   <button class="portfolio-menu" type="button" aria-expanded="false" aria-controls="portfolioNavigation" hidden><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 5h14M2 9h14M2 13h14"/></svg><span>Menu</span></button>
-  <nav class="nav p-nav" id="portfolioNavigation" aria-label="Main navigation">${items.map(([url, text]) => `<a href="${url}"${url === current ? ' aria-current="page"' : ''}${text === 'Contact' ? ' class="nav-contact"' : ''}>${text}</a>`).join('')}</nav>
+  <nav class="nav p-nav" id="portfolioNavigation" aria-label="Main navigation">${items.map(([url, text]) => `<a href="${url}"${url === current ? ' aria-current="page"' : ''}>${text}</a>`).join('')}</nav>
   <button class="theme" id="themeToggle" type="button" aria-label="Toggle theme"><svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg><svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg></button>
 </header>`;
 }
 
 export function Footer() {
-  return `<footer class="foot p-footer"><span>© <span id="year">2026</span> Maksym</span><nav aria-label="Footer">${link(profile.linkedin, 'LinkedIn')}${link(profile.github, 'GitHub')}<a href="/radar/">Radar</a><a href="/about/#ask">Ask my CV</a><a href="/llms.txt">llms.txt</a></nav></footer>`;
+  return `<footer class="foot p-footer"><span>© <span id="year">2026</span> Maksym</span><nav aria-label="Footer"><a href="/radar/">Radar / Blog</a><a href="/about/#ask">Ask my AI CV</a></nav></footer>`;
 }
 
 export function Page({ title, description, path, body, current = '', home = false }) {
@@ -50,7 +50,7 @@ export function Page({ title, description, path, body, current = '', home = fals
 <title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="author" content="Maksym">
 <link rel="canonical" href="${url}"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="alternate" type="text/markdown" href="/llms.txt" title="llms.txt"><link rel="alternate" type="text/markdown" href="/llms-full.txt" title="Full profile"><link rel="alternate" type="application/rss+xml" href="/radar/feed.xml" title="Radar">
-<meta name="theme-color" content="#f6f8fc"><meta property="og:type" content="website"><meta property="og:url" content="${url}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:image" content="https://maksym.site/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0d1219"><meta property="og:type" content="website"><meta property="og:url" content="${url}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:image" content="https://maksym.site/og.png"><meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>
 ${ThemeInit}
 <link rel="stylesheet" href="/assets/site.css"><link rel="stylesheet" href="/assets/portfolio.css"><script src="/assets/site.js" defer></script><script src="/assets/portfolio.js" defer></script>
@@ -62,15 +62,13 @@ ${ThemeInit}
 }
 
 export function Hero() {
-  return `<section class="glass-hero" aria-labelledby="home-title">
-  <p class="hero-eyebrow"><span aria-hidden="true"></span> MADRID, SPAIN · OPEN TO REMOTE ROLES</p>
-  <h1 id="home-title">Hi, I'm <span>Maksym.</span></h1>
-  <p class="hero-role">${esc(profile.role)}</p>
-  <p class="p-lead">I build reliable backend systems for banking and telecommunications — and tools that help developers do their best work.</p>
-  <div class="p-actions"><a class="p-cta" href="/experience/">View experience <span aria-hidden="true">→</span></a><a class="p-cta outline" href="/about/#contact">Let's talk</a></div>
-  <div class="hero-facts"><span>10+ years in engineering</span><span>Currently at Openbank</span><span>EU work authorization</span></div>
-  <div class="p-social">${link(profile.github, 'GitHub')}${link(profile.linkedin, 'LinkedIn')}<a href="/about/#ask">Ask my AI CV →</a></div>
-</section>`;
+  return `<section class="entry-hero" aria-labelledby="home-title"><div class="entry-copy">
+  <p class="p-kicker">SOFTWARE ENGINEER · MADRID, SPAIN</p>
+  <h1 id="home-title">Senior Java<br>Backend Engineer<span>.</span></h1>
+  <p class="p-lead">I'm Maksym. 10+ years building reliable backend systems for banking and telecommunications.</p>
+  <div class="p-actions"><a class="p-cta" href="/experience/">View experience <span aria-hidden="true">→</span></a><a class="p-cta outline" href="/contact/">Let's talk</a></div>
+  <div class="p-social">${link(profile.linkedin, 'LinkedIn')}${link(profile.github, 'GitHub')}<a href="/about/#ask">Ask my AI CV →</a></div>
+  </div><img class="entry-illustration" src="/assets/backend-stack.svg" alt="Backend architecture: Java, Spring Boot, microservices and event-driven systems" width="540" height="400"></section>`;
 }
 
 export function ProjectCard(project) {
@@ -118,4 +116,22 @@ export function CaseStudy(project, next) {
   <section class="case-section" aria-labelledby="results-title"><h2 id="results-title">${esc(project.resultTitle)}</h2><ul class="case-results">${project.results.map((s) => `<li>${esc(s)}</li>`).join('')}</ul></section>
   <nav class="case-next" aria-label="Next project"><span>KEEP EXPLORING</span><a href="/projects/${next.slug}/">${esc(next.title)} →</a></nav>
 </article>${ContactCTA()}`;
+}
+
+export function RepositoryList() {
+  const repos = [
+    { name: 'Citadel', icon: '>_', description: 'A lightweight, self-hosted workspace for projects, persistent terminals and AI coding agents.', stack: 'Node.js · Fastify · SQLite · tmux', url: 'https://github.com/maksymhs/Citadel' },
+    { name: 'maksymhs.github.io', icon: '{ }', description: 'This portfolio, its AI profile assistant, public MCP endpoint and daily engineering Radar.', stack: 'HTML · CSS · JavaScript · Cloudflare Workers', url: 'https://github.com/maksymhs/maksymhs.github.io' },
+  ];
+  return `<ul class="repository-list">${repos.map(r => `<li><article><span class="repository-icon" aria-hidden="true">${esc(r.icon)}</span><div><h2>${link(r.url,r.name)}</h2><p>${esc(r.description)}</p><p class="p-stack">${esc(r.stack)}</p></div></article></li>`).join('')}</ul><p class="repository-profile">${link(profile.github, 'View GitHub profile')}</p>`;
+}
+
+export function ContactPage() {
+  return `<section class="p-intro"><p class="p-kicker">CONTACT</p><h1>Let's talk.</h1><p class="p-lead">A backend role, a developer tool or an idea for a collaboration.</p></section>
+  <div class="direct-contact-layout"><form class="form direct-contact-form" id="directContactForm" data-ok="Message sent. Thanks for getting in touch.">
+  <label for="directName">Your name <span class="muted">(optional)</span></label><input id="directName" name="name" autocomplete="name" maxlength="100">
+  <label for="directEmail">Your email</label><input id="directEmail" name="email" type="email" autocomplete="email" required maxlength="254">
+  <label for="directMessage">Your message</label><textarea id="directMessage" name="message" rows="4" required maxlength="2000"></textarea>
+  <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="p-cta" type="submit">Send message →</button><p class="form-status" role="status" aria-live="polite"></p></form>
+  <aside class="contact-aside"><h2>Connect directly</h2><p>${link(profile.linkedin,'LinkedIn')}</p><h2>A question about my experience?</h2><p><a href="/about/#ask">Ask my AI CV →</a></p><p class="muted">An AI assistant based on my professional profile, not Maksym himself.</p></aside></div>`;
 }
