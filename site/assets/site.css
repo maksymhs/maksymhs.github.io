@@ -633,3 +633,7 @@ body:has(.connect-launcher) .foot { padding-bottom: 6rem; }
 .connect-own .tabs button { min-height: 2.75rem; font-size: .8125rem; }
 .connect-own .panel { min-width: 0; font-size: .8125rem; }
 .connect-own .panel pre { max-width: 100%; }
+/* Personal wordmark on the standalone Citadel landing. */
+.brand-wordmark{gap:0;font-size:1.55rem;font-weight:750;letter-spacing:-.045em;line-height:1}
+.brand-wordmark span{color:#73afff}
+html[data-theme="light"] .brand-wordmark span{color:#226dc6}

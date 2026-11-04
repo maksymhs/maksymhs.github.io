@@ -3,7 +3,7 @@ body.portfolio{--bg:#f6f8fc;--soft:#edf2fc;--fg:#202c43;--muted:#5c6b82;--line:#
 html[data-theme="dark"] body.portfolio{--bg:#111722;--soft:#1b2639;--fg:#edf2fc;--muted:#a7b5cd;--line:#334157;--accent:#a7c2ff;--on-accent:#142443;--card:#1b2535c9;--glass:#182131ed;--glow:#25477722;--shadow:0 8px 32px #00000015;color-scheme:dark}
 body.portfolio .p-wrap{max-width:1160px;min-height:100vh;display:flex;flex-direction:column;padding:0 clamp(21px,4.8vw,52px)}
 body.portfolio .p-top{display:flex;align-items:center;gap:22px;padding:13px 20px;min-height:70px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:18px;background:var(--glass);backdrop-filter:blur(18px);box-shadow:var(--shadow);margin-top:20px;position:sticky;top:14px;z-index:10}
-body.portfolio .p-logo{font-size:1.55rem;font-weight:750;letter-spacing:-.065em;line-height:1;color:var(--fg);text-decoration:none;margin-right:auto}
+body.portfolio .p-logo{gap:0;font-size:1.55rem;font-weight:750;letter-spacing:-.045em;line-height:1;color:var(--fg);text-decoration:none;margin-right:auto}
 body.portfolio .p-logo span{color:var(--accent)}
 body.portfolio .p-nav{display:flex;align-items:center;gap:clamp(12px,1.8vw,24px);margin-left:auto;font-size:.79rem}
 body.portfolio .p-nav a{color:var(--muted);text-decoration:none;white-space:nowrap}
