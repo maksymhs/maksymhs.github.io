@@ -424,3 +424,4 @@ body.portfolio main section.p-block:not(.hero):has(>.p-timeline){border-top:0;pa
 #contactConversation .connect-own summary{color:var(--muted)}
 #contactConversation .chat-form:focus-within{box-shadow:none}
 .contact-links{padding-top:19px;margin-top:25px;gap:7px}
+body.portfolio .p-footer{justify-content:flex-end}

@@ -7,7 +7,7 @@ export const link = (url, label, cls = '') => `<a href="${esc(url)}"${cls ? ` cl
 export const ThemeInit = "<script>try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='light'?'light':'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>";
 
 export function RadarFooter() {
-  return `<p class="radar-disclosure">Links point to original sources. Commentary is drafted with AI assistance and published automatically.</p>${Footer()}`;
+  return Footer();
 }
 
 // Apply the shared shell to archived posts without regenerating editorial text.
@@ -37,7 +37,7 @@ export function Header(current = '') {
 }
 
 export function Footer() {
-  return `<footer class="foot p-footer"><span>© <span id="year">2026</span> Maksym</span><nav aria-label="Footer"><a href="/radar/">Radar / Blog</a><a href="/contact/#ask">Ask my AI CV</a></nav></footer>`;
+  return `<footer class="foot p-footer"><nav aria-label="Footer"><a href="/radar/">Radar</a></nav></footer>`;
 }
 
 export function Page({ title, description, path, body, current = '', home = false }) {
