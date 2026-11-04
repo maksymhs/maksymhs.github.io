@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Google&#39;s LiteRT Tensor API for on-device ML models</title>
+      <link>https://maksym.site/radar/2026-11-04-google-litert-tensor-api-device-ml-models/</link>
+      <guid>https://maksym.site/radar/2026-11-04-google-litert-tensor-api-device-ml-models/</guid>
+      <pubDate>Wed, 04 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Google&#39;s new LiteRT Tensor API lets developers build, customize, and optimize ML models for on-device execution. This could change how backend teams integrate AI into their applications.</description>
+    </item>
+    <item>
       <title>LLMs can edit neural network weights: Weight Space Programming</title>
       <link>https://maksym.site/radar/2026-11-03-llms-can-edit-neural-network-weights-weight-space-programming/</link>
       <guid>https://maksym.site/radar/2026-11-03-llms-can-edit-neural-network-weights-weight-space-programming/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-13-spring-ai-2-1-milestone-tool-calls-reasoning-become-typed/</guid>
       <pubDate>Tue, 13 Oct 2026 06:00:00 GMT</pubDate>
       <description>Agent code lives or dies on how it replays model output between turns. Spring AI 2.1.0-M1 changes the message model for that, and fixes a silent timeout bug.</description>
-    </item>
-    <item>
-      <title>Spring Boot 4.2.0-M2 brings OpenTelemetry conventions and LDAP SSL bundles</title>
-      <link>https://maksym.site/radar/2026-10-09-spring-boot-4-2-0-m2-brings-opentelemetry-conventions-ldap-ssl/</link>
-      <guid>https://maksym.site/radar/2026-10-09-spring-boot-4-2-0-m2-brings-opentelemetry-conventions-ldap-ssl/</guid>
-      <pubDate>Fri, 09 Oct 2026 06:00:00 GMT</pubDate>
-      <description>A milestone, not a release, but the 4.2 line is already pointing at standard telemetry configuration. Spring Cloud&#39;s new train builds on it, with a Resilience4J bump.</description>
     </item>
   </channel>
 </rss>
