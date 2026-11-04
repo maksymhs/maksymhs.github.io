@@ -372,3 +372,5 @@ body.portfolio main section.contact-intro:not(.hero){max-width:720px;margin:0 au
 .contact-links{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin-top:28px;padding-top:22px;border-top:1px solid var(--line);font-size:.78rem;color:var(--muted)}
 .contact-links a{text-decoration:none;color:var(--accent)}
 @media(max-width:730px){body.portfolio main section.contact-intro:not(.hero){padding:32px 0 26px}.contact-intro .p-lead{font-size:.88rem}#contactConversation .connect-tabs button{font-size:.76rem;min-height:46px;padding:9px 8px}.contact-links{font-size:.72rem;gap:8px}.contact-links>span:first-child{display:none}}
+/* Give the backend illustration more presence on wide screens. */
+@media(min-width:1200px){.entry-art{width:116%;margin-left:-5%}.entry-art .entry-illustration{max-width:none}}
