@@ -410,3 +410,17 @@ body.portfolio .p-timeline>li:not(:last-child):after{content:'';display:block;po
 @media(max-width:730px){body.portfolio .p-timeline>li:not(:last-child):after{left:6px;top:35px;bottom:-22px}}
 body.portfolio main section.p-block:not(.hero):has(>.p-timeline){border-top:0;padding-top:8px}
 @media(max-width:730px){.entry-hero .entry-art{grid-row:1;margin-bottom:10px}.entry-hero .entry-copy{grid-row:2}}
+/* Both conversation modes use the same input and action layout. */
+#contactConversation #chatForm,#contactConversation #contactForm{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:0;margin:0;border:0;background:none;align-items:stretch}
+#contactConversation #chatInput,#contactConversation #contactMessage{box-sizing:border-box;width:100%;min-height:160px;max-height:320px;padding:13px 15px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:1rem;line-height:1.6;resize:vertical}
+#contactConversation #chatForm button[type="submit"],#contactConversation #contactForm button[type="submit"]{box-sizing:border-box;width:100%;min-height:44px;height:44px;margin:0;padding:10px 20px;border-radius:6px;font:inherit;font-size:.9rem;justify-self:stretch}
+#contactConversation .chat-log:empty{display:none}
+#contactConversation .suggest{margin:18px 0 0;gap:10px 22px;font-size:.8rem}
+#contactConversation .suggest button{min-height:36px}
+#contactConversation .form-status:empty{display:none}
+.contact-intro h1{margin-bottom:0!important}
+/* Keep the secondary contact route quiet and separate from conversation modes. */
+#contactConversation .connect-own{font-size:.8rem;margin-top:22px;padding-top:17px}
+#contactConversation .connect-own summary{color:var(--muted)}
+#contactConversation .chat-form:focus-within{box-shadow:none}
+.contact-links{padding-top:19px;margin-top:25px;gap:7px}

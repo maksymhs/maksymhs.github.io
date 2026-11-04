@@ -21,7 +21,7 @@ await save('projects/index.html', Page({
   title: 'Projects — Maksym | Open Source',
   description: 'Public GitHub repositories by Maksym: Citadel and this portfolio.',
   path: '/projects/', current: '/projects/',
-  body: `<section class="p-intro"><p class="p-kicker">PROJECTS</p><h1>Things I build.</h1><p class="p-lead">Open-source tools and experiments around developer productivity and AI.</p></section>${RepositoryList()}${Contributions()}`,
+  body: `<section class="p-intro"><h1>Things I build.</h1><p class="p-lead">Open-source tools and experiments around developer productivity and AI.</p></section>${RepositoryList()}${Contributions()}`,
 
 }));
 

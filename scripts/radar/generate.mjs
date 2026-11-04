@@ -212,7 +212,6 @@ function issuePage(issue, items, prev) {
     },
     head: prev ? `  <link rel="prev" href="${ORIGIN}/radar/${prev.slug}/">\n` : '',
     body: `      <article class="post">
-        <p class="kicker"><a href="/radar/">Radar</a> · ${issue.kind === 'daily' ? fmtDate(issue.date) : `Week ${issue.week}, ${issue.year}`}</p>
         <h1>${esc(issue.title)}</h1>
         <p class="post-meta">${fmtDate(issue.date)} · ${items.length} picks</p>
         <p class="post-intro">${esc(issue.intro)}</p>
@@ -250,7 +249,6 @@ function indexPage(all, pageNo = 1) {
     head: `${pageNo > 1 ? `  <link rel="prev" href="${ORIGIN}${at(pageNo - 1)}">\n` : ''}${pageNo < pages ? `  <link rel="next" href="${ORIGIN}${at(pageNo + 1)}">\n` : ''}`,
     jsonld: { '@context': 'https://schema.org', '@type': 'Blog', name: 'Radar', url: `${ORIGIN}${at(pageNo)}`, inLanguage: 'en', description, author: { '@type': 'Person', name: 'Maksym', url: ORIGIN }, blogPost: issues.slice(0, 10).map((i) => ({ '@type': 'BlogPosting', headline: i.title, url: `${ORIGIN}/radar/${i.slug}/`, datePublished: i.date })) },
     body: `      <article class="post">
-        <p class="kicker">Radar</p>
         <h1>What I'm reading<span class="dot-accent" aria-hidden="true">.</span></h1>
         <p class="post-intro">A daily selection of news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a> or read it from your assistant through the <a href="/contact/#mcp">MCP server</a>.</p>
         <ol class="radar-items issues">

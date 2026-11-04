@@ -127,11 +127,11 @@ export function RepositoryList() {
 }
 
 export function ContactPage() {
-  return `<section class="p-intro contact-intro"><p class="p-kicker">CONTACT</p><h1>Let's talk.</h1><p class="p-lead">A backend role, a developer tool or an idea for a collaboration.</p></section>
+  return `<section class="p-intro contact-intro"><h1>Let's talk.</h1></section>
   <div class="direct-contact-layout"><div id="contactConversation"><nav class="contact-fallback-modes" aria-label="Conversation options"><span>Message Maksym</span><a href="/contact/#ask">Ask about me · AI →</a></nav><form class="form direct-contact-form" id="directContactForm" data-ok="Message sent. Thanks for getting in touch.">
-  <label for="directMessage">Your message</label><textarea id="directMessage" name="message" rows="4" required maxlength="2000" placeholder="Your message… Include a way to reply if you’d like."></textarea>
+  <textarea id="directMessage" aria-label="Your message" name="message" rows="4" required maxlength="2000" placeholder="Your message… Include a way to reply if you’d like."></textarea>
   <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="p-cta" type="submit">Send message →</button><p class="form-status" role="status" aria-live="polite"></p></form></div>
-  <nav class="contact-links" aria-label="Other ways to connect"><span>Connect directly:</span> ${link(profile.linkedin,'LinkedIn')}<span class="contact-link-divider" aria-hidden="true">·</span><a href="/contact/#ask">Ask my AI CV →</a></nav></div>`;
+  <nav class="contact-links" aria-label="Other ways to connect"><span>Or connect on</span> ${link(profile.linkedin,'LinkedIn')}</nav></div>`;
 }
 
 export function Contributions() {

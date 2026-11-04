@@ -46,7 +46,7 @@
 
   if (inlineConversation) {
     try {
-      const response = await fetch('/assets/connect.html?v=centered-contact-v1');
+      const response = await fetch('/assets/connect.html?v=uniform-contact-v1');
       if (!response.ok) throw new Error('Conversation unavailable');
       const draft = $('directMessage')?.value || '';
       inlineConversation.innerHTML = await response.text();
