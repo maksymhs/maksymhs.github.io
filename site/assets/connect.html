@@ -1,12 +1,12 @@
   <div class="connect-tabs" role="tablist" aria-label="Conversation options">
-    <button id="connectAskTab" type="button" role="tab" aria-controls="connectAskPanel" aria-selected="true">Ask about me · AI</button>
+    <button id="connectAskTab" type="button" role="tab" aria-controls="connectAskPanel" aria-selected="true"><span>Ask about me</span><span class="mode-badge">AI</span></button>
     <button id="connectMessageTab" type="button" role="tab" aria-controls="connectMessagePanel" aria-selected="false" tabindex="-1">Message Maksym</button>
   </div>
   <div class="connect-body">
     <div id="connectAskPanel" role="tabpanel" aria-labelledby="connectAskTab">
       <div class="chat-log" id="chatLog" role="log" aria-label="Conversation with the AI assistant" aria-live="polite" aria-relevant="additions text"></div>
       <form class="chat-form" id="chatForm">
-        <textarea id="chatInput" rows="4" maxlength="6000" required placeholder="Ask about his work…" aria-label="Your question about Maksym’s work"></textarea>
+        <textarea id="chatInput" rows="3" maxlength="6000" required placeholder="Ask about his work…" aria-label="Your question about Maksym’s work"></textarea>
         <button class="btn primary connect-send" type="submit">Ask AI</button>
       </form>
       <div class="suggest" id="chatSuggest">
@@ -71,7 +71,7 @@
     </div>
     <div id="connectMessagePanel" role="tabpanel" aria-labelledby="connectMessageTab" hidden>
       <form class="form" id="contactForm" data-ok="Message sent. Thanks for getting in touch.">
-        <textarea id="contactMessage" aria-label="Your message" name="message" rows="4" required maxlength="2000" placeholder="Your message… Include a way to reply if you’d like."></textarea>
+        <textarea id="contactMessage" aria-label="Your message" name="message" rows="3" required maxlength="2000" placeholder="Your message… Include a way to reply if you’d like."></textarea>
         <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="btn primary" type="submit">Send message</button>
         <p class="form-status" role="status" aria-live="polite"></p>

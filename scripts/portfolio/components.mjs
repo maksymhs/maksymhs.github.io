@@ -39,7 +39,7 @@ export function Header(current = '') {
 }
 
 export function Footer() {
-  return `<footer class="foot p-footer"><nav aria-label="Footer"><a href="/radar/">Radar</a></nav></footer>`;
+  return `<footer class="foot p-footer"><nav aria-label="Footer"><a href="/radar/">Radar</a><a href="/llms.txt" aria-label="LLM — machine-readable profile">LLM</a><a href="/radar/feed.xml" aria-label="RSS — Radar feed">RSS</a></nav></footer>`;
 }
 
 export function Page({ title, description, path, body, current = '', home = false }) {
@@ -131,7 +131,7 @@ export function RepositoryList() {
 export function ContactPage() {
   return `<section class="p-intro contact-intro"><h1>Let's talk.</h1></section>
   <div class="direct-contact-layout"><div id="contactConversation"><nav class="contact-fallback-modes" aria-label="Conversation options"><span>Message Maksym</span><a href="/contact/#ask">Ask about me · AI →</a></nav><form class="form direct-contact-form" id="directContactForm" data-ok="Message sent. Thanks for getting in touch.">
-  <textarea id="directMessage" aria-label="Your message" name="message" rows="4" required maxlength="2000" placeholder="Your message… Include a way to reply if you’d like."></textarea>
+  <textarea id="directMessage" aria-label="Your message" name="message" rows="3" required maxlength="2000" placeholder="Your message… Include a way to reply if you’d like."></textarea>
   <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="p-cta" type="submit">Send message →</button><p class="form-status" role="status" aria-live="polite"></p></form></div>
   <nav class="contact-links" aria-label="Other ways to connect"><span>Or connect on</span> ${link(profile.linkedin,'LinkedIn')}</nav></div>`;
 }
