@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>How big is the open model economy today?</title>
+      <link>https://maksym.site/radar/2026-11-05-how-big-open-model-economy-today/</link>
+      <guid>https://maksym.site/radar/2026-11-05-how-big-open-model-economy-today/</guid>
+      <pubDate>Thu, 05 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Today&#39;s picks start with Interconnects: How big is the open model economy today?</description>
+    </item>
+    <item>
       <title>Google&#39;s LiteRT Tensor API for on-device ML models</title>
       <link>https://maksym.site/radar/2026-11-04-google-litert-tensor-api-device-ml-models/</link>
       <guid>https://maksym.site/radar/2026-11-04-google-litert-tensor-api-device-ml-models/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-14-gemini-4-argon-built-solve-your-hardest-problems/</guid>
       <pubDate>Wed, 14 Oct 2026 06:00:00 GMT</pubDate>
       <description>Today&#39;s picks start with Google: Gemini 4 Argon: Built to solve your hardest problems</description>
-    </item>
-    <item>
-      <title>Spring AI 2.1 milestone: tool calls and reasoning become typed message parts</title>
-      <link>https://maksym.site/radar/2026-10-13-spring-ai-2-1-milestone-tool-calls-reasoning-become-typed/</link>
-      <guid>https://maksym.site/radar/2026-10-13-spring-ai-2-1-milestone-tool-calls-reasoning-become-typed/</guid>
-      <pubDate>Tue, 13 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Agent code lives or dies on how it replays model output between turns. Spring AI 2.1.0-M1 changes the message model for that, and fixes a silent timeout bug.</description>
     </item>
   </channel>
 </rss>
