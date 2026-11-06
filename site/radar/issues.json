@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code",
+    "kind": "daily",
+    "year": 2026,
+    "week": 45,
+    "title": "Together AI keeps humans in control as coding agents rewrite GPU code",
+    "intro": "Together AI has leveraged coding agents to rewrite GPU code, but kept human oversight in the deployment process. This approach highlights the balance between automation and human control in critical systems.",
+    "date": "2026-11-06T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://thenewstack.io/together-compiler-gpu-optimization/",
+      "https://thenewstack.io/openai-gpt6-cyber-exploits/",
+      "https://www.microsoft.com/en-us/research/blog/formally-verifying-agent-written-full-stack-web-apps-with-pdd-kit/",
+      "https://devblogs.microsoft.com/foundry/microsoft-foundry-azure-developer-cli-ga/"
+    ]
+  },
+  {
     "slug": "2026-11-05-how-big-open-model-economy-today",
     "kind": "daily",
     "year": 2026,

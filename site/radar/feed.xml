@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Together AI keeps humans in control as coding agents rewrite GPU code</title>
+      <link>https://maksym.site/radar/2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code/</link>
+      <guid>https://maksym.site/radar/2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code/</guid>
+      <pubDate>Fri, 06 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Together AI has leveraged coding agents to rewrite GPU code, but kept human oversight in the deployment process. This approach highlights the balance between automation and human control in critical systems.</description>
+    </item>
+    <item>
       <title>How big is the open model economy today?</title>
       <link>https://maksym.site/radar/2026-11-05-how-big-open-model-economy-today/</link>
       <guid>https://maksym.site/radar/2026-11-05-how-big-open-model-economy-today/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-16-welcome-beam-501b-open-model-you-can-own-customize-scale/</guid>
       <pubDate>Fri, 16 Oct 2026 06:00:00 GMT</pubDate>
       <description>Today&#39;s picks start with Hugging Face: Welcome Beam: a 501B open model you can own, customize, and scale</description>
-    </item>
-    <item>
-      <title>Gemini 4 Argon: Built to solve your hardest problems</title>
-      <link>https://maksym.site/radar/2026-10-14-gemini-4-argon-built-solve-your-hardest-problems/</link>
-      <guid>https://maksym.site/radar/2026-10-14-gemini-4-argon-built-solve-your-hardest-problems/</guid>
-      <pubDate>Wed, 14 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Today&#39;s picks start with Google: Gemini 4 Argon: Built to solve your hardest problems</description>
     </item>
   </channel>
 </rss>

@@ -28,11 +28,11 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [All issues](https://maksym.site/radar/): daily news from the LLM and AI world and backend engineering, with a short take on each (RSS and MCP available)
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
+- [Together AI keeps humans in control as coding agents rewrite GPU code](https://maksym.site/radar/2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code/): Together AI has leveraged coding agents to rewrite GPU code, but kept human oversight in the deployment process. This approach highlights the balance between automation and human control in critical systems.
 - [How big is the open model economy today?](https://maksym.site/radar/2026-11-05-how-big-open-model-economy-today/): Today's picks start with Interconnects: How big is the open model economy today?
 - [Google's LiteRT Tensor API for on-device ML models](https://maksym.site/radar/2026-11-04-google-litert-tensor-api-device-ml-models/): Google's new LiteRT Tensor API lets developers build, customize, and optimize ML models for on-device execution. This could change how backend teams integrate AI into their applications.
 - [LLMs can edit neural network weights: Weight Space Programming](https://maksym.site/radar/2026-11-03-llms-can-edit-neural-network-weights-weight-space-programming/): A new method lets LLMs read and edit neural network weights, potentially streamlining model training and debugging. I would verify the method's robustness before adopting it in production.
 - [Agentic web: the new frontier for AI](https://maksym.site/radar/2026-11-02-agentic-web-new-frontier-ai/): The agentic web is here, transforming how AI interacts with online content. This shift brings new opportunities and challenges for backend engineering teams.
-- [Docusign's contract agents and Spring's AI push](https://maksym.site/radar/2026-11-01-docusign-contract-agents-spring-ai-push/): Docusign's new contract agents and the latest Spring releases highlight the growing integration of AI in backend systems.
 <!-- radar:end -->
 
 ## Optional
