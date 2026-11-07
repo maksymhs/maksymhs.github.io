@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-07-agent-memory-design-serverless-mcp-amazon-ecs-fargate",
+    "kind": "daily",
+    "year": 2026,
+    "week": 45,
+    "title": "Agent memory design and serverless MCP on Amazon ECS Fargate",
+    "intro": "Today's radar covers the design of agent memory inspired by human processes, a serverless MCP server on Amazon ECS Fargate, and new capabilities in AI agents.",
+    "date": "2026-11-07T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.anthropic.com/research/components-of-agent-memory",
+      "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash/",
+      "https://aws.amazon.com/blogs/machine-learning/serverless-mcp-server-for-ai-agent-data-lake-access-on-amazon-ecs-fargate/",
+      "https://aws.amazon.com/blogs/machine-learning/taxonomy-of-agentic-primitives-in-amazon-quick/"
+    ]
+  },
+  {
     "slug": "2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code",
     "kind": "daily",
     "year": 2026,

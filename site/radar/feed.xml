@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Agent memory design and serverless MCP on Amazon ECS Fargate</title>
+      <link>https://maksym.site/radar/2026-11-07-agent-memory-design-serverless-mcp-amazon-ecs-fargate/</link>
+      <guid>https://maksym.site/radar/2026-11-07-agent-memory-design-serverless-mcp-amazon-ecs-fargate/</guid>
+      <pubDate>Sat, 07 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Today&#39;s radar covers the design of agent memory inspired by human processes, a serverless MCP server on Amazon ECS Fargate, and new capabilities in AI agents.</description>
+    </item>
+    <item>
       <title>Together AI keeps humans in control as coding agents rewrite GPU code</title>
       <link>https://maksym.site/radar/2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code/</link>
       <guid>https://maksym.site/radar/2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-19-disney-12-5m-deal-character-ai-tech-avoids-lawsuits/</guid>
       <pubDate>Mon, 19 Oct 2026 06:00:00 GMT</pubDate>
       <description>Disney&#39;s acquisition of Character.AI&#39;s technology through a bankruptcy deal highlights the risks and strategies in acquiring AI assets with legal liabilities.</description>
-    </item>
-    <item>
-      <title>Welcome Beam: a 501B open model you can own, customize, and scale</title>
-      <link>https://maksym.site/radar/2026-10-16-welcome-beam-501b-open-model-you-can-own-customize-scale/</link>
-      <guid>https://maksym.site/radar/2026-10-16-welcome-beam-501b-open-model-you-can-own-customize-scale/</guid>
-      <pubDate>Fri, 16 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Today&#39;s picks start with Hugging Face: Welcome Beam: a 501B open model you can own, customize, and scale</description>
     </item>
   </channel>
 </rss>
