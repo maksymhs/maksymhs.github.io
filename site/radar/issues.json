@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-09-article-agentic-ai-architecture-current-challenges-future",
+    "kind": "daily",
+    "year": 2026,
+    "week": 46,
+    "title": "Article: Agentic AI Architecture: Current Challenges and Future Opportunities",
+    "intro": "Today's picks start with InfoQ: Article: Agentic AI Architecture: Current Challenges and Future Opportunities",
+    "date": "2026-11-09T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.infoq.com/articles/agentic-ai-architecture-challenges-opportunities/",
+      "https://www.baeldung.com/maven-pom-missing-tools-jar",
+      "https://inside.java/2026/11/09/inside-java-ticker-value-class/",
+      "https://foojay.io/today/beyond-mvn-install-maven-practices/"
+    ]
+  },
+  {
     "slug": "2026-11-08-ai-agents-getting-more-complex-developers-shouldnt-have-babysit",
     "kind": "daily",
     "year": 2026,
