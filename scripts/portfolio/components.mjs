@@ -11,11 +11,9 @@ export function RadarFooter() {
   return `<footer class="foot p-footer"><nav aria-label="Footer"><a href="/radar/feed.xml" aria-label="RSS — Radar feed">RSS</a></nav></footer>`;
 }
 
-function RadarHeader() {
-  return `<header class="top p-top">
-  <a class="brand p-logo" href="/" aria-label="Maksym home">Maksym<span>.</span></a>
-  <nav class="home-links radar-nav" aria-label="Main navigation"><a href="/radar/">Radar</a><a href="/contact/">Contact</a></nav>
-</header>`;
+function RadarBack(path) {
+  const archive = /^\/radar\/(?:page\/\d+\/)?$/.test(path);
+  return `<nav class="home-links radar-back" aria-label="Page navigation"><a href="${archive ? '/' : '/radar/'}"><span aria-hidden="true">←</span> ${archive ? 'Back to home' : 'Back to Radar'}</a></nav>`;
 }
 
 // Apply the shared shell to archived posts without regenerating editorial text.
@@ -23,7 +21,8 @@ export function RefreshRadarShell(html) {
   if (!html.includes('<article class="post">')) return html;
   let result = html.replace(/<body(?: class="[^"]*")?>/, '<body class="portfolio p-radar">')
     .replace('<div class="wrap">', '<div class="wrap p-wrap">')
-    .replace(/<header class="top(?: p-top)?">[\s\S]*?<\/header>/, RadarHeader())
+    .replace(/\s*<header class="top(?: p-top)?">[\s\S]*?<\/header>/, '')
+    .replace(/\s*<nav class="home-links radar-back"[^>]*>[\s\S]*?<\/nav>/, '')
     .replace(/<script>try\{var t=localStorage\.getItem\('theme'\);[\s\S]*?<\/script>/, ThemeInit)
     .replace('content="#f4f1ea"', 'content="#0d1219"').replace('content="#1d201d"', 'content="#111722"');
   if (!result.includes('href="/assets/portfolio.css"')) result = result.replace('</head>', '<link rel="stylesheet" href="/assets/portfolio.css"><script src="/assets/portfolio.js" defer></script>\n</head>');
@@ -32,6 +31,7 @@ export function RefreshRadarShell(html) {
     .replace(/\s*<p class="radar-disclosure">[\s\S]*?<\/p>/, '')
     .replace('</main>', `</main>\n${RadarFooter()}`);
   const path = new URL(result.match(/rel="canonical" href="([^"]+)"/)[1]).pathname;
+  result = result.replace('<article class="post">', `<article class="post">\n        ${RadarBack(path)}`);
   return EnhanceSEO(result, path);
 }
 

@@ -544,8 +544,8 @@ body.portfolio .landing-entry .landing-radar {
   font-size: clamp(1.35rem, 3vw, 1.75rem);
 }
 
-body.p-radar .radar-nav {
-  margin-top: 0;
+body.p-radar .radar-back {
+  margin: 0 0 12px;
 }
 
 .landing-radar .radar-archive-link {

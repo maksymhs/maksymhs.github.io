@@ -120,11 +120,6 @@ async function curate(candidates) {
 }
 
 const THEME = `<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>`;
-const TOGGLE = `<button class="theme" id="themeToggle" type="button" aria-label="Toggle theme">
-        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg>
-        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
-      </button>`;
-
 const PAGE_SIZE = 10;
 
 function page({ title, description, path, body, jsonld, head = '', ogType = 'article' }) {
@@ -159,16 +154,6 @@ ${head}  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme
 <body>
   <a class="skip" href="#content">Skip to content</a>
   <div class="wrap">
-    <header class="top">
-      <a class="brand" href="/"><img class="brand-icon" src="/avatar.svg?v=ce392533" width="28" height="28" alt="">Maksym</a>
-      <nav class="nav" aria-label="Site">
-        <a href="/about/">About</a>
-        <a href="/experience/">Experience</a>
-        <a href="/projects/">Projects</a>
-        <a href="/contact/#contact">Contact</a>
-      </nav>
-      ${TOGGLE}
-    </header>
     <main id="content">
 ${body}
       <footer class="foot">
