@@ -534,3 +534,12 @@ body.portfolio .contact-entry h1 {
 @media (max-width: 420px) {
   .contact-actions button { width: 100%; }
 }
+
+body.portfolio .landing-entry .landing-radar {
+  margin-top: clamp(36px, 6vw, 56px);
+}
+
+.landing-radar h2 {
+  margin: 0 0 16px;
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+}
