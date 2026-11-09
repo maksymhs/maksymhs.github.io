@@ -25,33 +25,40 @@
   dark.addEventListener?.('change', label);
   label();
 
-  // All conversations live on Contact. Preserve old fragment entry points.
-  const modes = ['#ask', '#contact', '#mcp'];
+  // Keep old contact, assistant and MCP links working after splitting the pages.
+  const legacyRoutes = new Map([
+    ['#ask', '/ask/#ask'],
+    ['#contact', '/contact/'],
+    ['#mcp', '/ask/#mcp'],
+  ]);
   const inlineConversation = $('contactConversation');
-  if (!inlineConversation && modes.includes(location.hash)) {
-    location.replace('/contact/' + location.hash);
-    return;
+  if (!inlineConversation) {
+    const redirectLegacy = () => {
+      const destination = legacyRoutes.get(location.hash);
+      if (destination) location.replace(destination);
+      return Boolean(destination);
+    };
+    if (redirectLegacy()) return;
+    window.addEventListener('hashchange', redirectLegacy);
   }
   document.addEventListener('click', (event) => {
     const anchor = event.target.closest('a[href]');
     if (!anchor || event.defaultPrevented || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || anchor.target === '_blank') return;
     const url = new URL(anchor.href);
-    if (url.origin !== location.origin || !modes.includes(url.hash)) return;
+    const destination = legacyRoutes.get(url.hash);
+    if (url.origin !== location.origin || !destination || url.pathname + url.hash === destination) return;
     event.preventDefault();
-    if (inlineConversation) {
-      if (location.hash !== url.hash) location.hash = url.hash;
-      else window.dispatchEvent(new Event('hashchange'));
-    } else location.assign('/contact/' + url.hash);
+    location.assign(destination);
   });
 
   if (inlineConversation) {
     try {
       const response = await fetch('/assets/connect.html?v=segmented-contact-v2');
       if (!response.ok) throw new Error('Conversation unavailable');
-      const draft = $('directMessage')?.value || '';
       inlineConversation.innerHTML = await response.text();
-      $('contactMessage').value = draft;
-    } catch { /* Keep the direct form and LinkedIn fallback available. */ }
+    } catch {
+      inlineConversation.textContent = 'The assistant is temporarily unavailable.';
+    }
   }
   const connectTabs = [...document.querySelectorAll('.connect-tabs [role="tab"]')];
   const selectConnect = (mode) => {
@@ -80,7 +87,7 @@
       });
     });
     const fromHash = () => {
-      selectConnect(location.hash === '#ask' || location.hash === '#mcp' ? 'ask' : 'contact');
+      selectConnect(location.hash === '#contact' ? 'contact' : 'ask');
       if (location.hash === '#mcp') {
         document.querySelector('.connect-own').open = true;
         $('mcp').open = true;
@@ -211,7 +218,8 @@
       form.reset();
       status.textContent = form.dataset.ok || 'Thanks, message sent.';
     } catch {
-      status.innerHTML = `Could not send it. Please <a href="https://www.linkedin.com/in/herasymenko" target="_blank" rel="noopener">message on LinkedIn</a>.`;
+      if (form.dataset.error) status.textContent = form.dataset.error;
+      else status.innerHTML = `Could not send it. Please <a href="https://www.linkedin.com/in/herasymenko" target="_blank" rel="noopener">message on LinkedIn</a>.`;
     } finally {
       btn.disabled = false;
     }

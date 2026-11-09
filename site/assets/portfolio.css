@@ -418,14 +418,14 @@ body.portfolio .p-footer nav{gap:22px}
 @media(max-width:730px){#contactConversation .connect-tabs{gap:4px;padding:4px}#contactConversation .connect-tabs button{font-size:.77rem;padding:10px 8px}#contactConversation #chatForm button[type="submit"],#contactConversation #contactForm button[type="submit"]{width:100%;justify-self:stretch}}
 
 body.p-home .home-entry {
-  width: min(calc(100% - 42px), 720px);
+  width: min(calc(100% - 42px), 960px);
   margin-inline: auto;
   padding-block: clamp(50px, 9vw, 94px);
 }
 
 body.p-home .home-entry h1 {
   margin: 0;
-  font-size: clamp(2.65rem, 7.5vw, 4rem);
+  font-size: clamp(2.85rem, 8vw, 5.25rem);
   font-weight: 650;
   line-height: 1.04;
   letter-spacing: -.07em;
@@ -441,8 +441,9 @@ body.p-home .home-entry h1 {
 }
 
 .home-entry > p {
-  margin: 12px 0 0;
+  margin: 14px 0 0;
   color: var(--muted);
+  font-size: clamp(1rem, 2vw, 1.25rem);
 }
 
 .home-links {
@@ -457,7 +458,7 @@ body.p-home .home-entry h1 {
   align-items: center;
   gap: 5px;
   min-height: 44px;
-  font-size: .875rem;
+  font-size: clamp(.875rem, 1.5vw, 1rem);
   font-weight: 560;
   text-decoration: none;
 }
@@ -473,7 +474,7 @@ body.p-home .home-entry h1 {
 
 .home-calendar {
   min-width: 0;
-  margin: 24px 0 0;
+  margin: 32px 0 0;
 }
 
 .home-calendar .contribution-scroll {
@@ -482,4 +483,21 @@ body.p-home .home-entry h1 {
 
 .home-calendar .contribution-scroll img {
   min-width: 640px;
+}
+
+body.portfolio .contact-entry {
+  width: min(calc(100% - 42px), 560px);
+  margin-inline: auto;
+  padding-block: clamp(46px, 9vw, 88px);
+}
+
+body.portfolio .contact-entry h1 {
+  margin: 0 0 28px;
+  font-size: clamp(2.35rem, 6vw, 3.5rem);
+}
+
+.contact-entry #directMessage {
+  min-height: 160px;
+  height: auto;
+  resize: vertical;
 }
