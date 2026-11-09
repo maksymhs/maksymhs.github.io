@@ -543,3 +543,16 @@ body.portfolio .landing-entry .landing-radar {
   margin: 0 0 16px;
   font-size: clamp(1.35rem, 3vw, 1.75rem);
 }
+
+body.p-radar .radar-nav {
+  margin-top: 0;
+}
+
+.landing-radar .radar-archive-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: 8px;
+  color: var(--accent);
+}

@@ -8,7 +8,14 @@ export const link = (url, label, cls = '') => `<a href="${esc(url)}"${cls ? ` cl
 export const ThemeInit = "<script>try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='light'?'light':'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>";
 
 export function RadarFooter() {
-  return Footer();
+  return `<footer class="foot p-footer"><nav aria-label="Footer"><a href="/radar/feed.xml" aria-label="RSS — Radar feed">RSS</a></nav></footer>`;
+}
+
+function RadarHeader() {
+  return `<header class="top p-top">
+  <a class="brand p-logo" href="/" aria-label="Maksym home">Maksym<span>.</span></a>
+  <nav class="home-links radar-nav" aria-label="Main navigation"><a href="/radar/">Radar</a><a href="/contact/">Contact</a></nav>
+</header>`;
 }
 
 // Apply the shared shell to archived posts without regenerating editorial text.
@@ -16,7 +23,7 @@ export function RefreshRadarShell(html) {
   if (!html.includes('<article class="post">')) return html;
   let result = html.replace(/<body(?: class="[^"]*")?>/, '<body class="portfolio p-radar">')
     .replace('<div class="wrap">', '<div class="wrap p-wrap">')
-    .replace(/<header class="top(?: p-top)?">[\s\S]*?<\/header>/, Header('/radar/'))
+    .replace(/<header class="top(?: p-top)?">[\s\S]*?<\/header>/, RadarHeader())
     .replace(/<script>try\{var t=localStorage\.getItem\('theme'\);[\s\S]*?<\/script>/, ThemeInit)
     .replace('content="#f4f1ea"', 'content="#0d1219"').replace('content="#1d201d"', 'content="#111722"');
   if (!result.includes('href="/assets/portfolio.css"')) result = result.replace('</head>', '<link rel="stylesheet" href="/assets/portfolio.css"><script src="/assets/portfolio.js" defer></script>\n</head>');

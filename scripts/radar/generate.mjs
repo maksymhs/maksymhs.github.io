@@ -1,5 +1,4 @@
 import { readFile, writeFile, mkdir, access, appendFile } from 'node:fs/promises';
-import { projects as portfolioProjects } from '../portfolio/data.mjs';
 import { RadarHomeBlock, RefreshRadarShell } from '../portfolio/components.mjs';
 
 const ROOT = new URL('../../', import.meta.url);
@@ -218,7 +217,7 @@ function issuePage(issue, items, prev) {
         <ol class="radar-items">
 ${list}
         </ol>
-        <p class="post-end"><a href="/radar/">← All issues</a>${prev ? ` · <a href="/radar/${prev.slug}/" rel="prev">Previous: ${esc(prev.title)}</a>` : ''} · <a href="/contact/#ask">Ask me</a></p>
+        <p class="post-end"><a href="/radar/">← All issues</a>${prev ? ` · <a href="/radar/${prev.slug}/" rel="prev">Previous: ${esc(prev.title)}</a>` : ''}</p>
       </article>`,
   });
 }
@@ -250,7 +249,7 @@ function indexPage(all, pageNo = 1) {
     jsonld: { '@context': 'https://schema.org', '@type': 'Blog', name: 'Radar', url: `${ORIGIN}${at(pageNo)}`, inLanguage: 'en', description, author: { '@type': 'Person', name: 'Maksym', url: ORIGIN }, blogPost: issues.slice(0, 10).map((i) => ({ '@type': 'BlogPosting', headline: i.title, url: `${ORIGIN}/radar/${i.slug}/`, datePublished: i.date })) },
     body: `      <article class="post">
         <h1>What I'm reading<span class="dot-accent" aria-hidden="true">.</span></h1>
-        <p class="post-intro">A daily selection of news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a> or read it from your assistant through the <a href="/contact/#mcp">MCP server</a>.</p>
+        <p class="post-intro">A daily selection of news from the LLM and AI world (Anthropic, OpenAI, Google, Microsoft, Meta) and backend engineering, with a short take on why it matters for software teams. Drafted with AI assistance in Maksym's voice and published automatically; every link points to the original source. <a href="/radar/feed.xml">Subscribe via RSS</a>.</p>
         <ol class="radar-items issues">
 ${list}
         </ol>${pager}
@@ -288,17 +287,13 @@ async function sitemapXml(issues) {
     const declared = html.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})/i)?.[1];
     return declared || current.match(new RegExp(`<loc>https://maksym\\.site${path}</loc>\\s*<lastmod>([^<]+)</lastmod>`))?.[1];
   };
-  const [homeEdited, aboutEdited, citadelEdited, experienceEdited, projectsEdited] = await Promise.all([stamp('/'), stamp('/about/'), stamp('/citadel/'), stamp('/experience/'), stamp('/projects/')]);
+  const homeEdited = await stamp('/');
   const home = [homeEdited, issues[0]?.date.slice(0, 10)].filter(Boolean).sort().at(-1);
   const url = (loc, lastmod, freq, prio) => `  <url>\n    <loc>${loc}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}\n    <changefreq>${freq}</changefreq>\n    <priority>${prio}</priority>\n  </url>`;
   const latest = issues[0]?.date.slice(0, 10) || home;
-  const caseStudies = await Promise.all(portfolioProjects.map(async (project) => {
-    const path = `/projects/${project.slug}/`;
-    return url(`${ORIGIN}${path}`, await stamp(path), 'monthly', '0.7');
-  }));
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/citadel/`, citadelEdited, 'monthly', '0.9'), url(`${ORIGIN}/about/`, aboutEdited, 'monthly', '0.9'), url(`${ORIGIN}/experience/`, experienceEdited, 'monthly', '0.9'), url(`${ORIGIN}/projects/`, projectsEdited, 'monthly', '0.8'), url(`${ORIGIN}/contact/`, await stamp('/contact/'), 'monthly', '0.8'), ...caseStudies, url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...Array.from({ length: Math.max(0, Math.ceil(issues.length / PAGE_SIZE) - 1) }, (_, k) => url(`${ORIGIN}/radar/page/${k + 2}/`, latest, 'daily', '0.4')), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
+${[url(`${ORIGIN}/`, home, 'monthly', '1.0'), url(`${ORIGIN}/contact/`, await stamp('/contact/'), 'monthly', '0.8'), url(`${ORIGIN}/radar/`, latest, 'daily', '0.7'), ...Array.from({ length: Math.max(0, Math.ceil(issues.length / PAGE_SIZE) - 1) }, (_, k) => url(`${ORIGIN}/radar/page/${k + 2}/`, latest, 'daily', '0.4')), ...issues.map((i) => url(`${ORIGIN}/radar/${i.slug}/`, i.date.slice(0, 10), 'yearly', '0.5'))].join('\n')}
 </urlset>
 `;
 }
