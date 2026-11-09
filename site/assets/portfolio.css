@@ -417,13 +417,13 @@ body.portfolio .p-footer{justify-content:flex-end}
 body.portfolio .p-footer nav{gap:22px}
 @media(max-width:730px){#contactConversation .connect-tabs{gap:4px;padding:4px}#contactConversation .connect-tabs button{font-size:.77rem;padding:10px 8px}#contactConversation #chatForm button[type="submit"],#contactConversation #contactForm button[type="submit"]{width:100%;justify-self:stretch}}
 
-body.p-home .home-entry {
+body.portfolio .landing-entry {
   width: min(calc(100% - 42px), 960px);
   margin-inline: auto;
   padding-block: clamp(50px, 9vw, 94px);
 }
 
-body.p-home .home-entry h1 {
+body.portfolio .landing-entry h1 {
   margin: 0;
   font-size: clamp(2.85rem, 8vw, 5.25rem);
   font-weight: 650;
@@ -440,7 +440,7 @@ body.p-home .home-entry h1 {
   background: var(--accent);
 }
 
-.home-entry > p {
+.landing-entry > p {
   margin: 14px 0 0;
   color: var(--muted);
   font-size: clamp(1rem, 2vw, 1.25rem);
@@ -496,41 +496,41 @@ body.portfolio .contact-entry h1 {
   font-size: clamp(2.35rem, 6vw, 3.5rem);
 }
 
-.contact-entry #directMessage {
+.home-calendar figcaption {
+  display: none;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: .8rem;
+}
+
+.landing-entry .direct-contact-form {
+  max-width: 680px;
+  margin-top: 32px;
+}
+
+.landing-entry #directMessage {
   min-height: 160px;
   height: auto;
   resize: vertical;
+  font-size: 1rem;
 }
 
-.contact-back {
-  display: inline-flex;
+.contact-actions {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  color: var(--accent);
-  font-size: .875rem;
-  text-decoration: none;
+  flex-wrap: wrap;
+  gap: 8px 16px;
 }
 
-.contact-back:hover {
-  text-decoration: underline;
-}
-
-.contact-heading {
-  margin: 12px 0 28px;
-}
-
-body.portfolio .contact-heading h1 {
-  margin: 0 0 8px;
-  font-weight: 650;
-}
-
-.contact-heading p {
-  margin: 0;
+.contact-actions span {
   color: var(--muted);
+  font-size: .8rem;
 }
 
-.contact-heading strong {
-  color: var(--fg);
-  font-weight: 600;
+@media (max-width: 700px) {
+  .home-calendar figcaption { display: block; }
+}
+
+@media (max-width: 420px) {
+  .contact-actions button { width: 100%; }
 }

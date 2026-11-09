@@ -231,7 +231,16 @@
     sendLead(e.currentTarget, { source: 'contact', contact: email || '(not provided, direct message)' });
   };
   $('contactForm')?.addEventListener('submit', handleContactSubmit);
-  $('directContactForm')?.addEventListener('submit', handleContactSubmit);
+  const directContact = $('directContactForm');
+  directContact?.addEventListener('submit', handleContactSubmit);
+  if (directContact) {
+    const send = directContact.querySelector('button[type="submit"]');
+    $('directMessage').addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' || event.shiftKey || event.ctrlKey || event.altKey || event.metaKey || event.isComposing || event.keyCode === 229) return;
+      event.preventDefault();
+      if (!event.repeat && !send.disabled) directContact.requestSubmit(send);
+    });
+  }
 
   const log = $('chatLog');
   const form = $('chatForm');

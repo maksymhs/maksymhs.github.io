@@ -17,20 +17,23 @@
 <meta name="twitter:image" content="https://maksym.site/og.png">
 </head>
 <body class="portfolio">
-  <main id="content" class="contact-entry">
-    <a class="contact-back" href="/"><span aria-hidden="true">←</span> Back to home</a>
-    <header class="contact-heading">
-      <h1>Contact</h1>
-      <p>Your message goes straight to my <strong>Telegram</strong>.</p>
-    </header>
+  <main id="content" class="landing-entry">
+    <h1>Contact<span class="home-signature" aria-hidden="true"></span></h1>
+    <p>Your message goes straight to my <strong>Telegram</strong>.</p>
+    <nav class="home-links" aria-label="Page navigation">
+      <a href="/"><span aria-hidden="true">←</span> Back to home</a>
+    </nav>
     <form class="form direct-contact-form" id="directContactForm" method="post"
           data-ok="Message sent. Thanks for getting in touch."
           data-error="Could not send your message. Please try again.">
       <label for="directMessage">Your message</label>
-      <textarea id="directMessage" name="message" rows="6" required maxlength="2000"
+      <textarea id="directMessage" name="message" aria-describedby="contact-shortcut" rows="6" required maxlength="2000"
                 placeholder="Include a way to reply if you’d like."></textarea>
       <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <button class="p-cta" type="submit">Send message</button>
+      <div class="contact-actions">
+        <button class="p-cta" type="submit">Send message</button>
+        <span id="contact-shortcut">Enter to send · Shift + Enter for a new line</span>
+      </div>
       <p class="form-status" role="status" aria-live="polite"></p>
     </form>
   </main>
