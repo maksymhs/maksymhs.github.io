@@ -5,7 +5,7 @@ export const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&': '
 const external = (url) => url.startsWith('https:') ? ' target="_blank" rel="noopener"' : '';
 const externalIcon = '<svg class="external-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg>';
 export const link = (url, label, cls = '') => `<a href="${esc(url)}"${cls ? ` class="${cls}"` : ''}${external(url)}>${esc(label)} ${externalIcon}</a>`;
-export const ThemeInit = "<script>try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='light'?'light':'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>";
+export const ThemeInit = "<script>(()=>{let theme;try{theme=localStorage.getItem('theme')}catch{}if(theme!=='light'&&theme!=='dark')theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=theme;document.querySelector('meta[name=\"theme-color\"]')?.setAttribute('content',theme==='dark'?'#0d1219':'#fafbfd')})()</script>";
 
 export function RadarFooter() {
   return `<footer class="foot p-footer"><nav aria-label="Footer"><a href="/radar/feed.xml" aria-label="RSS — Radar feed">RSS</a></nav></footer>`;
@@ -23,8 +23,8 @@ export function RefreshRadarShell(html) {
     .replace('<div class="wrap">', '<div class="wrap p-wrap">')
     .replace(/\s*<header class="top(?: p-top)?">[\s\S]*?<\/header>/, '')
     .replace(/\s*<nav class="home-links radar-back"[^>]*>[\s\S]*?<\/nav>/, '')
-    .replace(/<script>try\{var t=localStorage\.getItem\('theme'\);[\s\S]*?<\/script>/, ThemeInit)
-    .replace('content="#f4f1ea"', 'content="#0d1219"').replace('content="#1d201d"', 'content="#111722"');
+    .replace(/<script>(?:try\{var t=localStorage\.getItem\('theme'\);|\(\(\)=>\{let theme;)[\s\S]*?<\/script>/, ThemeInit)
+    .replace(/<meta name="theme-color"[^>]*>\n\s*<meta name="theme-color"[^>]*>/, '<meta name="theme-color" content="#0d1219">');
   if (!result.includes('href="/assets/portfolio.css"')) result = result.replace('</head>', '<link rel="stylesheet" href="/assets/portfolio.css"><script src="/assets/portfolio.js" defer></script>\n</head>');
   // Both old and current Radar shells place the footer after the article.
   result = result.replace(/\s*<footer class="foot(?: p-footer)?">[\s\S]*?<\/footer>/, '')

@@ -132,8 +132,7 @@ function page({ title, description, path, body, jsonld, head = '', ogType = 'art
   <meta name="description" content="${esc(description)}">
   <link rel="canonical" href="${ORIGIN}${path}">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-${head}  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1d201d" media="(prefers-color-scheme: dark)">
+${head}  <meta name="theme-color" content="#0d1219">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=wordmark-v1"><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=wordmark-v1">
   <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
   <meta property="og:type" content="${ogType}">

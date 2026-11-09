@@ -12,18 +12,27 @@
 
   const dark = matchMedia('(prefers-color-scheme: dark)');
   const toggle = $('themeToggle');
-  const system = () => (dark.matches ? 'dark' : 'light');
-  const current = () => root.dataset.theme || system();
-  const label = () => toggle?.setAttribute('aria-label', current() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
-  const store = (v) => { try { v ? localStorage.setItem('theme', v) : localStorage.removeItem('theme'); } catch { } };
+  const system = () => dark.matches ? 'dark' : 'light';
+  const savedTheme = () => {
+    try {
+      const value = localStorage.getItem('theme');
+      return value === 'light' || value === 'dark' ? value : null;
+    } catch { return null; }
+  };
+  const applyTheme = (theme) => {
+    root.dataset.theme = theme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0d1219' : '#fafbfd');
+    toggle?.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+  };
   toggle?.addEventListener('click', () => {
-    const next = current() === 'dark' ? 'light' : 'dark';
-    if (next === system() && !document.body.classList.contains('portfolio')) { delete root.dataset.theme; store(null); }
-    else { root.dataset.theme = next; store(next); }
-    label();
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem('theme', next); } catch { }
+    applyTheme(next);
   });
-  dark.addEventListener?.('change', label);
-  label();
+  dark.addEventListener?.('change', () => {
+    if (!savedTheme()) applyTheme(system());
+  });
+  applyTheme(savedTheme() || system());
 
   // Keep old contact, assistant and MCP links working after splitting the pages.
   const legacyRoutes = new Map([

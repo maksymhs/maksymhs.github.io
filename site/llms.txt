@@ -9,11 +9,8 @@ AI assistants can query his profile directly through a public MCP server (no aut
 ## Profile
 
 - [Full profile](https://maksym.site/llms-full.txt): experience, skills, education and what he is looking for, in Markdown
-- [About](https://maksym.site/about/): human-readable personal background and education
-- [Experience](https://maksym.site/experience/): professional history and selected technical work
-- [Contact](https://maksym.site/contact/): direct message or questions about his profile through an AI assistant
-- [Projects](https://maksym.site/projects/): personal software and open-source projects
-- [Citadel](https://maksym.site/citadel/): his open-source, self-hosted command center for terminals and AI coding agents (https://github.com/maksymhs/Citadel)
+- [Contact](https://maksym.site/contact/): direct message to Maksym
+- [Citadel](https://github.com/maksymhs/Citadel): his open-source, self-hosted command center for terminals and AI coding agents (https://github.com/maksymhs/Citadel)
 - [Home](https://maksym.site/): entry point to the sections
 
 ## Interact
@@ -37,5 +34,5 @@ AI assistants can query his profile directly through a public MCP server (no aut
 
 ## Optional
 
-- [Ask about me](https://maksym.site/contact/#ask): on-site AI assistant grounded on his profile
+- [Ask about me](https://maksym.site/ask/#ask): on-site AI assistant grounded on his profile
 - [Source of this site](https://github.com/maksymhs/maksymhs.github.io): static site, Cloudflare Worker (chat, contact form, MCP server) and daily radar automation
