@@ -238,14 +238,6 @@ body.portfolio .p-cta.outline{background:transparent;border-color:var(--line);co
 body.portfolio .p-kicker{font-size:.72rem;letter-spacing:.09em;font-weight:550}
 body.portfolio .p-social{justify-content:flex-start;font-size:.8rem;gap:24px}
 body.portfolio .p-footer{font-size:.73rem;padding:23px 0;min-height:70px}
-body.p-home main{display:flex;align-items:center}
-body.p-home main section.entry-hero:not(.hero){display:grid;grid-template-columns:1.12fr 1fr;gap:25px;align-items:center;width:100%;padding:50px 0}
-.entry-copy{min-width:0}
-body.portfolio .entry-hero h1{font-size:clamp(2.5rem,4.5vw,3.8rem);line-height:1.13;letter-spacing:-.045em;margin:0 0 23px;font-weight:680}
-.entry-hero h1>span{color:var(--accent)}
-body.portfolio .entry-hero .p-lead{font-size:1.05rem;max-width:480px;line-height:1.85}
-.entry-illustration{display:block;width:100%;height:auto;max-width:540px}
-body.portfolio .entry-hero .p-actions{margin:29px 0 23px;gap:13px}
 body.portfolio main section.p-intro:not(.hero){padding:55px 0 35px}
 body.portfolio .p-intro h1{font-size:clamp(2.2rem,4.3vw,3.25rem);font-weight:650}
 body.portfolio .p-job{background:none;border:0;border-radius:0;padding:0;grid-template-columns:145px minmax(0,1fr)}
@@ -290,15 +282,10 @@ body.portfolio .contact-aside h2{font-size:.96rem;line-height:1.6;letter-spacing
 .contact-aside p{font-size:.84rem;margin:0 0 30px}.contact-aside .muted{font-size:.78rem}
 .contact-aside a{text-decoration:none;color:var(--accent)}
 body.portfolio .connect-dialog{backdrop-filter:none;border-radius:10px;box-shadow:0 20px 70px #0005}
-@media(max-width:1000px) and (min-width:731px){body.portfolio .p-nav{gap:20px}body.p-home main section.entry-hero:not(.hero){grid-template-columns:1.2fr 1fr;gap:10px}.entry-illustration{min-width:0}body.portfolio .entry-hero h1{font-size:2.65rem}}
+@media(max-width:1000px) and (min-width:731px){body.portfolio .p-nav{gap:20px}}
 @media(max-width:730px){
  body.portfolio .p-top{min-height:78px;padding:17px 0;border-radius:0;gap:13px}
  body.portfolio .p-nav{gap:20px;font-size:.81rem}
- body.p-home main section.entry-hero:not(.hero){grid-template-columns:1fr;padding:38px 0 18px;gap:14px}
- body.portfolio .entry-hero h1{font-size:clamp(2.35rem,9.4vw,3.2rem)}
- body.portfolio .entry-hero .p-lead{font-size:.98rem}
- .entry-illustration{width:100%;max-width:350px;justify-self:center}
- body.portfolio .entry-hero .p-actions{gap:12px;margin:25px 0 18px}
  body.portfolio .p-social{font-size:.74rem;gap:20px}
  body.portfolio .p-footer{min-height:70px;flex-direction:row;align-items:center;gap:10px}
  body.portfolio .p-footer nav{gap:16px}
@@ -352,12 +339,10 @@ body.portfolio .contribution-heading h2{font-size:1.35rem;margin:0}
 .contribution-scroll img{display:block;width:100%;min-width:700px;height:auto}
 .contribution-section>p{margin:15px 0 0}
 @media(max-width:730px){body.portfolio .p-timeline>li{padding-left:22px}body.portfolio .p-job{grid-template-columns:1fr;padding:20px;gap:8px}body.portfolio .p-job h3{font-size:1.08rem}.toolkit .skill-group{padding:21px}.toolkit .skill-group li{font-size:.86rem}.contribution-scroll{padding:10px}}
-.entry-art{min-width:0;width:100%}
 body.portfolio .theme-light-art{display:none}
 html[data-theme="light"] body.portfolio .theme-light-art{display:block}
 html[data-theme="light"] body.portfolio .theme-dark-art{display:none}
 html[data-theme="light"] .contribution-scroll{background:#fafbfd}
-@media(max-width:730px){.entry-art{max-width:350px;justify-self:center}}
 body.portfolio main section.contact-intro:not(.hero){max-width:900px;margin:0 auto;padding:48px 0 30px;text-align:center}
 .contact-intro .p-lead{margin:0 auto;font-size:.96rem}
 .direct-contact-layout{display:flex;flex-direction:column;align-items:stretch;gap:0;max-width:900px;margin:0 auto;padding-bottom:45px}
@@ -372,8 +357,6 @@ body.portfolio main section.contact-intro:not(.hero){max-width:900px;margin:0 au
 .contact-links{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin-top:28px;padding-top:22px;border-top:1px solid var(--line);font-size:.78rem;color:var(--muted)}
 .contact-links a{text-decoration:none;color:var(--accent)}
 @media(max-width:730px){body.portfolio main section.contact-intro:not(.hero){padding:32px 0 26px}.contact-intro .p-lead{font-size:.88rem}#contactConversation .connect-tabs button{font-size:.76rem;min-height:46px;padding:9px 8px}.contact-links{font-size:.72rem;gap:8px}.contact-links>span:first-child{display:none}}
-/* Give the backend illustration more presence on wide screens. */
-@media(min-width:1200px){.entry-art{width:116%;margin-left:-5%}.entry-art .entry-illustration{max-width:none}}
 /* Career rail: years, milestones and role content share a single alignment. */
 body.portfolio .p-timeline{position:relative;margin:0;padding:0;isolation:isolate}
 body.portfolio .p-timeline:before{content:'';position:absolute;left:157px;top:30px;bottom:34px;width:1px;background:var(--line);z-index:-1}
@@ -409,7 +392,6 @@ body.portfolio .p-timeline:before{display:none}
 body.portfolio .p-timeline>li:not(:last-child):after{content:'';display:block;position:absolute;left:157px;top:41px;bottom:-28px;width:1px;border:0;background:var(--line);z-index:-1}
 @media(max-width:730px){body.portfolio .p-timeline>li:not(:last-child):after{left:6px;top:35px;bottom:-22px}}
 body.portfolio main section.p-block:not(.hero):has(>.p-timeline){border-top:0;padding-top:8px}
-@media(max-width:730px){.entry-hero .entry-art{grid-row:1;margin-bottom:10px}.entry-hero .entry-copy{grid-row:2}}
 /* Both conversation modes use the same input and action layout. */
 #contactConversation #chatForm,#contactConversation #contactForm{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:0;margin:0;border:0;background:none;align-items:stretch}
 #contactConversation #chatInput,#contactConversation #contactMessage{box-sizing:border-box;width:100%;min-height:160px;max-height:320px;padding:13px 15px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;font-size:1rem;line-height:1.6;resize:vertical}
@@ -434,3 +416,70 @@ body.portfolio .p-footer{justify-content:flex-end}
 #contactConversation #chatForm button[type="submit"],#contactConversation #contactForm button[type="submit"]{width:auto;min-width:150px;justify-self:end}
 body.portfolio .p-footer nav{gap:22px}
 @media(max-width:730px){#contactConversation .connect-tabs{gap:4px;padding:4px}#contactConversation .connect-tabs button{font-size:.77rem;padding:10px 8px}#contactConversation #chatForm button[type="submit"],#contactConversation #contactForm button[type="submit"]{width:100%;justify-self:stretch}}
+
+body.p-home .home-entry {
+  width: min(calc(100% - 42px), 720px);
+  margin-inline: auto;
+  padding-block: clamp(50px, 9vw, 94px);
+}
+
+body.p-home .home-entry h1 {
+  margin: 0;
+  font-size: clamp(2.65rem, 7.5vw, 4rem);
+  font-weight: 650;
+  line-height: 1.04;
+  letter-spacing: -.07em;
+}
+
+.home-signature {
+  display: inline-block;
+  width: .18em;
+  height: .18em;
+  margin-inline-start: .11em;
+  border-radius: .04em;
+  background: var(--accent);
+}
+
+.home-entry > p {
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+
+.home-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 clamp(14px, 3.4vw, 28px);
+  margin-top: 10px;
+}
+
+.home-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  font-size: .875rem;
+  font-weight: 560;
+  text-decoration: none;
+}
+
+.home-links a span,
+.home-links a:last-child {
+  color: var(--accent);
+}
+
+.home-links a:hover {
+  text-decoration: underline;
+}
+
+.home-calendar {
+  min-width: 0;
+  margin: 24px 0 0;
+}
+
+.home-calendar .contribution-scroll {
+  direction: rtl;
+}
+
+.home-calendar .contribution-scroll img {
+  min-width: 640px;
+}
