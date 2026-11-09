@@ -501,3 +501,36 @@ body.portfolio .contact-entry h1 {
   height: auto;
   resize: vertical;
 }
+
+.contact-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--accent);
+  font-size: .875rem;
+  text-decoration: none;
+}
+
+.contact-back:hover {
+  text-decoration: underline;
+}
+
+.contact-heading {
+  margin: 12px 0 28px;
+}
+
+body.portfolio .contact-heading h1 {
+  margin: 0 0 8px;
+  font-weight: 650;
+}
+
+.contact-heading p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.contact-heading strong {
+  color: var(--fg);
+  font-weight: 600;
+}
