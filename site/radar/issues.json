@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-10-claude-fable-5-2-mythos-5-2-aws-what-backend-teams-need-know",
+    "kind": "daily",
+    "year": 2026,
+    "week": 46,
+    "title": "Claude Fable 5.2 and Mythos 5.2 on AWS: what backend teams need to know",
+    "intro": "Claude Fable 5.2 and Mythos 5.2 are now available on AWS, bringing new capabilities for technical tasks and cybersecurity. Here is what backend teams need to consider.",
+    "date": "2026-11-10T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://aws.amazon.com/blogs/machine-learning/introducing-claude-fable-5-2-on-aws/",
+      "https://devblogs.microsoft.com/foundry/when-one-pass-isnt-enough-agentic-mode-in-azure-content-understanding/",
+      "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+      "https://www.anthropic.com/research/claude-electronics-design"
+    ]
+  },
+  {
     "slug": "2026-11-09-article-agentic-ai-architecture-current-challenges-future",
     "kind": "daily",
     "year": 2026,

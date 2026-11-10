@@ -25,11 +25,11 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [All issues](https://maksym.site/radar/): daily news from the LLM and AI world and backend engineering, with a short take on each (RSS and MCP available)
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
+- [Claude Fable 5.2 and Mythos 5.2 on AWS: what backend teams need to know](https://maksym.site/radar/2026-11-10-claude-fable-5-2-mythos-5-2-aws-what-backend-teams-need-know/): Claude Fable 5.2 and Mythos 5.2 are now available on AWS, bringing new capabilities for technical tasks and cybersecurity. Here is what backend teams need to consider.
 - [Article: Agentic AI Architecture: Current Challenges and Future Opportunities](https://maksym.site/radar/2026-11-09-article-agentic-ai-architecture-current-challenges-future/): Today's picks start with InfoQ: Article: Agentic AI Architecture: Current Challenges and Future Opportunities
 - [AI agents are getting more complex. Developers shouldn’t have to babysit them.](https://maksym.site/radar/2026-11-08-ai-agents-getting-more-complex-developers-shouldnt-have-babysit/): Today's picks start with The New Stack: AI agents are getting more complex. Developers shouldn’t have to babysit them.
 - [Agent memory design and serverless MCP on Amazon ECS Fargate](https://maksym.site/radar/2026-11-07-agent-memory-design-serverless-mcp-amazon-ecs-fargate/): Today's radar covers the design of agent memory inspired by human processes, a serverless MCP server on Amazon ECS Fargate, and new capabilities in AI agents.
 - [Together AI keeps humans in control as coding agents rewrite GPU code](https://maksym.site/radar/2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code/): Together AI has leveraged coding agents to rewrite GPU code, but kept human oversight in the deployment process. This approach highlights the balance between automation and human control in critical systems.
-- [How big is the open model economy today?](https://maksym.site/radar/2026-11-05-how-big-open-model-economy-today/): Today's picks start with Interconnects: How big is the open model economy today?
 <!-- radar:end -->
 
 ## Optional
