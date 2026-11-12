@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-12-kiji-inspector-explains-ai-agent-decisions",
+    "kind": "daily",
+    "year": 2026,
+    "week": 46,
+    "title": "Kiji Inspector explains AI agent decisions",
+    "intro": "Dataiku's Kiji Inspector uses Sparse Autoencoders to explain AI agent decisions, while AWS releases a local emulator for its services.",
+    "date": "2026-11-12T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.infoq.com/presentations/explainable-ai-llm-agent-decisions/",
+      "https://simonwillison.net/2026/Nov/11/aws-emulator/",
+      "https://simonwillison.net/2026/Nov/11/gemini-decisions-api/",
+      "https://aws.amazon.com/blogs/machine-learning/build-autonomous-ai-agents-with-amazon-bedrock-and-spring-ai/"
+    ]
+  },
+  {
     "slug": "2026-11-11-new-york-ai-safety-law-takes-effect-impacting-openai-anthropic",
     "kind": "daily",
     "year": 2026,
