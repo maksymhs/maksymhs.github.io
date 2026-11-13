@@ -25,11 +25,11 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [All issues](https://maksym.site/radar/): daily news from the LLM and AI world and backend engineering, with a short take on each (RSS and MCP available)
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
+- [AWS launches SGLang-Neuron for Trainium, Natera's lab ops agent](https://maksym.site/radar/2026-11-13-aws-launches-sglang-neuron-trainium-natera-lab-ops-agent/): AWS released SGLang-Neuron for Trainium, enabling frontier AI models. Natera built an agentic AI system for lab operations with Amazon Bedrock AgentCore.
 - [Kiji Inspector explains AI agent decisions](https://maksym.site/radar/2026-11-12-kiji-inspector-explains-ai-agent-decisions/): Dataiku's Kiji Inspector uses Sparse Autoencoders to explain AI agent decisions, while AWS releases a local emulator for its services.
 - [New York's AI safety law takes effect, impacting OpenAI and Anthropic](https://maksym.site/radar/2026-11-11-new-york-ai-safety-law-takes-effect-impacting-openai-anthropic/): New York's RAISE Act is now in effect, requiring large AI developers to register and publish safety frameworks. This impacts companies like OpenAI and Anthropic, which are also seeing significant financial moves.
 - [Claude Fable 5.2 and Mythos 5.2 on AWS: what backend teams need to know](https://maksym.site/radar/2026-11-10-claude-fable-5-2-mythos-5-2-aws-what-backend-teams-need-know/): Claude Fable 5.2 and Mythos 5.2 are now available on AWS, bringing new capabilities for technical tasks and cybersecurity. Here is what backend teams need to consider.
 - [Article: Agentic AI Architecture: Current Challenges and Future Opportunities](https://maksym.site/radar/2026-11-09-article-agentic-ai-architecture-current-challenges-future/): Today's picks start with InfoQ: Article: Agentic AI Architecture: Current Challenges and Future Opportunities
-- [AI agents are getting more complex. Developers shouldn’t have to babysit them.](https://maksym.site/radar/2026-11-08-ai-agents-getting-more-complex-developers-shouldnt-have-babysit/): Today's picks start with The New Stack: AI agents are getting more complex. Developers shouldn’t have to babysit them.
 <!-- radar:end -->
 
 ## Optional

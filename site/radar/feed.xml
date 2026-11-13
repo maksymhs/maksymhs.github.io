@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>AWS launches SGLang-Neuron for Trainium, Natera&#39;s lab ops agent</title>
+      <link>https://maksym.site/radar/2026-11-13-aws-launches-sglang-neuron-trainium-natera-lab-ops-agent/</link>
+      <guid>https://maksym.site/radar/2026-11-13-aws-launches-sglang-neuron-trainium-natera-lab-ops-agent/</guid>
+      <pubDate>Fri, 13 Nov 2026 06:00:00 GMT</pubDate>
+      <description>AWS released SGLang-Neuron for Trainium, enabling frontier AI models. Natera built an agentic AI system for lab operations with Amazon Bedrock AgentCore.</description>
+    </item>
+    <item>
       <title>Kiji Inspector explains AI agent decisions</title>
       <link>https://maksym.site/radar/2026-11-12-kiji-inspector-explains-ai-agent-decisions/</link>
       <guid>https://maksym.site/radar/2026-11-12-kiji-inspector-explains-ai-agent-decisions/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-25-google-gemini-4-argon-optimizes-adk-codebase-40-session-overhead/</guid>
       <pubDate>Sun, 25 Oct 2026 06:00:00 GMT</pubDate>
       <description>Google&#39;s Gemini 4 Argon completed an 11-hour unattended optimization run on the Agent Development Kit codebase, producing two accepted changes that cut session-preparation overhead by 40% and cold import time by 21%. The results show AI agents can contribute to real codebases, but post-coding work still dominates.</description>
-    </item>
-    <item>
-      <title>OpenAI says it will no longer train its AI models on the live internet, citing “signifi...</title>
-      <link>https://maksym.site/radar/2026-10-24-openai-says-will-no-longer-train-ai-models-live-internet-citing/</link>
-      <guid>https://maksym.site/radar/2026-10-24-openai-says-will-no-longer-train-ai-models-live-internet-citing/</guid>
-      <pubDate>Sat, 24 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Today&#39;s picks start with TechCrunch AI: OpenAI says it will no longer train its AI models on the live internet, citing “significant risks”</description>
     </item>
   </channel>
 </rss>
