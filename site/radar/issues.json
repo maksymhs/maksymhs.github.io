@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-14-google-search-gets-major-upgrade-gemini-4-hydrogen",
+    "kind": "daily",
+    "year": 2026,
+    "week": 46,
+    "title": "Google Search gets a major upgrade with Gemini 4 Hydrogen",
+    "intro": "Google Search has received a significant upgrade with Gemini 4 Hydrogen, enhancing user navigation and intent understanding. This upgrade supports simultaneous queries and structured information display, providing more visual content.",
+    "date": "2026-11-14T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://blog.google/products-and-platforms/products/search/gemini-4-hydrogen-search-upgrade/",
+      "https://aws.amazon.com/blogs/architecture/scale-distributed-ai-workloads-with-ray-and-anyscale-on-amazon-ec2/",
+      "https://arstechnica.com/google/2026/11/google-rolls-out-gemini-4-hydrogen-finally-replacing-3-8-flash/",
+      "https://www.wired.com/story/silicon-valley-is-still-defending-jensen-huang/"
+    ]
+  },
+  {
     "slug": "2026-11-13-aws-launches-sglang-neuron-trainium-natera-lab-ops-agent",
     "kind": "daily",
     "year": 2026,
