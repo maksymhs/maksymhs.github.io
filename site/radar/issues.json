@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-15-anthropic-ai-powered-code-review-boosts-pull-request-quality",
+    "kind": "daily",
+    "year": 2026,
+    "week": 46,
+    "title": "Anthropic's AI-powered code review boosts pull request quality",
+    "intro": "Anthropic's new AI-powered code review process for Claude Code shows significant improvements in pull request quality and efficiency. I would check how such a system could fit into existing workflows.",
+    "date": "2026-11-15T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.infoq.com/news/2026/11/claude-code-review/",
+      "https://www.infoq.com/news/2026/11/cohere-open-weight-egress-risk/",
+      "https://thenewstack.io/aws-emulator-verification-loops/",
+      "https://www.baeldung.com/java-spring-ai-openai-sdk"
+    ]
+  },
+  {
     "slug": "2026-11-14-google-search-gets-major-upgrade-gemini-4-hydrogen",
     "kind": "daily",
     "year": 2026,
