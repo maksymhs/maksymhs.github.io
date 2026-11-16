@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-16-llama-cpp-1-0-0-new-foundation-local-ai",
+    "kind": "daily",
+    "year": 2026,
+    "week": 47,
+    "title": "Llama.cpp 1.0.0: a new foundation for local AI",
+    "intro": "Llama.cpp 1.0.0 was released, supporting multi-modal LLMs on a wide range of hardware. I would evaluate how it fits into the backend toolchain.",
+    "date": "2026-11-16T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://huggingface.co/blog/ggml-org/llama-cpp-v1",
+      "https://foojay.io/today/foojay-podcast-105/",
+      "https://foojay.io/today/skills-across-coding-assistants/",
+      "https://www.infoq.com/news/2026/11/aws-emulator-agents/"
+    ]
+  },
+  {
     "slug": "2026-11-15-anthropic-ai-powered-code-review-boosts-pull-request-quality",
     "kind": "daily",
     "year": 2026,
