@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-17-accelerate-molecular-dynamics-simulations-accurate-flexible",
+    "kind": "daily",
+    "year": 2026,
+    "week": 47,
+    "title": "Accelerate Molecular Dynamics Simulations with Accurate, Flexible Primitives Using NVID...",
+    "intro": "Today's picks start with NVIDIA Developer: Accelerate Molecular Dynamics Simulations with Accurate, Flexible Primitives Using NVIDIA cuPotential",
+    "date": "2026-11-17T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://developer.nvidia.com/blog/accelerate-molecular-dynamics-simulations-with-accurate-flexible-primitives-using-nvidia-cupotential/",
+      "https://aws.amazon.com/blogs/machine-learning/taxonomy-of-multi-agent-design-patterns-anti-patterns-and-lessons-from-manufacturing/",
+      "https://aws.amazon.com/blogs/machine-learning/build-memory-aware-ai-agents-with-agentic-retrieve-on-amazon-bedrock-managed-knowledge-base/",
+      "https://aws.amazon.com/blogs/machine-learning/how-duco-transforms-financial-data-automation-with-amazon-bedrock-agentcore/"
+    ]
+  },
+  {
     "slug": "2026-11-16-llama-cpp-1-0-0-new-foundation-local-ai",
     "kind": "daily",
     "year": 2026,

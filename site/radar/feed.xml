@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Accelerate Molecular Dynamics Simulations with Accurate, Flexible Primitives Using NVID...</title>
+      <link>https://maksym.site/radar/2026-11-17-accelerate-molecular-dynamics-simulations-accurate-flexible/</link>
+      <guid>https://maksym.site/radar/2026-11-17-accelerate-molecular-dynamics-simulations-accurate-flexible/</guid>
+      <pubDate>Tue, 17 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Today&#39;s picks start with NVIDIA Developer: Accelerate Molecular Dynamics Simulations with Accurate, Flexible Primitives Using NVIDIA cuPotential</description>
+    </item>
+    <item>
       <title>Llama.cpp 1.0.0: a new foundation for local AI</title>
       <link>https://maksym.site/radar/2026-11-16-llama-cpp-1-0-0-new-foundation-local-ai/</link>
       <guid>https://maksym.site/radar/2026-11-16-llama-cpp-1-0-0-new-foundation-local-ai/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-29-gemini-4-carbon-our-next-frontier-model/</guid>
       <pubDate>Thu, 29 Oct 2026 06:00:00 GMT</pubDate>
       <description>Today&#39;s picks start with Google DeepMind: Gemini 4 Carbon: Our next frontier model</description>
-    </item>
-    <item>
-      <title>DeepMind&#39;s Genie 4 brings realistic physics and audio to world models</title>
-      <link>https://maksym.site/radar/2026-10-28-deepmind-genie-4-brings-realistic-physics-audio-world-models/</link>
-      <guid>https://maksym.site/radar/2026-10-28-deepmind-genie-4-brings-realistic-physics-audio-world-models/</guid>
-      <pubDate>Wed, 28 Oct 2026 06:00:00 GMT</pubDate>
-      <description>DeepMind&#39;s new Genie 4 world model promises more realistic physics and audio, but it has limits. I would check how it handles long-term consistency before adopting it.</description>
     </item>
   </channel>
 </rss>
