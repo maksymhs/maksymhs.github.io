@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-18-nvidia-sparse-attention-efficient-long-context-inference",
+    "kind": "daily",
+    "year": 2026,
+    "week": 47,
+    "title": "NVIDIA's Sparse Attention for Efficient Long-Context Inference",
+    "intro": "NVIDIA's latest advancements in sparse attention for efficient long-context inference are significant for backend teams dealing with large-scale AI models. Muse's expansion into Australia and Rakbank's observability setup are also noteworthy.",
+    "date": "2026-11-18T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://developer.nvidia.com/blog/co-designing-sparse-attention-for-efficient-long-context-inference/",
+      "https://www.wired.com/story/nvidias-board-has-no-plans-to-reinstate-jensen-huang/",
+      "https://about.fb.com/news/2026/11/muse-is-now-available-in-australia/",
+      "https://aws.amazon.com/blogs/architecture/how-rakbank-built-centralized-observability-at-scale-with-amazon-opensearch-service/"
+    ]
+  },
+  {
     "slug": "2026-11-17-accelerate-molecular-dynamics-simulations-accurate-flexible",
     "kind": "daily",
     "year": 2026,
