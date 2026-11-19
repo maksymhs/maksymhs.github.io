@@ -1,5 +1,20 @@
 [
   {
+    "slug": "2026-11-19-gemini-4-neon-released-engineering-knowledge-work-science",
+    "kind": "daily",
+    "year": 2026,
+    "week": 47,
+    "title": "Gemini 4 Neon released for engineering, knowledge work and science",
+    "intro": "Google DeepMind's Gemini 4 Neon model is now available, with a 1 million-token context window and four scalable thinking levels. It ranks highly on several benchmarks, and its pricing is competitive.",
+    "date": "2026-11-19T06:00:00.000Z",
+    "count": 3,
+    "links": [
+      "https://deepmind.google/blog/introducing-gemini-4-neon/",
+      "https://aws.amazon.com/blogs/machine-learning/how-airbnb-uses-cost-per-task-to-operate-coding-agents-on-amazon-bedrock/",
+      "https://arstechnica.com/gadgets/2026/11/microsoft-calls-copilot-the-new-os-for-work-at-ignite-keynote/"
+    ]
+  },
+  {
     "slug": "2026-11-18-nvidia-sparse-attention-efficient-long-context-inference",
     "kind": "daily",
     "year": 2026,

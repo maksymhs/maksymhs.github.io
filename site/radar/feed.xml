@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Gemini 4 Neon released for engineering, knowledge work and science</title>
+      <link>https://maksym.site/radar/2026-11-19-gemini-4-neon-released-engineering-knowledge-work-science/</link>
+      <guid>https://maksym.site/radar/2026-11-19-gemini-4-neon-released-engineering-knowledge-work-science/</guid>
+      <pubDate>Thu, 19 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Google DeepMind&#39;s Gemini 4 Neon model is now available, with a 1 million-token context window and four scalable thinking levels. It ranks highly on several benchmarks, and its pricing is competitive.</description>
+    </item>
+    <item>
       <title>NVIDIA&#39;s Sparse Attention for Efficient Long-Context Inference</title>
       <link>https://maksym.site/radar/2026-11-18-nvidia-sparse-attention-efficient-long-context-inference/</link>
       <guid>https://maksym.site/radar/2026-11-18-nvidia-sparse-attention-efficient-long-context-inference/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-10-31-boxlang-ai-3-6-adds-browser-audio-mcp-modules-jvm-agents/</guid>
       <pubDate>Sat, 31 Oct 2026 06:00:00 GMT</pubDate>
       <description>Ortus Solutions released BoxLang AI 3.6, extending its JVM-based productivity platform with browser automation, audio processing, and a stdio MCP client. The update is relevant as teams look for ways to embed agentic capabilities directly into existing Java stacks without spinning up separate runtimes.</description>
-    </item>
-    <item>
-      <title>Mistral&#39;s Le Chonk: open-weight model targets coding and cyber defense</title>
-      <link>https://maksym.site/radar/2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense/</link>
-      <guid>https://maksym.site/radar/2026-10-30-mistral-le-chonk-open-weight-model-targets-coding-cyber-defense/</guid>
-      <pubDate>Fri, 30 Oct 2026 06:00:00 GMT</pubDate>
-      <description>Mistral released Mistral Large 4 (Le Chonk), a 1-trillion-parameter open-weight model trained on European infrastructure, claiming leads in coding and defensive cybersecurity benchmarks.</description>
     </item>
   </channel>
 </rss>
