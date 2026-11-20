@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-20-google-tool-retrieval-gemini-aws-agent-built-emulator",
+    "kind": "daily",
+    "year": 2026,
+    "week": 47,
+    "title": "Google's Tool Retrieval for Gemini and AWS's agent-built emulator",
+    "intro": "Google's new Tool Retrieval for Gemini and AWS's agent-built emulator are both significant steps in the evolution of AI-assisted engineering.",
+    "date": "2026-11-20T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-api-tool-retrieval/",
+      "https://www.infoq.com/news/2026/11/aws-emulator-local-testing/",
+      "https://www.infoq.com/news/2026/11/google-substrate-gvisor-cncf/",
+      "https://deepmind.google/blog/genie-4-is-now-available/"
+    ]
+  },
+  {
     "slug": "2026-11-19-gemini-4-neon-released-engineering-knowledge-work-science",
     "kind": "daily",
     "year": 2026,
