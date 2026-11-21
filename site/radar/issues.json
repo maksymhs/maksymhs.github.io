@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry",
+    "kind": "daily",
+    "year": 2026,
+    "week": 47,
+    "title": "OpenAI's MedChemBench tests AI models on medicinal chemistry",
+    "intro": "OpenAI's new benchmark for AI in drug discovery shows promising results, but practical adoption requires more than just high scores.",
+    "date": "2026-11-21T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://openai.com/index/introducing-medchembench",
+      "https://thenewstack.io/anthropic-claude-code-verification/",
+      "https://openai.com/index/combatting-adversarial-distillation",
+      "https://aws.amazon.com/blogs/architecture/ai-coding-agents-on-amazon-ec2-mac-how-cognition-scales-devin-for-macos/"
+    ]
+  },
+  {
     "slug": "2026-11-20-google-tool-retrieval-gemini-aws-agent-built-emulator",
     "kind": "daily",
     "year": 2026,

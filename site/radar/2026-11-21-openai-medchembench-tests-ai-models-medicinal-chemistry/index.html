@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenAI&#39;s MedChemBench tests AI models on medicinal chemistry · Radar 2026-11-21 · Maksym</title>
+  <meta name="description" content="OpenAI&#39;s new benchmark for AI in drug discovery shows promising results, but practical adoption requires more than just high scores.">
+  <link rel="canonical" href="https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="prev" href="https://maksym.site/radar/2026-11-20-google-tool-retrieval-gemini-aws-agent-built-emulator/">
+  <meta name="theme-color" content="#0d1219">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=wordmark-v1"><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=wordmark-v1">
+  <link rel="alternate" type="application/rss+xml" title="Maksym · Radar" href="/radar/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/">
+  <meta property="og:title" content="OpenAI&#39;s MedChemBench tests AI models on medicinal chemistry · Radar 2026-11-21 · Maksym">
+  <meta property="og:description" content="OpenAI&#39;s new benchmark for AI in drug discovery shows promising results, but practical adoption requires more than just high scores.">
+  <meta property="og:image" content="https://maksym.site/og.png?v=bb9981a9">
+  <meta property="og:image:width" content="1730">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="Maksym — Backend systems, tools and engineering notes. Madrid, Spain.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="Maksym — Backend systems, tools and engineering notes. Madrid, Spain.">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://maksym.site/#maksym","name":"Maksym","url":"https://maksym.site/","jobTitle":"Senior Backend Engineer","description":"Java and Spring Boot backend engineer with 10+ years in banking and telecommunications, based in Madrid, Spain.","address":{"@type":"PostalAddress","addressLocality":"Madrid","addressCountry":"ES"},"sameAs":["https://github.com/maksymhs","https://www.linkedin.com/in/herasymenko"],"knowsAbout":["Java","Spring Boot","Distributed systems","Microservices","Event-driven architecture","PostgreSQL","AWS SQS","Observability","Developer tools"],"knowsLanguage":["Spanish","Russian","Ukrainian","English"],"subjectOf":{"@type":"CreativeWork","url":"https://maksym.site/llms-full.txt","encodingFormat":"text/markdown"}},{"@type":"WebSite","@id":"https://maksym.site/#website","url":"https://maksym.site/","name":"Maksym","inLanguage":"en","publisher":{"@id":"https://maksym.site/#maksym"},"about":{"@id":"https://maksym.site/#maksym"}},{"@type":"BlogPosting","headline":"OpenAI's MedChemBench tests AI models on medicinal chemistry","description":"OpenAI's new benchmark for AI in drug discovery shows promising results, but practical adoption requires more than just high scores.","datePublished":"2026-11-21T06:00:00.000Z","dateModified":"2026-11-21T06:00:00.000Z","inLanguage":"en","articleSection":"AI and backend engineering","url":"https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/","mainEntityOfPage":"https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/","image":"https://maksym.site/og.png?v=bb9981a9","isPartOf":{"@id":"https://maksym.site/#website"},"author":{"@id":"https://maksym.site/#maksym"},"publisher":{"@type":"Person","name":"Maksym","url":"https://maksym.site"},"citation":[{"@type":"CreativeWork","name":"Can AI help scientists identify promising drug candidates?","url":"https://openai.com/index/introducing-medchembench","datePublished":"2026-11-20","publisher":{"@type":"Organization","name":"OpenAI"}},{"@type":"CreativeWork","name":"Anthropic says Claude writes and reviews 90% of its team’s code. The catch is how it checks the work.","url":"https://thenewstack.io/anthropic-claude-code-verification/","datePublished":"2026-11-20","publisher":{"@type":"Organization","name":"The New Stack"}},{"@type":"CreativeWork","name":"Combatting adversarial distillation","url":"https://openai.com/index/combatting-adversarial-distillation","datePublished":"2026-11-20","publisher":{"@type":"Organization","name":"OpenAI"}},{"@type":"CreativeWork","name":"AI coding agents on Amazon EC2 Mac: How Cognition scales Devin for macOS","url":"https://aws.amazon.com/blogs/architecture/ai-coding-agents-on-amazon-ec2-mac-how-cognition-scales-devin-for-macos/","datePublished":"2026-11-20","publisher":{"@type":"Organization","name":"AWS Architecture"}}],"@id":"https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/#page","about":{"@id":"https://maksym.site/#maksym"}}]}</script>
+  <script>(()=>{let theme;try{theme=localStorage.getItem('theme')}catch{}if(theme!=='light'&&theme!=='dark')theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#0d1219':'#fafbfd')})()</script>
+  <link rel="stylesheet" href="/assets/site.css">
+  <script src="/assets/site.js" defer></script>
+<link rel="stylesheet" href="/assets/portfolio.css"><script src="/assets/portfolio.js" defer></script>
+<link rel="alternate" type="text/markdown" href="/llms.txt" title="llms.txt">
+<link rel="alternate" type="text/markdown" href="/llms-full.txt" title="Full professional profile">
+<meta name="twitter:title" content="OpenAI&#39;s MedChemBench tests AI models on medicinal chemistry · Radar 2026-11-21 · Maksym">
+<meta name="twitter:description" content="OpenAI&#39;s new benchmark for AI in drug discovery shows promising results, but practical adoption requires more than just high scores.">
+<meta name="twitter:image" content="https://maksym.site/og.png">
+</head>
+<body class="portfolio p-radar">
+  <a class="skip" href="#content">Skip to content</a>
+  <div class="wrap p-wrap">
+    <main id="content">
+      <article class="post">
+        <nav class="home-links radar-back" aria-label="Page navigation"><a href="/radar/"><span aria-hidden="true">←</span> Back to Radar</a></nav>
+        <h1>OpenAI&#39;s MedChemBench tests AI models on medicinal chemistry</h1>
+        <p class="post-meta">21 Nov 2026 · 4 picks</p>
+        <p class="post-intro">OpenAI&#39;s new benchmark for AI in drug discovery shows promising results, but practical adoption requires more than just high scores.</p>
+        <ol class="radar-items">
+          <li>
+            <h2><a href="https://openai.com/index/introducing-medchembench" target="_blank" rel="noopener">Can AI help scientists identify promising drug candidates?</a></h2>
+            <p class="radar-src">OpenAI · 20 Nov 2026</p>
+            <p>OpenAI introduced MedChemBench, a benchmark to test AI models on reasoning tasks from medicinal chemistry research. MedChemBench includes 99 problems drawn from 117 papers and patents, featuring 761 distinct molecular structures. GPT-6.2 Astra scored 84.5% at the xhigh reasoning setting, outperforming other models like GPT-6 Astra at 83.3% and GPT-6.1 Sol at 82.0%. The benchmark does not establish whether models can discover new drugs or improve laboratory decisions. For backend teams, this means that while AI can assist in identifying promising drug candidates, it is not a replacement for human expertise. I would verify how the benchmark&#39;s results translate to real-world drug discovery processes before integrating such models into existing workflows. The ability to reconstruct molecular structures and explain experimental evidence is crucial, but the practical impact on drug development needs further validation.</p>
+          </li>
+          <li>
+            <h2><a href="https://thenewstack.io/anthropic-claude-code-verification/" target="_blank" rel="noopener">Anthropic says Claude writes and reviews 90% of its team’s code. The catch is how it checks the work.</a></h2>
+            <p class="radar-src">The New Stack · 20 Nov 2026</p>
+            <p>Anthropic reports that its AI model, Claude, writes and reviews 90% of its team’s code, with a red team of 20 engineers ensuring safety and reliability. I would check how this approach scales and integrates with existing code review processes in backend engineering.</p>
+          </li>
+          <li>
+            <h2><a href="https://openai.com/index/combatting-adversarial-distillation" target="_blank" rel="noopener">Combatting adversarial distillation</a></h2>
+            <p class="radar-src">OpenAI · 20 Nov 2026</p>
+            <p>OpenAI is addressing safety risks of adversarial distillation, a technique that allows bad actors to reproduce AI capabilities without safeguards. The average attack success rate fell from 54.0% against GPT-6 Astra to 0.2% against GPT-6.2 Astra. This is worth watching for backend teams dealing with sensitive data and cybersecurity concerns.</p>
+          </li>
+          <li>
+            <h2><a href="https://aws.amazon.com/blogs/architecture/ai-coding-agents-on-amazon-ec2-mac-how-cognition-scales-devin-for-macos/" target="_blank" rel="noopener">AI coding agents on Amazon EC2 Mac: How Cognition scales Devin for macOS</a></h2>
+            <p class="radar-src">AWS Architecture · 20 Nov 2026</p>
+            <p>The Cognition team scaled its AI coding agent, Devin, to macOS using Amazon EC2 Mac instances, allowing it to build Apple apps. According to AWS Architecture, they start a fresh macOS virtual machine for each Devin session in under a minute, using a fleet of EC2 Mac hosts across six AWS Regions. This approach avoids the overhead of maintaining physical Mac computers and could be useful for teams needing cross-platform development capabilities.</p>
+          </li>
+        </ol>
+        <p class="post-end"><a href="/radar/">← All issues</a> · <a href="/radar/2026-11-20-google-tool-retrieval-gemini-aws-agent-built-emulator/" rel="prev">Previous: Google&#39;s Tool Retrieval for Gemini and AWS&#39;s agent-built emulator</a></p>
+      </article>
+    </main>
+<footer class="foot p-footer"><nav aria-label="Footer"><a href="/radar/feed.xml" aria-label="RSS — Radar feed">RSS</a></nav></footer>
+  </div>
+</body>
+</html>

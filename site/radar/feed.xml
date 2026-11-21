@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>OpenAI&#39;s MedChemBench tests AI models on medicinal chemistry</title>
+      <link>https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/</link>
+      <guid>https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/</guid>
+      <pubDate>Sat, 21 Nov 2026 06:00:00 GMT</pubDate>
+      <description>OpenAI&#39;s new benchmark for AI in drug discovery shows promising results, but practical adoption requires more than just high scores.</description>
+    </item>
+    <item>
       <title>Google&#39;s Tool Retrieval for Gemini and AWS&#39;s agent-built emulator</title>
       <link>https://maksym.site/radar/2026-11-20-google-tool-retrieval-gemini-aws-agent-built-emulator/</link>
       <guid>https://maksym.site/radar/2026-11-20-google-tool-retrieval-gemini-aws-agent-built-emulator/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-11-02-agentic-web-new-frontier-ai/</guid>
       <pubDate>Mon, 02 Nov 2026 06:00:00 GMT</pubDate>
       <description>The agentic web is here, transforming how AI interacts with online content. This shift brings new opportunities and challenges for backend engineering teams.</description>
-    </item>
-    <item>
-      <title>Docusign&#39;s contract agents and Spring&#39;s AI push</title>
-      <link>https://maksym.site/radar/2026-11-01-docusign-contract-agents-spring-ai-push/</link>
-      <guid>https://maksym.site/radar/2026-11-01-docusign-contract-agents-spring-ai-push/</guid>
-      <pubDate>Sun, 01 Nov 2026 06:00:00 GMT</pubDate>
-      <description>Docusign&#39;s new contract agents and the latest Spring releases highlight the growing integration of AI in backend systems.</description>
     </item>
   </channel>
 </rss>

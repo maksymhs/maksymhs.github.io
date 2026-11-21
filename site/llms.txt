@@ -25,11 +25,11 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [All issues](https://maksym.site/radar/): daily news from the LLM and AI world and backend engineering, with a short take on each (RSS and MCP available)
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
+- [OpenAI's MedChemBench tests AI models on medicinal chemistry](https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/): OpenAI's new benchmark for AI in drug discovery shows promising results, but practical adoption requires more than just high scores.
 - [Google's Tool Retrieval for Gemini and AWS's agent-built emulator](https://maksym.site/radar/2026-11-20-google-tool-retrieval-gemini-aws-agent-built-emulator/): Google's new Tool Retrieval for Gemini and AWS's agent-built emulator are both significant steps in the evolution of AI-assisted engineering.
 - [Gemini 4 Neon released for engineering, knowledge work and science](https://maksym.site/radar/2026-11-19-gemini-4-neon-released-engineering-knowledge-work-science/): Google DeepMind's Gemini 4 Neon model is now available, with a 1 million-token context window and four scalable thinking levels. It ranks highly on several benchmarks, and its pricing is competitive.
 - [NVIDIA's Sparse Attention for Efficient Long-Context Inference](https://maksym.site/radar/2026-11-18-nvidia-sparse-attention-efficient-long-context-inference/): NVIDIA's latest advancements in sparse attention for efficient long-context inference are significant for backend teams dealing with large-scale AI models. Muse's expansion into Australia and Rakbank's observability setup are also noteworthy.
 - [Accelerate Molecular Dynamics Simulations with Accurate, Flexible Primitives Using NVID...](https://maksym.site/radar/2026-11-17-accelerate-molecular-dynamics-simulations-accurate-flexible/): Today's picks start with NVIDIA Developer: Accelerate Molecular Dynamics Simulations with Accurate, Flexible Primitives Using NVIDIA cuPotential
-- [Llama.cpp 1.0.0: a new foundation for local AI](https://maksym.site/radar/2026-11-16-llama-cpp-1-0-0-new-foundation-local-ai/): Llama.cpp 1.0.0 was released, supporting multi-modal LLMs on a wide range of hardware. I would evaluate how it fits into the backend toolchain.
 <!-- radar:end -->
 
 ## Optional
