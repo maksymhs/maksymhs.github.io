@@ -1,5 +1,20 @@
 [
   {
+    "slug": "2026-11-22-google-agent-compute-engine-secure-ai-agent-execution",
+    "kind": "daily",
+    "year": 2026,
+    "week": 47,
+    "title": "Google's Agent Compute Engine for secure AI agent execution",
+    "intro": "Google has announced Agent Compute Engine, a managed service for running AI agents in isolated microVMs. This is a significant step in securing AI agent execution environments.",
+    "date": "2026-11-22T06:00:00.000Z",
+    "count": 3,
+    "links": [
+      "https://www.infoq.com/news/2026/11/google-agent-compute-engine/",
+      "https://openai.com/business/customer-stories/hebbia",
+      "https://aws.amazon.com/blogs/machine-learning/cut-self-hosted-llm-cost-and-latency-with-the-distributed-kv-caching-agent-skill/"
+    ]
+  },
+  {
     "slug": "2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry",
     "kind": "daily",
     "year": 2026,

@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Google&#39;s Agent Compute Engine for secure AI agent execution</title>
+      <link>https://maksym.site/radar/2026-11-22-google-agent-compute-engine-secure-ai-agent-execution/</link>
+      <guid>https://maksym.site/radar/2026-11-22-google-agent-compute-engine-secure-ai-agent-execution/</guid>
+      <pubDate>Sun, 22 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Google has announced Agent Compute Engine, a managed service for running AI agents in isolated microVMs. This is a significant step in securing AI agent execution environments.</description>
+    </item>
+    <item>
       <title>OpenAI&#39;s MedChemBench tests AI models on medicinal chemistry</title>
       <link>https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/</link>
       <guid>https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-11-03-llms-can-edit-neural-network-weights-weight-space-programming/</guid>
       <pubDate>Tue, 03 Nov 2026 06:00:00 GMT</pubDate>
       <description>A new method lets LLMs read and edit neural network weights, potentially streamlining model training and debugging. I would verify the method&#39;s robustness before adopting it in production.</description>
-    </item>
-    <item>
-      <title>Agentic web: the new frontier for AI</title>
-      <link>https://maksym.site/radar/2026-11-02-agentic-web-new-frontier-ai/</link>
-      <guid>https://maksym.site/radar/2026-11-02-agentic-web-new-frontier-ai/</guid>
-      <pubDate>Mon, 02 Nov 2026 06:00:00 GMT</pubDate>
-      <description>The agentic web is here, transforming how AI interacts with online content. This shift brings new opportunities and challenges for backend engineering teams.</description>
     </item>
   </channel>
 </rss>
