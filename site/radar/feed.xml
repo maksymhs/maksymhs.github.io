@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>OpenAI&#39;s perplexity breakthrough and the AI safety debate</title>
+      <link>https://maksym.site/radar/2026-11-23-openai-perplexity-breakthrough-ai-safety-debate/</link>
+      <guid>https://maksym.site/radar/2026-11-23-openai-perplexity-breakthrough-ai-safety-debate/</guid>
+      <pubDate>Mon, 23 Nov 2026 06:00:00 GMT</pubDate>
+      <description>OpenAI&#39;s latest AI models have achieved unprecedented perplexity levels, signaling transformative capabilities. Meanwhile, the AI industry debates safety standards and transparency.</description>
+    </item>
+    <item>
       <title>Google&#39;s Agent Compute Engine for secure AI agent execution</title>
       <link>https://maksym.site/radar/2026-11-22-google-agent-compute-engine-secure-ai-agent-execution/</link>
       <guid>https://maksym.site/radar/2026-11-22-google-agent-compute-engine-secure-ai-agent-execution/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-11-04-google-litert-tensor-api-device-ml-models/</guid>
       <pubDate>Wed, 04 Nov 2026 06:00:00 GMT</pubDate>
       <description>Google&#39;s new LiteRT Tensor API lets developers build, customize, and optimize ML models for on-device execution. This could change how backend teams integrate AI into their applications.</description>
-    </item>
-    <item>
-      <title>LLMs can edit neural network weights: Weight Space Programming</title>
-      <link>https://maksym.site/radar/2026-11-03-llms-can-edit-neural-network-weights-weight-space-programming/</link>
-      <guid>https://maksym.site/radar/2026-11-03-llms-can-edit-neural-network-weights-weight-space-programming/</guid>
-      <pubDate>Tue, 03 Nov 2026 06:00:00 GMT</pubDate>
-      <description>A new method lets LLMs read and edit neural network weights, potentially streamlining model training and debugging. I would verify the method&#39;s robustness before adopting it in production.</description>
     </item>
   </channel>
 </rss>

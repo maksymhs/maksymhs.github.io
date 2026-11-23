@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-23-openai-perplexity-breakthrough-ai-safety-debate",
+    "kind": "daily",
+    "year": 2026,
+    "week": 48,
+    "title": "OpenAI's perplexity breakthrough and the AI safety debate",
+    "intro": "OpenAI's latest AI models have achieved unprecedented perplexity levels, signaling transformative capabilities. Meanwhile, the AI industry debates safety standards and transparency.",
+    "date": "2026-11-23T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://openai.com/index/perplexity-and-intelligence",
+      "https://huggingface.co/blog/inkling2mini",
+      "https://huggingface.co/blog/harness-adapters-at-scale",
+      "https://www.infoq.com/news/2026/11/java-news-roundup-nov16-2026/"
+    ]
+  },
+  {
     "slug": "2026-11-22-google-agent-compute-engine-secure-ai-agent-execution",
     "kind": "daily",
     "year": 2026,

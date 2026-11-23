@@ -25,11 +25,11 @@ AI assistants can query his profile directly through a public MCP server (no aut
 - [All issues](https://maksym.site/radar/): daily news from the LLM and AI world and backend engineering, with a short take on each (RSS and MCP available)
 - [RSS](https://maksym.site/radar/feed.xml)
 <!-- radar:start -->
+- [OpenAI's perplexity breakthrough and the AI safety debate](https://maksym.site/radar/2026-11-23-openai-perplexity-breakthrough-ai-safety-debate/): OpenAI's latest AI models have achieved unprecedented perplexity levels, signaling transformative capabilities. Meanwhile, the AI industry debates safety standards and transparency.
 - [Google's Agent Compute Engine for secure AI agent execution](https://maksym.site/radar/2026-11-22-google-agent-compute-engine-secure-ai-agent-execution/): Google has announced Agent Compute Engine, a managed service for running AI agents in isolated microVMs. This is a significant step in securing AI agent execution environments.
 - [OpenAI's MedChemBench tests AI models on medicinal chemistry](https://maksym.site/radar/2026-11-21-openai-medchembench-tests-ai-models-medicinal-chemistry/): OpenAI's new benchmark for AI in drug discovery shows promising results, but practical adoption requires more than just high scores.
 - [Google's Tool Retrieval for Gemini and AWS's agent-built emulator](https://maksym.site/radar/2026-11-20-google-tool-retrieval-gemini-aws-agent-built-emulator/): Google's new Tool Retrieval for Gemini and AWS's agent-built emulator are both significant steps in the evolution of AI-assisted engineering.
 - [Gemini 4 Neon released for engineering, knowledge work and science](https://maksym.site/radar/2026-11-19-gemini-4-neon-released-engineering-knowledge-work-science/): Google DeepMind's Gemini 4 Neon model is now available, with a 1 million-token context window and four scalable thinking levels. It ranks highly on several benchmarks, and its pricing is competitive.
-- [NVIDIA's Sparse Attention for Efficient Long-Context Inference](https://maksym.site/radar/2026-11-18-nvidia-sparse-attention-efficient-long-context-inference/): NVIDIA's latest advancements in sparse attention for efficient long-context inference are significant for backend teams dealing with large-scale AI models. Muse's expansion into Australia and Rakbank's observability setup are also noteworthy.
 <!-- radar:end -->
 
 ## Optional
