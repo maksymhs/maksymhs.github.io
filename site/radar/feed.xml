@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Anthropic&#39;s Claude Ship automates pull requests</title>
+      <link>https://maksym.site/radar/2026-11-24-anthropic-claude-ship-automates-pull-requests/</link>
+      <guid>https://maksym.site/radar/2026-11-24-anthropic-claude-ship-automates-pull-requests/</guid>
+      <pubDate>Tue, 24 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Anthropic&#39;s new product, Claude Ship, can review, fix, and approve pull requests, with implications for backend engineering teams.</description>
+    </item>
+    <item>
       <title>OpenAI&#39;s perplexity breakthrough and the AI safety debate</title>
       <link>https://maksym.site/radar/2026-11-23-openai-perplexity-breakthrough-ai-safety-debate/</link>
       <guid>https://maksym.site/radar/2026-11-23-openai-perplexity-breakthrough-ai-safety-debate/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-11-05-how-big-open-model-economy-today/</guid>
       <pubDate>Thu, 05 Nov 2026 06:00:00 GMT</pubDate>
       <description>Today&#39;s picks start with Interconnects: How big is the open model economy today?</description>
-    </item>
-    <item>
-      <title>Google&#39;s LiteRT Tensor API for on-device ML models</title>
-      <link>https://maksym.site/radar/2026-11-04-google-litert-tensor-api-device-ml-models/</link>
-      <guid>https://maksym.site/radar/2026-11-04-google-litert-tensor-api-device-ml-models/</guid>
-      <pubDate>Wed, 04 Nov 2026 06:00:00 GMT</pubDate>
-      <description>Google&#39;s new LiteRT Tensor API lets developers build, customize, and optimize ML models for on-device execution. This could change how backend teams integrate AI into their applications.</description>
     </item>
   </channel>
 </rss>

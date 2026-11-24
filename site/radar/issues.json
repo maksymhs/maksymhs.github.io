@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-24-anthropic-claude-ship-automates-pull-requests",
+    "kind": "daily",
+    "year": 2026,
+    "week": 48,
+    "title": "Anthropic's Claude Ship automates pull requests",
+    "intro": "Anthropic's new product, Claude Ship, can review, fix, and approve pull requests, with implications for backend engineering teams.",
+    "date": "2026-11-24T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.theverge.com/ai-artificial-intelligence/1040134/anthropic-claude-ship-ai-pull-requests",
+      "https://www.infoq.com/news/2026/11/openai-git-pando/",
+      "https://aws.amazon.com/blogs/machine-learning/introducing-the-amazon-bedrock-trusted-access-api-with-anthropics-enterprise-frontier-safeguards-and-enterprise-data-controls/",
+      "https://foojay.io/today/reactive-messaging-on-quarkus/"
+    ]
+  },
+  {
     "slug": "2026-11-23-openai-perplexity-breakthrough-ai-safety-debate",
     "kind": "daily",
     "year": 2026,
