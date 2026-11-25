@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-25-amateurs-find-exoplanets-openai-codex-astra",
+    "kind": "daily",
+    "year": 2026,
+    "week": 48,
+    "title": "Amateurs find exoplanets with OpenAI Codex and Astra",
+    "intro": "Two amateur astronomers used OpenAI's Codex and Astra to search for exoplanets in public telescope data, finding signals that professional researchers are now checking.",
+    "date": "2026-11-25T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://openai.com/index/searching-for-distant-planets-with-astra",
+      "https://devblogs.microsoft.com/foundry/whats-new-in-microsoft-foundry-ignite-2026/",
+      "https://blog.jetbrains.com/ai/2026/11/mellum2-1-instruct-is-out-bringing-faster-answers-for-coding-agents/",
+      "https://www.baeldung.com/spring-ai-2-tool-calling"
+    ]
+  },
+  {
     "slug": "2026-11-24-anthropic-claude-ship-automates-pull-requests",
     "kind": "daily",
     "year": 2026,
