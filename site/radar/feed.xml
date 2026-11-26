@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>GPT-6 models design proteins, OpenAI claims math breakthrough</title>
+      <link>https://maksym.site/radar/2026-11-26-gpt-6-models-design-proteins-openai-claims-math-breakthrough/</link>
+      <guid>https://maksym.site/radar/2026-11-26-gpt-6-models-design-proteins-openai-claims-math-breakthrough/</guid>
+      <pubDate>Thu, 26 Nov 2026 06:00:00 GMT</pubDate>
+      <description>OpenAI&#39;s GPT-6 models show new capabilities in protein design and math problem-solving, while Anthropic tests Claude&#39;s robustness.</description>
+    </item>
+    <item>
       <title>Amateurs find exoplanets with OpenAI Codex and Astra</title>
       <link>https://maksym.site/radar/2026-11-25-amateurs-find-exoplanets-openai-codex-astra/</link>
       <guid>https://maksym.site/radar/2026-11-25-amateurs-find-exoplanets-openai-codex-astra/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-11-07-agent-memory-design-serverless-mcp-amazon-ecs-fargate/</guid>
       <pubDate>Sat, 07 Nov 2026 06:00:00 GMT</pubDate>
       <description>Today&#39;s radar covers the design of agent memory inspired by human processes, a serverless MCP server on Amazon ECS Fargate, and new capabilities in AI agents.</description>
-    </item>
-    <item>
-      <title>Together AI keeps humans in control as coding agents rewrite GPU code</title>
-      <link>https://maksym.site/radar/2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code/</link>
-      <guid>https://maksym.site/radar/2026-11-06-together-ai-keeps-humans-control-coding-agents-rewrite-gpu-code/</guid>
-      <pubDate>Fri, 06 Nov 2026 06:00:00 GMT</pubDate>
-      <description>Together AI has leveraged coding agents to rewrite GPU code, but kept human oversight in the deployment process. This approach highlights the balance between automation and human control in critical systems.</description>
     </item>
   </channel>
 </rss>
