@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-27-verifiable-social-reasoning-llm-assistants",
+    "kind": "daily",
+    "year": 2026,
+    "week": 48,
+    "title": "Verifiable Social Reasoning for LLM Assistants",
+    "intro": "Today's picks start with Google Research: Verifiable Social Reasoning for LLM Assistants",
+    "date": "2026-11-27T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://research.google/blog/verifiable-social-reasoning-for-llm-assistants/",
+      "https://www.wired.com/story/jensen-huang-nvidia-us-national-security-risks/",
+      "https://inside.java/podcast/76/",
+      "https://foojay.io/today/what-java4shell-teaches-about-patching-java-at-ai-speed/"
+    ]
+  },
+  {
     "slug": "2026-11-26-gpt-6-models-design-proteins-openai-claims-math-breakthrough",
     "kind": "daily",
     "year": 2026,

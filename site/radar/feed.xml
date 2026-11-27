@@ -6,6 +6,13 @@
     <description>Daily news from the LLM and AI world and backend engineering, with a short take on each.</description>
     <language>en</language>
     <item>
+      <title>Verifiable Social Reasoning for LLM Assistants</title>
+      <link>https://maksym.site/radar/2026-11-27-verifiable-social-reasoning-llm-assistants/</link>
+      <guid>https://maksym.site/radar/2026-11-27-verifiable-social-reasoning-llm-assistants/</guid>
+      <pubDate>Fri, 27 Nov 2026 06:00:00 GMT</pubDate>
+      <description>Today&#39;s picks start with Google Research: Verifiable Social Reasoning for LLM Assistants</description>
+    </item>
+    <item>
       <title>GPT-6 models design proteins, OpenAI claims math breakthrough</title>
       <link>https://maksym.site/radar/2026-11-26-gpt-6-models-design-proteins-openai-claims-math-breakthrough/</link>
       <guid>https://maksym.site/radar/2026-11-26-gpt-6-models-design-proteins-openai-claims-math-breakthrough/</guid>
@@ -137,13 +144,6 @@
       <guid>https://maksym.site/radar/2026-11-08-ai-agents-getting-more-complex-developers-shouldnt-have-babysit/</guid>
       <pubDate>Sun, 08 Nov 2026 06:00:00 GMT</pubDate>
       <description>Today&#39;s picks start with The New Stack: AI agents are getting more complex. Developers shouldn’t have to babysit them.</description>
-    </item>
-    <item>
-      <title>Agent memory design and serverless MCP on Amazon ECS Fargate</title>
-      <link>https://maksym.site/radar/2026-11-07-agent-memory-design-serverless-mcp-amazon-ecs-fargate/</link>
-      <guid>https://maksym.site/radar/2026-11-07-agent-memory-design-serverless-mcp-amazon-ecs-fargate/</guid>
-      <pubDate>Sat, 07 Nov 2026 06:00:00 GMT</pubDate>
-      <description>Today&#39;s radar covers the design of agent memory inspired by human processes, a serverless MCP server on Amazon ECS Fargate, and new capabilities in AI agents.</description>
     </item>
   </channel>
 </rss>
