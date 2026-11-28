@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-11-28-azure-ai-gateway-now-generally-available",
+    "kind": "daily",
+    "year": 2026,
+    "week": 48,
+    "title": "Azure AI Gateway now generally available",
+    "intro": "Microsoft's Azure AI Gateway is now generally available, supporting multiple AI models and offering a cost-based model router.",
+    "date": "2026-11-28T06:00:00.000Z",
+    "count": 4,
+    "links": [
+      "https://www.infoq.com/news/2026/11/azure-ai-gateway-ga/",
+      "https://latent.space/p/how-clay-builds-gtm-agents-jeff-barg-head-of-ai/",
+      "https://www.infoq.com/news/2026/11/uber-agent-spend-steady/",
+      "https://foojay.io/today/building-token-budgets-for-spring-ai-the-problems-i-didnt-expect/"
+    ]
+  },
+  {
     "slug": "2026-11-27-verifiable-social-reasoning-llm-assistants",
     "kind": "daily",
     "year": 2026,
